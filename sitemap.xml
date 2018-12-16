@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://chen-zhe.github.io/2018/12/notes-on-graphx-and-clique-detection/</loc>
+    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://chen-zhe.github.io/2018/09/apache-spark-save-time-with-less-join-operations/</loc>
     <lastmod>2018-09-28T21:05:12+08:00</lastmod>
   </url>
@@ -19,13 +24,13 @@
   
   <url>
     <loc>https://chen-zhe.github.io/</loc>
-    <lastmod>2018-09-28T21:05:12+08:00</lastmod>
+    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://chen-zhe.github.io/post/</loc>
-    <lastmod>2018-09-28T21:05:12+08:00</lastmod>
+    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
     <priority>0</priority>
   </url>
   
