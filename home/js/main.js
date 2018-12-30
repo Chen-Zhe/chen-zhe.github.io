@@ -105,7 +105,7 @@
 								.css('width', '100%')
 								.css('margin-top', ($headerTitle.outerHeight() / -2));
 							if (skel.vars.mobile)
-								$wrapper.css('background-image', '');
+								$wrapper.css('background-image', '').css('background-size', '');
 							$headerImageContainer.css('height', '100%').css('display', '');;
 
 						});
@@ -121,7 +121,8 @@
 								.css('margin-top', '');
 							
 							$wrapper.css('background-image', (
-							'url("' + $headerImageContainer.find("img").attr('src') + '")'));
+							'url("' + $headerImageContainer.find("img").attr('src') + '")'))
+							.css('background-size', 'cover');
 							$headerImageContainer.css('height', '0%').css('display', 'none');
 
 						});
@@ -185,9 +186,7 @@
 					$bg = $('<div class="main-bg" id="' + $this.attr('id') + '-bg"></div>')
 						.css('background-image', (
 							'url("' + $primaryImg.attr('src') + '")'
-						)).css('background-size', (
-							'cover'
-						))
+						)).css('background-size', 'cover')
 						.appendTo($body);
 
 				// Scrollex.
