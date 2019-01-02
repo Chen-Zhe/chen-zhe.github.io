@@ -94,9 +94,11 @@
 			// Make title fixed.
 
 					$window.on('load.hl_headerTitle', function() {
-
+						if (skel.vars.mobile)
+							var $bg = $wrapper
+						else
+							var $bg = $header
 						skel.on('-medium !medium', function() {
-
 							$headerTitle
 								.css('position', 'fixed')
 								.css('height', 'auto')
@@ -104,14 +106,11 @@
 								.css('left', '0')
 								.css('width', '100%')
 								.css('margin-top', ($headerTitle.outerHeight() / -2));
-							if (skel.vars.mobile)
-								$wrapper.css('background-image', '').css('background-size', '');
+							$bg.css('background-image', '').css('background-size', '');
 							$headerImageContainer.css('height', '100%').css('display', '');;
 
 						});
-
 						skel.on('+medium', function() {
-
 							$headerTitle
 								.css('position', '')
 								.css('height', '')
@@ -120,7 +119,7 @@
 								.css('width', '')
 								.css('margin-top', '');
 							
-							$wrapper.css('background-image', (
+							$bg.css('background-image', (
 							'url("' + $headerImageContainer.find("img").attr('src') + '")'))
 							.css('background-size', 'cover');
 							$headerImageContainer.css('height', '0%').css('display', 'none');
