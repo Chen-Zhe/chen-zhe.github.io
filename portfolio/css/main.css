@@ -6,8 +6,6 @@ body {
     line-height: 1.5;
     word-wrap: break-word;
     color: #d8d8d8;
-}
-.center {
     min-width: 200px;
     max-width: 980px;
     margin: 0 auto;
@@ -17,8 +15,8 @@ h1,h2,h3,h4,h5,h6{
     text-align: center;
 }
 img {
-    max-width: 95%;
-    max-height: 60vh;
+    max-width: 90%;
+    max-height: 65vh;
     display: block;
     margin: 0 auto;
     padding: 15px;
@@ -44,7 +42,7 @@ img {
   padding: 16px;
   color: white;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 20px;
   transition: 0.6s ease;
   border-radius: 0 3px 3px 0;
   user-select: none;
@@ -127,7 +125,8 @@ img {
 /* The actual popup (appears on top) */
 .popup .popuptext {
   visibility: hidden;
-  width: 50vw;
+  max-width: 900px;
+  width: 80vw;
   background-color: #555;
   color: #fff;
   text-align: center;
@@ -136,7 +135,8 @@ img {
   position: absolute;
   z-index: 1;
   bottom: 125%;
-  left: 25%;
+  left: 50%;
+  transform: translate(-50%);
 }
 
 /* Popup arrow */
