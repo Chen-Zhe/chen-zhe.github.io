@@ -119,6 +119,9 @@ img {
 .popup {
   position: relative;
   display: inline-block;
+}
+
+.popup:hover {
   cursor: pointer;
 }
 
