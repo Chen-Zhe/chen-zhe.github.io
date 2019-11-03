@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Chen Zhe&#39;s Blog</title>
@@ -12,7 +12,7 @@
     
     
     <item>
-      <title>Clique</title>
+      <title>clique</title>
       <link>https://chen-zhe.github.io/blog/tags/clique/</link>
       <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
       
@@ -21,25 +21,7 @@
     </item>
     
     <item>
-      <title>Graphx</title>
-      <link>https://chen-zhe.github.io/blog/tags/graphx/</link>
-      <pubDate>Sat, 15 Dec 2018 21:05:12 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/tags/graphx/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Optimization</title>
-      <link>https://chen-zhe.github.io/blog/tags/optimization/</link>
-      <pubDate>Fri, 28 Sep 2018 21:05:12 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/tags/optimization/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Paper</title>
+      <title>paper</title>
       <link>https://chen-zhe.github.io/blog/tags/paper/</link>
       <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
       
@@ -48,11 +30,29 @@
     </item>
     
     <item>
-      <title>Spark</title>
+      <title>spark</title>
       <link>https://chen-zhe.github.io/blog/tags/spark/</link>
       <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/tags/spark/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>graphx</title>
+      <link>https://chen-zhe.github.io/blog/tags/graphx/</link>
+      <pubDate>Sat, 15 Dec 2018 21:05:12 +0800</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/tags/graphx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>optimization</title>
+      <link>https://chen-zhe.github.io/blog/tags/optimization/</link>
+      <pubDate>Fri, 28 Sep 2018 21:05:12 +0800</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/tags/optimization/</guid>
       <description></description>
     </item>
     

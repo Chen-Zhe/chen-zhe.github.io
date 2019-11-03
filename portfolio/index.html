@@ -1,142 +1,112 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="generator" content="Hugo 0.51" />
-	<title>Chen Zhe&#39;s Portfolio</title>
+	<meta name="generator" content="Hugo 0.59.1" />
+	<title>Chen Zhe&#39;s Photo Portfolio</title>
 	 <link rel="icon" href="https://chen-zhe.github.io/favicon.png"> 
-	<style type="text/css">
-		body {
-			background: #d8d8d8;
-		    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
-	        font-size: 18px;
-		    line-height: 1.5;
-		    word-wrap: break-word;
-		}
-		.center {
-			box-sizing: border-box;
-			min-width: 200px;
-			max-width: 980px;
-			margin: 0 auto;
-			padding: 15px;
-		}
-		h1,h2,h3,h4,h5,h6{
-			text-align: center;
-		}
-		img {
-			box-sizing: border-box;
-            max-width: 95%;
-			max-height: 80vh;
-            min-height: 200px;
-			display: block;
-            margin: 0 auto;
-			padding: 15px;
-		}
-	</style>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 	<div class="center">
-	<h2>Chen Zhe's Photo Portfolio</h2>
-	<h4>Preface</h4>
-	<p>Photography is not just about art. Indeed, composition matters a lot in making a photo appear pleasing, so does location, color and postprocessing. To me, photography is more than that, because every time I press down the shutter button and the curtains click, it captures a moment that I can never relive again. Be it a moment of joy, surprise, tranquility or sorrow, photo is a gate to the past and allows me to re-immerse in the emotion captured by the photo. It's from the past that I can gain experience and strength to fight in the current.</p>
+	<h2>Chen Zhe&#39;s Photo Portfolio</h2>
+	<p>To me, photography is more than that, because every time the shutter curtains clicks, the camera captures a moment that I can never relive again. Be it a moment of joy, surprise, tranquility or sorrow, photo is a gate to the past, and it&#39;s from the past that I can gain experience and strength to fight in the current.</p>
 	</div>
-	<hr>
-	
-		<h4 class="center">Night time at Downtown Manhattan</h4>
-        <img class="lazy" data-src="image/IMG_16381.jpg">
-        <p class="center">Taken on the 86th floor observatory of Empire State Building in a 30-second exposure, which turned out to be a bit too long as the lights on the One World Trade Center are slightly blown out. I usually try to make use of objects at hand as tripod while travelling, and this time, my tripod is the steel fence of the observatory. Most of the openings on the fence is not big enough to fit in a DSLR camera lens, but the opening at the base is just enough for my Canon 24-70mm f/4 to slide through and firmly attached for this moment.</p>
-        <hr>
-    
-		<h4 class="center">4000m above Guangdong Province</h4>
-        <img class="lazy" data-src="image/IMG_5496.jpg">
-        <p class="center">Taken aboard a China Southern Airlines flight from Singapore to Guangzhou, China. For a long time, China Southern is the choice for me to go back home during term breaks, with relatively good timing and fast layover. Not to mention that their IATA code, <em>CZ</em>, is the same as my initial :) <br/> This photo will serve as a reminder to me, that although I have real-life limitations, my mind can still fly high above the ground and take a walk in the clouds.</p>
-        <hr>
-    
-		<h4 class="center">Thunder</h4>
-        <img class="lazy" data-src="image/IMG_9402.jpg">
-        <p class="center">Thunder is one of the hardest event to capture and I was lucky to get this shot. This is a single 15-second exposure and the only postprocessing done was to dramatically recover the highlight (luckily I always shoot raw, albeit with drawbacks, too) and adjust the white balance.</p>
-        <hr>
-    
-		<h4 class="center">The Hive, Nanyang Technological University</h4>
-        <img class="lazy" data-src="image/IMG_5296_stitch.jpg">
-        <p class="center">a stitch panorama (with some artifacts) of the interior of an oddly-shaped building in NTU</p>
-        <hr>
-    
-		<h4 class="center">Fireworks, Singapore National Day Parade rehearsal</h4>
-        <img class="lazy" data-src="image/IMGX_3642_blend.jpg">
-        <p class="center">Fireworks are traditionally taken using Black Card techniques to stack more fireworks onto a single frame. However, with digital photography and Photoshop, this can be done in postprocessing, with more granularity for control. This photo is a controlled stack of 4 image. If you ever wonder why is the sky dark blue while the fireworks are going on, it&rsquo;s because I chose to have this sky in the stack so that the sky doesn&rsquo;t look too empty.</p>
-        <hr>
-    
-		<h4 class="center">Lotus Peak, Huangshan, Anhui</h4>
-        <img class="lazy" data-src="image/IMG_4261_stitch.jpg">
-        <p class="center">A panorama at sunrise. The color is magical!</p>
-        <hr>
-    
-		<h4 class="center">Flowers of an ordinary type of vegetable</h4>
-        <img class="lazy" data-src="image/IMGX_1896.jpg">
-        <p class="center">Things look more intriguing in Macro, don&rsquo;t you think?</p>
-        <hr>
-    
-		<h4 class="center">Epic sunset in a small town</h4>
-        <img class="lazy" data-src="image/IMG_8714_stitch.jpg">
-        <p class="center">Taken at my grandma&rsquo;s place, a small county in Jiangxi Province. It&rsquo;s a stitched panorama and have the horizon adjusted to appear even more epic</p>
-        <hr>
-    
-		<h4 class="center">Black and White, Mount Longhu, Jiangxi</h4>
-        <img class="lazy" data-src="image/IMGX6174.jpg">
-        <p class="center">The color is a bit dull on that day, so I thought: hey, why not make it black and white, so that the color doesn&rsquo;t matter anymore?</p>
-        <hr>
-    
+<div class="slideshow-container">
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  var lazyloadImages;    
+  
 
-  if ("IntersectionObserver" in window) {
-    lazyloadImages = document.querySelectorAll("img.lazy");
-    var imageObserver = new IntersectionObserver(function(entries, observer) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          var image = entry.target;
-          image.src = image.dataset.src;
-          image.classList.remove("lazy");
-          imageObserver.unobserve(image);
-        }
-      });
-    });
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMG_16381.jpg">
+    <div class="text popup" onclick="showPopup(this)">Night time at Downtown Manhattan
+        <span class="popuptext">Taken on the 86th floor observatory of Empire State Building in a 30-second exposure, which turned out to be a bit too long as the lights on the One World Trade Center are slightly blown out. I usually try to make use of objects at hand as tripod while travelling, and this time, my tripod is the steel fence of the observatory. Most of the openings on the fence is not big enough to fit in a DSLR camera lens, but the opening at the base is just enough for my Canon 24-70mm f/4 to slide through and firmly attached for this moment.</span>
+    </div>
+  </div>
 
-    lazyloadImages.forEach(function(image) {
-      imageObserver.observe(image);
-    });
-  } else {  
-    var lazyloadThrottleTimeout;
-    lazyloadImages = document.querySelectorAll("img.lazy");
-    
-    function lazyload () {
-      if(lazyloadThrottleTimeout) {
-        clearTimeout(lazyloadThrottleTimeout);
-      }    
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMG_5496.jpg">
+    <div class="text popup" onclick="showPopup(this)">4000m above Guangdong Province
+        <span class="popuptext">Taken aboard a China Southern Airlines flight from Singapore to Guangzhou, China. For a long time, China Southern is the choice for me to go back home during term breaks, with relatively good timing and fast layover. Not to mention that their IATA code, <em>CZ</em>, is the same as my initial :) <br/> This photo will serve as a reminder to me, that although I have real-life limitations, my mind can still fly high above the ground and take a walk in the clouds.</span>
+    </div>
+  </div>
 
-      lazyloadThrottleTimeout = setTimeout(function() {
-        var scrollTop = window.pageYOffset;
-        lazyloadImages.forEach(function(img) {
-            if(img.offsetTop < (window.innerHeight + scrollTop)) {
-              img.src = img.dataset.src;
-              img.classList.remove('lazy');
-            }
-        });
-        if(lazyloadImages.length == 0) { 
-          document.removeEventListener("scroll", lazyload);
-          window.removeEventListener("resize", lazyload);
-          window.removeEventListener("orientationChange", lazyload);
-        }
-      }, 20);
-    }
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMG_9402.jpg">
+    <div class="text popup" onclick="showPopup(this)">Thunder
+        <span class="popuptext">Thunder is one of the hardest event to capture and I was lucky to get this shot. This is a single 15-second exposure and the only postprocessing done was to dramatically recover the highlight (luckily I always shoot raw, albeit with drawbacks, too) and adjust the white balance.</span>
+    </div>
+  </div>
 
-    document.addEventListener("scroll", lazyload);
-    window.addEventListener("resize", lazyload);
-    window.addEventListener("orientationChange", lazyload);
-  }
-})
-</script>
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMG_5296_stitch.jpg">
+    <div class="text popup" onclick="showPopup(this)">The Hive, Nanyang Technological University
+        <span class="popuptext">a stitch panorama (with some artifacts) of the interior of an oddly-shaped building in NTU</span>
+    </div>
+  </div>
+
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMGX_3642_blend.jpg">
+    <div class="text popup" onclick="showPopup(this)">Fireworks, Singapore National Day Parade rehearsal
+        <span class="popuptext">Fireworks are traditionally taken using Black Card techniques to stack more fireworks onto a single frame. However, with digital photography and Photoshop, this can be done in postprocessing, with more granularity for control. This photo is a controlled stack of 4 image. If you ever wonder why is the sky dark blue while the fireworks are going on, it&rsquo;s because I chose to have this sky in the stack so that the sky doesn&rsquo;t look too empty.</span>
+    </div>
+  </div>
+
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMG_4261_stitch.jpg">
+    <div class="text popup" onclick="showPopup(this)">Lotus Peak, Huangshan, Anhui
+        <span class="popuptext">A panorama at sunrise. The color is magical!</span>
+    </div>
+  </div>
+
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMGX_1896.jpg">
+    <div class="text popup" onclick="showPopup(this)">Flowers of an ordinary type of vegetable
+        <span class="popuptext">Things look more intriguing in Macro, don&rsquo;t you think?</span>
+    </div>
+  </div>
+
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMG_8714_stitch.jpg">
+    <div class="text popup" onclick="showPopup(this)">Epic sunset in a small town
+        <span class="popuptext">Taken at my grandma&rsquo;s place, a small county in Jiangxi Province. It&rsquo;s a stitched panorama and have the horizon adjusted to appear even more epic</span>
+    </div>
+  </div>
+
+  <div class="mySlides fade" style="display:None">
+    <img data-src="image/IMGX6174.jpg">
+    <div class="text popup" onclick="showPopup(this)">Black and White, Mount Longhu, Jiangxi
+        <span class="popuptext">The color is a bit dull on that day, so I thought: hey, why not make it black and white, so that the color doesn&rsquo;t matter anymore?</span>
+    </div>
+  </div>
+
+
+  
+  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+  <a class="next" onclick="plusSlides(1)">&#10095;</a>
+</div>
+<br>
+
+
+<div style="text-align:center">
+  
+  <span class="dot" onclick="currentSlide( 0 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 1 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 2 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 3 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 4 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 5 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 6 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 7 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 8 )"></span>
+  
+</div>
 </body>
+<script src="js/main.js"></script>
 </html>
