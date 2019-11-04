@@ -110,8 +110,8 @@ function swipedetect(el, callback){
     }, false)
 }
 
-swipedetect(document.getElementById('swipezone'), function(swipedir){
-  switch(swipedir){
+function touchSwipe(swipeDir){
+    switch(swipeDir){
     case "left":
     plusSlides(1);
     break;
@@ -120,4 +120,9 @@ swipedetect(document.getElementById('swipezone'), function(swipedir){
     break;
     default: return;
   }
-});
+}
+
+var touchZoneList = document.getElementById('swipe-zone').getElementsByClassName("swipe");
+for (var i = 0; i < touchZoneList.length; i++) {
+  swipedetect(touchZoneList[i], touchSwipe);
+}
