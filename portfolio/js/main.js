@@ -32,14 +32,15 @@ function showSlides(n) {
 }
 
 function lazyLoadImg(slideDiv) {
-  var imgList = slideDiv.getElementsByTagName("img")
+  var imgList = slideDiv.getElementsByTagName("img");
   for (var i = 0; i < imgList.length; i++) {
     if (!imgList[i].src) {
-      imgList[i].src = imgList[i].dataset.src
+      imgList[i].src = imgList[i].dataset.src;
     }
   }
 }
 
+// keyboard event handling
 document.onkeyup = function(e) {
   switch(e.which) {
     case 37: // left
@@ -53,6 +54,19 @@ document.onkeyup = function(e) {
   e.preventDefault();
 };
 
+var enableTouchpad = true
+// scroll-wheel event handling
+window.addEventListener("wheel", event => {
+  if(Math.abs(event.deltaY) > 50 || enableTouchpad) {
+    if(event.deltaY > 0) plusSlides(1);
+    else if(event.deltaY < 0) plusSlides(-1);
+    if(Math.abs(event.deltaY) <= 50 && enableTouchpad) {
+      enableTouchpad = false;
+      setTimeout(function(){enableTouchpad=true}, 500);
+    }
+  }
+});
+
 // popup
 function showPopup(el) {
   var popups = el.getElementsByClassName("popuptext")
@@ -64,7 +78,6 @@ function showPopup(el) {
 // swipe detedction
 // credit: http://www.javascriptkit.com/javatutors/touchevents2.shtml
 function swipedetect(el, callback){
-
     var touchsurface = el,
     swipedir,
     startX,
@@ -110,19 +123,16 @@ function swipedetect(el, callback){
     }, false)
 }
 
-function touchSwipe(swipeDir){
+swipedetect(document.getElementById('swipe-zone'), function(swipeDir){
     switch(swipeDir){
     case "left":
+    case "up":
     plusSlides(1);
     break;
+    case "down":
     case "right":
     plusSlides(-1);
     break;
-    default: return;
+    default: showPopup(slides[slideIndex]);
   }
-}
-
-var touchZoneList = document.getElementById('swipe-zone').getElementsByClassName("swipe");
-for (var i = 0; i < touchZoneList.length; i++) {
-  swipedetect(touchZoneList[i], touchSwipe);
-}
+});
