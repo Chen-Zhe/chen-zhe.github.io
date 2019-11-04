@@ -41,21 +41,24 @@ function lazyLoadImg(slideDiv) {
 }
 
 document.onkeyup = function(e) {
-    switch(e.which) {
-        case 37: // left
-        plusSlides(-1);
-        break;
-        case 39: // right
-        plusSlides(1);
-        break;
-        default: return; // exit this handler for other keys
-    }
-    e.preventDefault();
+  switch(e.which) {
+    case 37: // left
+    plusSlides(-1);
+    break;
+    case 39: // right
+    plusSlides(1);
+    break;
+    default: return; // exit this handler for other keys
+  }
+  e.preventDefault();
 };
 
 // popup
 function showPopup(el) {
-  el.getElementsByClassName("popuptext")[0].classList.toggle("show");
+  var popups = el.getElementsByClassName("popuptext")
+  for (var i = 0; i < popups.length; i++) {
+    popups[i].classList.toggle("show");
+  }
 }
 
 // swipe detedction

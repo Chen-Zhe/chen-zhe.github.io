@@ -8,8 +8,10 @@
 <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<h2>Chen Zhe&#39;s Photo Portfolio</h2>
-<p>To me, photography is more than just art. Because every time the shutter curtains click, my camera captures a moment that I can never relive again. Be it a moment of joy, surprise, tranquility or sorrow, photo is a window to the past, and it&#39;s from the past that I can gain experience and strength to fight in the present.</p>
+  <div class="center">
+    <h2>Chen Zhe&#39;s Photo Portfolio</h2>
+    <p>To me, photography is more than just art. Because every time the shutter curtains click, my camera captures a moment that I can never relive again. Be it a moment of joy, surprise, tranquility or sorrow, photo is a window to the past, and it&#39;s from the past that I can gain experience and strength to fight in the present.</p>
+  </div>
 <div class="slideshow-container" id="swipezone">
 
   
@@ -32,6 +34,13 @@
     <img data-src="image/IMG_9402.jpg">
     <div class="text popup">Thunder
         <span class="popuptext">Thunder is one of the hardest event to capture and I was lucky to get this shot. This is a single 15-second exposure and the only postprocessing done was to dramatically recover the highlight (luckily I always shoot raw, albeit with drawbacks, too) and adjust the white balance.</span>
+    </div>
+  </div>
+
+  <div class="mySlides fade" style="display:None" onclick="showPopup(this)">
+    <img data-src="image/IMG_5818.jpg">
+    <div class="text popup">Singapore Air Show 2016
+        <span class="popuptext">I do love aviation. The roar of a jet engine just sends my mind straight to the sky!</span>
     </div>
   </div>
 
@@ -104,6 +113,8 @@
   <span class="dot" onclick="currentSlide( 7 )"></span>
   
   <span class="dot" onclick="currentSlide( 8 )"></span>
+  
+  <span class="dot" onclick="currentSlide( 9 )"></span>
   
 </div>
 </body>
