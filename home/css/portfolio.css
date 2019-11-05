@@ -16,12 +16,26 @@ body {
 h1,h2,h3,h4,h5,h6{
     text-align: center;
 }
-img,.preface {
+img,.preface, .exif {
     max-width: 90%;
-    max-height: 75vh;
+    max-height: 66vh;
     display: block;
     margin: 0 auto;
-    padding: 15px;
+    padding: 5px;
+}
+
+.exif {
+  font-size: 13px;
+  list-style-type: square;
+  padding: 1vh 0px 0px 5vw;
+  max-height: 30vh;
+  max-width: 60%;
+  -webkit-column-width: 180px;
+  -moz-column-width: 180px;
+  column-width: 180px;
+  -webkit-column-count: 4; // max count
+  -moz-column-count: 4;
+  column-count: 4;
 }
 
 .preface {
@@ -83,6 +97,11 @@ img,.preface {
   padding: 8px 12px;
   position: absolute;
   top: 0;
+}
+
+.nav-bar {
+  text-align:center;
+  padding-top: 20px;
 }
 
 /* The dots/bullets/indicators */
