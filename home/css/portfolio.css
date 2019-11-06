@@ -6,6 +6,7 @@ body {
     word-wrap: break-word;
     color: #f2f2f2;
     user-select: none;
+    font-size: 14px;
 }
 .center {
     min-width: 200px;
@@ -16,7 +17,7 @@ body {
 h1,h2,h3,h4,h5,h6{
     text-align: center;
 }
-img,.preface, .exif {
+img,.preface {
     max-width: 90%;
     max-height: 66vh;
     display: block;
@@ -24,13 +25,19 @@ img,.preface, .exif {
     padding: 5px;
 }
 
+.photo-desc {
+    max-height: 30vh;
+    max-width: 850px;
+    width: 80%;
+    text-align: left;
+    display: block;
+    margin: 0 auto;
+    padding: 5px 0px 0px 0px;
+    text-indent: 1em;
+}
+
 .exif {
-  font-size: 13px;
   list-style-type: square;
-  padding: 1vh 0px 0px 5vw;
-  max-height: 20vh;
-  max-width: 80%;
-  width: 900px;
   -webkit-column-width: 180px;
   -moz-column-width: 180px;
   column-width: 180px;
@@ -38,6 +45,7 @@ img,.preface, .exif {
   -moz-column-count: 3;
   column-count: 3;
   text-align: left;
+  margin: 0;
 }
 
 .preface {
@@ -159,7 +167,7 @@ img,.preface, .exif {
 .popup .popuptext {
   visibility: hidden;
   max-width: 900px;
-  width: 80vw;
+  width: 80%;
   background-color: #555;
   color: #fff;
   text-align: center;
