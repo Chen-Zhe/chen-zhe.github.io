@@ -319,8 +319,14 @@ var Grid = (function() {
 
       this.$title.html( eldata.title );
       this.$description.html( eldata.description );
-      this.$exifInfo.html( eldata.exif );
-      this.$collectionName.html( eldata.collectionName );
+      if(eldata.exif) {
+        this.$exifInfo.html( eldata.exif );
+        this.$exifInfo.show();
+      } else this.$exifInfo.hide(); 
+      if(eldata.collectionName) {
+        this.$collectionName.html( eldata.collectionName );
+        this.$collectionName.show();
+      } else this.$collectionName.hide();
       if(eldata.buttontext) this.$href.text(eldata.buttontext);
 
       if (eldata.href && eldata.buttontext) {
@@ -449,10 +455,9 @@ var Grid = (function() {
 
 // lazy loading thumbnails
 document.addEventListener("DOMContentLoaded", function() {
-  var lazyloadImages;    
+  var lazyloadImages= document.querySelectorAll("img.lazy");    
 
   if ("IntersectionObserver" in window) {
-    lazyloadImages = document.querySelectorAll("img.lazy");
     var imageObserver = new IntersectionObserver(function(entries, observer) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -469,49 +474,11 @@ document.addEventListener("DOMContentLoaded", function() {
     lazyloadImages.forEach(function(image) {
       imageObserver.observe(image);
     });
-  } else {  
-    var lazyloadThrottleTimeout;
-    lazyloadImages = document.querySelectorAll("img.lazy");
-
-    function lazyload () {
-      if(lazyloadThrottleTimeout) {
-        clearTimeout(lazyloadThrottleTimeout);
-      }    
-
-      lazyloadThrottleTimeout = setTimeout(function() {
-        var scrollTop = window.pageYOffset;
-        lazyloadImages.forEach(function(img) {
-            if(img.offsetTop < (window.innerHeight + scrollTop)) {
-              img.src = img.dataset.src;
-              img.classList.remove('lazy');
-            }
-        });
-        if(lazyloadImages.length == 0) { 
-          document.removeEventListener("scroll", lazyload);
-          window.removeEventListener("resize", lazyload);
-          window.removeEventListener("orientationChange", lazyload);
-        }
-      }, 20);
-    }
-
-    document.addEventListener("scroll", lazyload);
-    window.addEventListener("resize", lazyload);
-    window.addEventListener("orientationChange", lazyload);
+  } else {// original code has some issue. Disable lazy loading for now
+    lazyloadImages.forEach(function(img) {
+      img.src = img.dataset.src;
+      img.classList.remove('lazy');
+      img.style.removeProperty("width");
+    });
   }
 })
-
-function shuffleImg(){
-  var imgGrid = $("ul#og-grid");
-  var preview = $.data( this, 'preview' );
-  if( typeof preview != 'undefined' ) {
-    current = -1;
-    preview.close();
-    $.removeData( this, 'preview' );
-  }
-  imgGrid.hide();
-  for (var i = imgGrid.children().length; i >= 0; i--) {
-    imgGrid.append(imgGrid.children()[Math.random() * i | 0]);
-  }
- Grid.updateList();
- imgGrid.show();
-}

@@ -65,17 +65,6 @@ a {
 	padding-bottom: 0.5em;
 }
 
-
-.container > header button {
-	background-color: rgb(116, 116, 116);
-  border: none;
-  padding: 0.2em 0.5em;
-  text-align: center;
-  text-decoration: none;
-	display: inline-block;
-	font-weight: bold;
-}
-
 .main > p {
 	text-align: center;
 	padding: 50px 20px;
