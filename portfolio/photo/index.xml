@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Photos on Chen Zhe&#39;s Photo Gallery</title>
+    <link>https://chen-zhe.github.io/portfolio/photo/</link>
+    <description>Recent content in Photos on Chen Zhe&#39;s Photo Gallery</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://chen-zhe.github.io/portfolio/photo/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Fireworks</title>
+      <link>https://chen-zhe.github.io/portfolio/photo/4-fireworks/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chen-zhe.github.io/portfolio/photo/4-fireworks/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>In Flight</title>
+      <link>https://chen-zhe.github.io/portfolio/photo/2-in-flight/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chen-zhe.github.io/portfolio/photo/2-in-flight/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Macro</title>
+      <link>https://chen-zhe.github.io/portfolio/photo/3-macro/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chen-zhe.github.io/portfolio/photo/3-macro/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vantage Point</title>
+      <link>https://chen-zhe.github.io/portfolio/photo/1-vantage-point/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chen-zhe.github.io/portfolio/photo/1-vantage-point/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
