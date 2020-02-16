@@ -457,9 +457,10 @@ document.addEventListener("DOMContentLoaded", function() {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           var image = entry.target;
-          image.src = image.dataset.src;
-          image.classList.remove("lazy");
-          image.style.removeProperty("width");
+          $(image).load(function(){
+            image.classList.remove("lazy");
+            image.style.removeProperty("width");
+          }).attr('src', image.dataset.src);
           imageObserver.unobserve(image);
         }
       });
