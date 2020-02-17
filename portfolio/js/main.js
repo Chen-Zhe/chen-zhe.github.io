@@ -284,7 +284,7 @@ var Grid = (function() {
       this.$loading = $( '<div class="og-loading"></div>' );
       this.$fullimage = $( '<div class="og-fullimg"></div>' ).append( this.$loading );
       this.$closePreview = $( '<span class="og-close"></span>' );
-      this.$previewInner = $( '<div class="og-expander-inner"></div>' ).append( this.$closePreview, this.$fullimage, this.$details );
+      this.$previewInner = $( '<div class="og-expander-inner"></div>' ).append( this.$fullimage, this.$details, this.$closePreview );
       this.$previewEl = $( '<div class="og-expander"></div>' ).append( this.$previewInner );
       this.$item.append( this.getEl() );
       if( support ) {

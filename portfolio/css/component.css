@@ -165,37 +165,15 @@
 	animation: loader 0.5s infinite ease-in-out both;
 }
 
-@-webkit-keyframes loader {
-	0% { background: #ddd; }
-	33% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ccc, -15px 30px 1px #ddd; }
-	66% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ddd, -15px 30px 1px #ccc; }
-}
-
-@-moz-keyframes loader {
-	0% { background: #ddd; }
-	33% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ccc, -15px 30px 1px #ddd; }
-	66% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ddd, -15px 30px 1px #ccc; }
-}
-
-@keyframes loader {
-	0% { background: #ddd; }
-	33% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ccc, -15px 30px 1px #ddd; }
-	66% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ddd, -15px 30px 1px #ccc; }
-}
-
-@media screen and (max-width: 830px) {
-
-	.og-expander h3 { font-size: 32px; }
-	.og-expander p { font-size: 13px; }
-	.og-expander a { font-size: 12px; }
-
-}
-
-@media screen and (max-width: 650px) {
-
-	.og-fullimg { display: none; }
-	.og-details { float: none; width: 100%; }
-	
+.stamp {
+	color: #555;
+	font-size: 1em;
+	font-weight: 700;
+	border: 0.5rem double #555;
+	display: inline-block;
+	padding: 0.25rem 1rem;
+	text-transform: uppercase;
+	border-radius: 1rem;
 }
 
 ul.exif {
@@ -218,13 +196,37 @@ ul.exif > li {
 	margin: 0;
 }
 
-.stamp {
-	color: #555;
-	font-size: 1em;
-	font-weight: 700;
-	border: 0.5rem double #555;
-	display: inline-block;
-	padding: 0.25rem 1rem;
-	text-transform: uppercase;
-	border-radius: 1rem;
+@-webkit-keyframes loader {
+	0% { background: #ddd; }
+	33% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ccc, -15px 30px 1px #ddd; }
+	66% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ddd, -15px 30px 1px #ccc; }
+}
+
+@-moz-keyframes loader {
+	0% { background: #ddd; }
+	33% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ccc, -15px 30px 1px #ddd; }
+	66% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ddd, -15px 30px 1px #ccc; }
+}
+
+@keyframes loader {
+	0% { background: #ddd; }
+	33% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ccc, -15px 30px 1px #ddd; }
+	66% { background: #ccc; box-shadow: 0 0 1px #ccc, 15px 30px 1px #ddd, -15px 30px 1px #ccc; }
+}
+
+@media screen and (max-width: 830px) {
+
+	.stamp { font-size: 0.8em; border: 0.3rem double #555; }
+	.og-expander-inner { padding: 30px; }
+	.og-expander h3 { font-size: 30px; padding: 10px 0px; }
+	.og-expander p, ul.exif { font-size: 13px; }
+	.og-expander a { font-size: 12px; }
+	
+}
+
+@media screen and (max-width: 650px) {
+
+	.og-fullimg { display: none; }
+	.og-details { float: none; width: 100%; }
+	
 }
