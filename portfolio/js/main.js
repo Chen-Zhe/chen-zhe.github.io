@@ -345,7 +345,7 @@ var Grid = (function() {
 
       if( self.$fullimage.is( ':visible' ) ) {
         this.$loading.show();
-        $( '<img/>' ).load( function() {
+        $( '<img/>' ).on("load", function() {
           var $img = $( this );
           if( $img.attr( 'src' ) === self.$item.children('a').data( 'largesrc' ) ) {
             self.$loading.hide();
@@ -462,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function() {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           var image = entry.target;
-          $(image).load(function(){
+          $(image).on("load", function(){
             image.classList.remove("lazy");
             image.style.removeProperty("width");
           }).attr('src', image.dataset.src);
