@@ -26,7 +26,7 @@
       <pubDate>Sat, 15 Dec 2018 21:05:12 +0800</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</guid>
-      <description>GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is currently available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark, especially when the Spark cluster is not managed by me.</description>
+      <description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;</description>
     </item>
     
   </channel>

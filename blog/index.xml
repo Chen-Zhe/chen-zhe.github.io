@@ -6,10 +6,29 @@
     <description>Recent content on Chen Zhe&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 05 Oct 2019 12:05:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 15 Mar 2020 19:05:12 +0800</lastBuildDate>
     
 	<atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>How to get hired as a software engineer? A note to myself after 3 interviews</title>
+      <link>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews/</link>
+      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews/</guid>
+      <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
+&lt;li&gt;Provide more &lt;strong&gt;utility&lt;/strong&gt; to the job position as a senior engineer&lt;/li&gt;
+&lt;li&gt;Keep my resume short and relevant&lt;/li&gt;
+&lt;li&gt;Tailor my resume for each position that I apply to&lt;/li&gt;
+&lt;li&gt;Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/li&gt;
+&lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
+&lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
     
     <item>
       <title>Manuscript: Cell Sector Clustering</title>
@@ -21,21 +40,12 @@
     </item>
     
     <item>
-      <title>About Me</title>
-      <link>https://chen-zhe.github.io/blog/page/whoami/</link>
-      <pubDate>Sun, 23 Dec 2018 21:46:26 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/page/whoami/</guid>
-      <description>Hi there. I&amp;rsquo;m Chen Zhe.</description>
-    </item>
-    
-    <item>
       <title>Notes on GraphX and Clique Detection</title>
       <link>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</link>
       <pubDate>Sat, 15 Dec 2018 21:05:12 +0800</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</guid>
-      <description>GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is currently available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark, especially when the Spark cluster is not managed by me.</description>
+      <description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,7 +54,7 @@
       <pubDate>Fri, 28 Sep 2018 21:05:12 +0800</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</guid>
-      <description>Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations.</description>
+      <description>&lt;p&gt;Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of &lt;code&gt;join&lt;/code&gt; operations.&lt;/p&gt;</description>
     </item>
     
   </channel>

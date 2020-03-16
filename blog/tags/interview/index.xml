@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>interview on Chen Zhe&#39;s Blog</title>
+    <link>https://chen-zhe.github.io/blog/tags/interview/</link>
+    <description>Recent content in interview on Chen Zhe&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Mar 2020 19:05:12 +0800</lastBuildDate>
+    
+	<atom:link href="https://chen-zhe.github.io/blog/tags/interview/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to get hired as a software engineer? A note to myself after 3 interviews</title>
+      <link>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews/</link>
+      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews/</guid>
+      <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
+&lt;li&gt;Provide more &lt;strong&gt;utility&lt;/strong&gt; to the job position as a senior engineer&lt;/li&gt;
+&lt;li&gt;Keep my resume short and relevant&lt;/li&gt;
+&lt;li&gt;Tailor my resume for each position that I apply to&lt;/li&gt;
+&lt;li&gt;Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/li&gt;
+&lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
+&lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

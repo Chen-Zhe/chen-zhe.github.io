@@ -5,21 +5,21 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Hugo 0.59.1 with theme Tranquilpeak 0.4.7-BETA">
+<meta name="generator" content="Hugo 0.64.1 with theme Tranquilpeak 0.4.7-BETA">
 <meta name="author" content="Chen Zhe">
 <meta name="keywords" content="spark, graphx, clique">
-<meta name="description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is currently available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark, especially when the Spark cluster is not managed by me.">
+<meta name="description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.">
 
 
-<meta property="og:description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is currently available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark, especially when the Spark cluster is not managed by me.">
+<meta property="og:description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Notes on GraphX and Clique Detection">
 <meta name="twitter:title" content="Notes on GraphX and Clique Detection">
 <meta property="og:url" content="https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/">
 <meta property="twitter:url" content="https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/">
 <meta property="og:site_name" content="Chen Zhe&#39;s Blog">
-<meta property="og:description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is currently available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark, especially when the Spark cluster is not managed by me.">
-<meta name="twitter:description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is currently available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark, especially when the Spark cluster is not managed by me.">
+<meta property="og:description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.">
+<meta name="twitter:description" content="GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.">
 <meta property="og:locale" content="en">
 
   
@@ -84,19 +84,6 @@
 
     
       
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-151866646-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-
     
     
   </head>
@@ -227,54 +214,18 @@ if (!doNotTrack) {
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p><code>GraphX</code> is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on <code>RDD</code> and not <code>DataFrame</code> as I&rsquo;m used to in Spark 2.2. Although a Spark package called <a href="https://graphframes.github.io/"><code>GraphFrames</code></a> is currently available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark, especially when the Spark cluster is not managed by me.</p>
-
+              <p><code>GraphX</code> is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on <code>RDD</code> and not <code>DataFrame</code> as I&rsquo;m used to in Spark 2.2. Although a Spark package called <code>GraphFrames</code> is available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.</p>
 <p>GraphX requires me to manually assign a <code>VertexId</code> (which is essentially Scala/Java type <code>Long</code>) to each vertex, which can be done through Spark DataFrame&rsquo;s <code>monotonically_increasing_id()</code> function. This function provides unique id but doesn&rsquo;t guarantee continuity (unlike SQL database&rsquo;s auto-incremental primary key). However, since this id relies on partition number, it is NOT stable! The solution, though, is easy: <code>cache</code> the DataFrame with id (or saving it to disk) will make it persistent across operations (e.g. <code>join</code>).</p>
-
 <p>The following piece of code converts a graph expressed as a DataFrame of edges through source vertex object, destination vertex object and edge weight (a small price (storing redundant objects) to pay for Spark to generate it all in parallel) into GraphX Graph representation.</p>
-
-<pre><code class="scala">import org.apache.spark.graphx._
-import org.apache.spark.rdd.RDD
-
-case class Obj (id: String)
-
-// graph DataFrame Schema -- src: Struct, dst: Struct, weight: DoubleType
-val idx = graph.select($"src".as("obj"))
-                .union(graph.select($"dst"."obj"))
-                .distinct
-                .withColumn("id", monotonically_increasing_id())
-                .select("id", "obj")
-                .as[(VertexId, Obj)]
-                .cache
-
-val vertices: RDD[(VertexId, Cell)] = idx.rdd
-
-val edges: RDD[Edge[Double]] = graph
-            .select($"src.id".as("src"), $"dst.id".as("dst"), $"weight".as("attr"))
-            .join(idx.select($"id".as("srcId"), $"cell.id".as("src")), "src")
-            .join(idx.select($"id".as("dstId"), $"cell.id".as("dst")), "dst")
-            .select("srcId", "dstId", "attr") // GraphX's required fields for an Edge object
-            .as[Edge[Double]].rdd.cache // caching edges is optional
-
-val graph = Graph(vertices, edges)
-</code></pre>
-
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
 <p>The case class Obj requires a simple unique id that doesn&rsquo;t have to be a number (if so, it can be used as VertexId directly) as joining case classes are problematic with it. The <code>idx</code> DataFrame is cached for persistence and then assigned to the edges through join operations. It can also be referred to later for conversion of VertexId back to its corresponding object.</p>
-
 <h2 id="clique-detection-problem">Clique Detection Problem</h2>
-
 <p>Although GraphX supports popular graph algorithms such as PageRank, Connected Components and Strongly Connected Components, Clique Detection is missing from its features. It&rsquo;s probably due to the non-parallel nature of the original Bron-Kerbosch algorithm.</p>
-
 <p>Since it&rsquo;s the most suitable algorithm for my task on hand, research papers aren&rsquo;t going to cut it. I found a simple Scala-based implementation, cleaned it up and optimized it for my use. By offloading heavy-lifting work to Spark as much as possible, this tiny recursive function (running on a single core) is surprisingly fast. My runtime for a graph with around 120,000 edges took 45 seconds. The graph is filtered for the important edges (based on the weight I defined) generated in the entirety of Singapore. So, to me, it is probably enough.</p>
-
-<script src="https://gist.github.com/Chen-Zhe/ade6cb064fc32b9bb013a05fe482fc0b.js"></script>
-
+<!-- raw HTML omitted -->
 <p>The function may not perform well in a densely-connected graph, but you should try it before calling it unusable.</p>
-
 <p>Larger graph, on the other hand, could be handled through first partitioning the graph based on certain criteria and run multiple instances of this function on difference partitions.</p>
-
               
             </div>
           </div>

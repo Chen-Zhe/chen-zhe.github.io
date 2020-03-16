@@ -6,10 +6,28 @@
     <description>Recent content in Categories on Chen Zhe&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 05 Oct 2019 12:05:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 15 Mar 2020 19:05:12 +0800</lastBuildDate>
     
 	<atom:link href="https://chen-zhe.github.io/blog/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>blog</title>
+      <link>https://chen-zhe.github.io/blog/categories/blog/</link>
+      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/categories/blog/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>interview</title>
+      <link>https://chen-zhe.github.io/blog/categories/interview/</link>
+      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/categories/interview/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Graph Cliques</title>
@@ -26,24 +44,6 @@
       <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/categories/spark/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>about</title>
-      <link>https://chen-zhe.github.io/blog/categories/about/</link>
-      <pubDate>Sun, 23 Dec 2018 21:46:26 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/categories/about/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>me</title>
-      <link>https://chen-zhe.github.io/blog/categories/me/</link>
-      <pubDate>Sun, 23 Dec 2018 21:46:26 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/categories/me/</guid>
       <description></description>
     </item>
     
