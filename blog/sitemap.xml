@@ -23,12 +23,12 @@
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/categories/interview/</loc>
+    <loc>https://chen-zhe.github.io/blog/tags/interview/</loc>
     <lastmod>2020-03-15T19:05:12+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/tags/interview/</loc>
+    <loc>https://chen-zhe.github.io/blog/categories/interview/</loc>
     <lastmod>2020-03-15T19:05:12+08:00</lastmod>
   </url>
   
@@ -40,11 +40,6 @@
   <url>
     <loc>https://chen-zhe.github.io/blog/tags/</loc>
     <lastmod>2020-03-15T19:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/tags/clique/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
   </url>
   
   <url>
@@ -63,13 +58,23 @@
   </url>
   
   <url>
+    <loc>https://chen-zhe.github.io/blog/tags/sector-cluster/</loc>
+    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/categories/sector-cluster/</loc>
+    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://chen-zhe.github.io/blog/categories/spark/</loc>
     <lastmod>2019-10-05T12:05:00+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/tags/spark/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
+    <loc>https://chen-zhe.github.io/blog/tags/clique/</loc>
+    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
   </url>
   
   <url>
@@ -84,6 +89,11 @@
   
   <url>
     <loc>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</loc>
+    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/tags/spark/</loc>
     <lastmod>2018-12-15T21:05:12+08:00</lastmod>
   </url>
   
