@@ -5,11 +5,7 @@
     <link>https://chen-zhe.github.io/portfolio/</link>
     <description>Recent content on Chen Zhe&#39;s Photo Gallery</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="https://chen-zhe.github.io/portfolio/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language><atom:link href="https://chen-zhe.github.io/portfolio/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fireworks</title>
       <link>https://chen-zhe.github.io/portfolio/photo/4-fireworks/</link>
