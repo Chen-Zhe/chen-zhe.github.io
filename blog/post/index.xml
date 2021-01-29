@@ -6,55 +6,55 @@
     <description>Recent content in Posts on Chen Zhe&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Mar 2020 19:05:12 +0800</lastBuildDate>
-    
-	<atom:link href="https://chen-zhe.github.io/blog/post/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS User Notes for Deep Learning</title>
+      <link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link>
+      <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
+      <description>Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences, and here are my notes and observations about the platform for this purpose
+Overall speaking, AWS is a complex platform with a rather steep learning curve if I were to take advantage of services other than EC2 itself.
+Here are my notes for services that I&amp;rsquo;ve used throughout the rapid-paced learning journey and hopefully they can be of help to others.</description>
+    </item>
     
     <item>
       <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
-      <link>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
-      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
+      <link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
+      <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
-      <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
-&lt;li&gt;Provide more &lt;strong&gt;utility&lt;/strong&gt; to the job position as a senior engineer&lt;/li&gt;
-&lt;li&gt;Keep my resume short and relevant&lt;/li&gt;
-&lt;li&gt;Tailor my resume for each position that I apply to&lt;/li&gt;
-&lt;li&gt;Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/li&gt;
-&lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
-&lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
+      <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
+      <description>TL;DR
+To pose myself as a good software engineer candidate, I need to:
+ Demonstrate passion to learn Provide more utility to the job position as a senior engineer Keep my resume short and relevant Tailor my resume for each position that I apply to Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to Not forget about the basics of computing (data structure and algorithms) Demonstrate Passion for coding  Background In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product.</description>
     </item>
     
     <item>
       <title>Manuscript: Cell Sector Clustering</title>
-      <link>https://chen-zhe.github.io/blog/2019/10/manuscript-cell-sector-clustering/</link>
-      <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
+      <link>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</link>
+      <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/2019/10/manuscript-cell-sector-clustering/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;This paper is accepted by and presented at IEEE Wireless Communications and Networking Conference (WCNC) 2020 as &amp;ldquo;Identifying Cell Sector Clusters Using Massive Mobile Usage Records&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;</description>
+      <guid>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</guid>
+      <description>Presentation video at IEEE WCNC 2020
+When I was with DataSpark, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost.</description>
     </item>
     
     <item>
-      <title>Notes on GraphX and Clique Detection</title>
-      <link>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</link>
-      <pubDate>Sat, 15 Dec 2018 21:05:12 +0800</pubDate>
+      <title>Basic usage of GraphX for clique detection</title>
+      <link>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</link>
+      <pubDate>Sat, 15 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</guid>
-      <description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;</description>
+      <guid>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</guid>
+      <description>GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.</description>
     </item>
     
     <item>
       <title>Apache Spark - Save Time with Less Join Operations</title>
-      <link>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</link>
-      <pubDate>Fri, 28 Sep 2018 21:05:12 +0800</pubDate>
+      <link>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</link>
+      <pubDate>Fri, 28 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</guid>
-      <description>&lt;p&gt;Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of &lt;code&gt;join&lt;/code&gt; operations.&lt;/p&gt;</description>
+      <guid>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</guid>
+      <description>Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations.</description>
     </item>
     
   </channel>

@@ -3,117 +3,107 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/categories/blog/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
+    <loc>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</loc>
+    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://chen-zhe.github.io/blog/categories/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
+    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://chen-zhe.github.io/blog/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
+    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
+    <loc>https://chen-zhe.github.io/blog/categories/cloud/</loc>
+    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/tags/interview/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/categories/interview/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
+    <loc>https://chen-zhe.github.io/blog/categories/notes/</loc>
+    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://chen-zhe.github.io/blog/post/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
+    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/tags/</loc>
-    <lastmod>2020-03-15T19:05:12+08:00</lastmod>
+    <loc>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</loc>
+    <lastmod>2020-03-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/categories/interview/</loc>
+    <lastmod>2020-03-15T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://chen-zhe.github.io/blog/categories/graph-cliques/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
+    <lastmod>2019-10-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/2019/10/manuscript-cell-sector-clustering/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
+    <loc>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</loc>
+    <lastmod>2019-10-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/tags/paper/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/tags/sector-cluster/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/categories/sector-cluster/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
+    <loc>https://chen-zhe.github.io/blog/categories/paper/</loc>
+    <lastmod>2019-10-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://chen-zhe.github.io/blog/categories/spark/</loc>
-    <lastmod>2019-10-05T12:05:00+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/tags/clique/</loc>
-    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/categories/code/</loc>
-    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/tags/graphx/</loc>
-    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</loc>
-    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/tags/spark/</loc>
-    <lastmod>2018-12-15T21:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</loc>
-    <lastmod>2018-09-28T21:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/categories/optimization/</loc>
-    <lastmod>2018-09-28T21:05:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://chen-zhe.github.io/blog/tags/optimization/</loc>
-    <lastmod>2018-09-28T21:05:12+08:00</lastmod>
+    <lastmod>2019-10-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://chen-zhe.github.io/blog/archives/</loc>
+    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/page/</loc>
+    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</loc>
+    <lastmod>2018-12-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</loc>
+    <lastmod>2018-09-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/categories/optimization/</loc>
+    <lastmod>2018-09-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/tags/optimization/</loc>
+    <lastmod>2018-09-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/tags/spark/</loc>
+    <lastmod>2018-09-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/tags/</loc>
+    <lastmod>2018-09-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/search/</loc>
   </url>
   
 </urlset>

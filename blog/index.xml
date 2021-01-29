@@ -1,23 +1,254 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Chen Zhe&#39;s Blog</title>
-    <link>https://chen-zhe.github.io/blog/</link>
-    <description>Recent content on Chen Zhe&#39;s Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 15 Mar 2020 19:05:12 +0800</lastBuildDate>
-    
-	<atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
-      <link>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
-      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/2020/03/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
-      <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
+    <channel>
+        <title>Chen Zhe&#39;s Blog</title>
+        <link>https://chen-zhe.github.io/blog/</link>
+        <description>Recent content on Chen Zhe&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>AWS User Notes for Deep Learning</title>
+        <link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link>
+        <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
+        <description>&lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+and here are my notes and observations about the platform for this purpose&lt;/p&gt;
+&lt;p&gt;Overall speaking, AWS is a complex platform with a rather steep learning curve
+if I were to take advantage of services other than EC2 itself.&lt;/p&gt;
+&lt;p&gt;Here are my notes for services that I&amp;rsquo;ve used throughout the rapid-paced learning journey
+and hopefully they can be of help to others.&lt;/p&gt;
+&lt;h2 id=&#34;glossary&#34;&gt;Glossary&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;EC2: Elastic Compute Cloud&lt;/li&gt;
+&lt;li&gt;SSH: Secure Shell&lt;/li&gt;
+&lt;li&gt;AMI: Amazon Machine Image&lt;/li&gt;
+&lt;li&gt;EBS: Elastic Block Storage&lt;/li&gt;
+&lt;li&gt;EFS: Elastic File System&lt;/li&gt;
+&lt;li&gt;S3: Simple Storage Service&lt;/li&gt;
+&lt;li&gt;IAM: Identity and Access Management&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;region&#34;&gt;Region&lt;/h2&gt;
+&lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia) us-east-1&lt;/em&gt; and &lt;em&gt;US East (Ohio) us-east-2&lt;/em&gt;
+are basically their data centers located within the region. Network transit within region
+is free-of-charge and is charged otherwise.&lt;/p&gt;
+&lt;p&gt;Each region further divide into availability zones, such as &lt;code&gt;us-east-2a&lt;/code&gt;. EBS volumes
+created in a specific zone can only be mounted to EC2 instances within the same zone.&lt;/p&gt;
+&lt;p&gt;Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
+troublesome to me, so always backup important data in a shared file system like EFS.&lt;/p&gt;
+&lt;h2 id=&#34;ec2&#34;&gt;EC2&lt;/h2&gt;
+&lt;p&gt;EC2 is a virtual machine service but you can only choose from their confusingly-named
+presets (CPU and memory combo) as opposed to custom configurations. I assume this is
+to simplify their scheduling algorithm.&lt;/p&gt;
+&lt;h4 id=&#34;type-selection&#34;&gt;Type Selection&lt;/h4&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/instance-types/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;EC2 instance type and name list&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;For machine learning, compute-optimized C5 series makes the most sense due to their
+higher CPU-to-memory ratio. I used &lt;code&gt;c5.24xlarge&lt;/code&gt; (with 96 vCores) for tasks that can take advantage of
+multiple cores.&lt;/p&gt;
+&lt;p&gt;As a side note, C5a instances uses AMD EPYC processors and there&amp;rsquo;s a limited
+number of them, so one of my extra-large instance using C5a was stopped due to
+insufficient resource and couldn&amp;rsquo;t be resumed, yikes!&lt;/p&gt;
+&lt;p&gt;For deep learning, P series is a good choice. Since my task doesn&amp;rsquo;t need multiple GPUs,
+I used &lt;code&gt;p3.2xlarge&lt;/code&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;suspend-vs-stop-vs-terminate&#34;&gt;Suspend vs Stop vs Terminate&lt;/h4&gt;
+&lt;p&gt;When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
+such that the any task that are running when the instance is suspended can resume once the instance
+is woken up.
+As such, you need to ensure that the boot EBS volume has enough spare capacity
+for storing the entire memory.
+It&amp;rsquo;s like hibernation on Windows.
+However, not all AMIs supports this. The instance&amp;rsquo;s ephemeral IP address will also change, so you&amp;rsquo;d need to use the new IP address for SSH.&lt;/p&gt;
+&lt;p&gt;Stopping an EC2 instance &lt;strong&gt;will not&lt;/strong&gt; remove its boot EBS volume and it can be restarted again. It&amp;rsquo;s basically
+like shutting down your computer. However, stopping and restarting will change the instance&amp;rsquo;s
+ephemeral IP address, too.&lt;/p&gt;
+&lt;p&gt;Terminating an EC2 instance &lt;strong&gt;will&lt;/strong&gt; remove its boot EBS volume and it&amp;rsquo;s gone forever!&lt;/p&gt;
+&lt;h4 id=&#34;vcore-performance&#34;&gt;vCore Performance&lt;/h4&gt;
+&lt;p&gt;vCores are much lower than physical CPU cores, hence &lt;strong&gt;parallelism is very important&lt;/strong&gt;!
+By my estimation, a vCore only runs at 50% of the speed of my laptop&amp;rsquo;s i7-8750H core.
+Make sure your &lt;code&gt;DataLoader&lt;/code&gt; can run on as many vCores as possible to keep the Tesla GPU
+from data starvation.&lt;/p&gt;
+&lt;h4 id=&#34;burstable-cpu&#34;&gt;Burstable CPU&lt;/h4&gt;
+&lt;p&gt;Burstable CPU is a feature of T2 series general-purpose VMs. It basically means
+you&amp;rsquo;ll be charged extra when you almost always use all cores for compute, but if
+the machine is mostly idle (like a web/database server), this could be a cost-saver.&lt;/p&gt;
+&lt;p&gt;This is probably not suitable for training models since you want to push all
+cores to the max (ideally) for the best performance. But if you are running some
+data analysis task using Jupyter Notebook, this type of instance could be a good fit.&lt;/p&gt;
+&lt;h4 id=&#34;spot-instance&#34;&gt;Spot Instance&lt;/h4&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/spot/pricing/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Spot Instance Pricing&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Spot instances are much cheaper than regular timed instances. The only downside
+is that it could be stopped by AWS at any time. But my experience shows that
+it doesn&amp;rsquo;t happen very often, at least in &lt;code&gt;us-east-2&lt;/code&gt;(Ohio).&lt;/p&gt;
+&lt;p&gt;Be sure to check the &lt;strong&gt;Persistent request&lt;/strong&gt; box when launching a EC2 instance, otherwise
+the one-time-request spot instance will be terminated directly when it is stopped.&lt;/p&gt;
+&lt;h4 id=&#34;ssh&#34;&gt;SSH&lt;/h4&gt;
+&lt;p&gt;Any SSH client would work, but I do highly recommend &lt;a class=&#34;link&#34; href=&#34;https://mobaxterm.mobatek.net/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MobaXterm&lt;/a&gt;
+for Windows users (I&amp;rsquo;m one).&lt;/p&gt;
+&lt;p&gt;You would need a key pair to access the EC2 instance. This file can be generated
+when launching the EC2 instance and reused. Each key can only be downloaded once
+so don&amp;rsquo;t lose it. The full command line using ssh would look like:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Username would be &lt;code&gt;ec2-user&lt;/code&gt; for regular Amazon AMIs and &lt;code&gt;ubuntu&lt;/code&gt; for AWS Deep Learning AMI.&lt;/p&gt;
+&lt;h4 id=&#34;ami&#34;&gt;AMI&lt;/h4&gt;
+&lt;p&gt;AMI is basically a prepackaged system disk image with pre-configured environment.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;m really impressed with its boot speed, which only takes a few seconds.
+I certainly feel that it&amp;rsquo;s faster than Google Cloud Compute instances in terms of
+boot speed.&lt;/p&gt;
+&lt;p&gt;AWS Deep Learning AMI comes with Anaconda, PyTorch and TensorFlow (with choices of versions, too)
+so that you can run your code straightaway. A big time saver! However, this
+beefy image also requires at least 100GB of boot volume, so EBS cost is going to be a factor
+if you decide to keep the instance for some time.&lt;/p&gt;
+&lt;p&gt;However, AWS Deep Learning AMI does not support suspending the instance, so be sure to
+write code for saving to and restoring from checkpoints, in case the spot instance
+was stopped by AWS while your model has not been trained for enough epochs.&lt;/p&gt;
+&lt;h4 id=&#34;monitoring&#34;&gt;Monitoring&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;htop&lt;/code&gt; for a command-line task manager to monitor CPU usage&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nvidia-smi&lt;/code&gt; for a summary of GPU usage&lt;/p&gt;
+&lt;h2 id=&#34;ebs&#34;&gt;EBS&lt;/h2&gt;
+&lt;p&gt;EBS serves as a hard drive for EC2 instances. Each EC2 instance will have a boot
+EBS volume, but you can attach additional EBS volumes to it.&lt;/p&gt;
+&lt;p&gt;Resizing EBS would require filesystem level operations on the instance OS, so
+I would recommend allocate enough storage on the boot volume to start with.&lt;/p&gt;
+&lt;p&gt;By default, EBS volumes are SSD-backed &lt;code&gt;gp2&lt;/code&gt;. It&amp;rsquo;s not expensive and have pretty good performance
+for my use case,
+so I&amp;rsquo;d just stick with it instead of downgrading to a HDD-backed option.&lt;/p&gt;
+&lt;p&gt;Note that the IOPS (I/O operations per second) of an &lt;code&gt;gp2&lt;/code&gt; EBS volume is proportional
+to its size (&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;up to 5,334 GB&lt;/a&gt;).
+Therefore, it seems to me that it&amp;rsquo;s better to allocate a large-enough EBS boot volume
+for AMI, training data and some buffer so that you get overall better performance.&lt;/p&gt;
+&lt;h4 id=&#34;mounting-a-ebs-volume-to-ec2&#34;&gt;Mounting a EBS volume to EC2&lt;/h4&gt;
+&lt;p&gt;In case you need some temporary storage, you can create a new EBS volume and attach it
+to your EC2 instance (&lt;strong&gt;in the same availability zone&lt;/strong&gt;) on AWS console.&lt;/p&gt;
+&lt;p&gt;Once you&amp;rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,
+the steps are (assume the volume is detected as &lt;code&gt;/dev/xvdf&lt;/code&gt;):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ls /dev&lt;/code&gt; to find the new EBS volume device. I found that sometimes it has the name
+of &lt;code&gt;xvdf&lt;/code&gt; (last character is variable) and other times it has the name of &lt;code&gt;nvme1p1&lt;/code&gt;.
+You can compare the output before and after attaching the volume on UI so as
+to identify the new device.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;sudo mkfs -t xfs /dev/xvdf&lt;/code&gt; to format the volume. Skip if the volume is
+already formatted (e.g. it was used by another instance earlier).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;sudo mkdir ~/data &amp;amp;&amp;amp; sudo mount /dev/xvdf ~/data&lt;/code&gt; to mount the volume in
+a new &lt;code&gt;~/data&lt;/code&gt; directory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;cd ~/data &amp;amp;&amp;amp; sudo chmod go+rw .&lt;/code&gt; to give read-write permissions to non-root users.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;efs&#34;&gt;EFS&lt;/h2&gt;
+&lt;p&gt;EFS is a networked filesystem that can be shared across multiple instances in the
+same region. Since it&amp;rsquo;s managed by AWS, it is dynamically sized and charged based on the amount
+of data you stored in EFS. You also don&amp;rsquo;t need to worry about availability zone,
+since it will provide mounting points in all of them.&lt;/p&gt;
+&lt;p&gt;I find that it&amp;rsquo;s most convenient as both a shared drive across multiple instances and a backup
+location. The shared drive functionality allows me to run inference in one instance and
+score the result in another. I also backup training data and scripts in EFS such that
+I can terminate my instances but some time later I found that I need to retrain the model.&lt;/p&gt;
+&lt;p&gt;Accessing EFS will consume EC2 instance&amp;rsquo;s network bandwidth, so I usually copy the frequently accessed
+files out to the EBS volume. When copying files, it can sustain a read speed of
+close to 1Gbps.&lt;/p&gt;
+&lt;p&gt;In terms of pricing, EFS is more expensive than EBS per GB. However, given the flexibility
+and dynamic sizing, it might cost less.&lt;/p&gt;
+&lt;h4 id=&#34;mounting-a-efs-share-to-ec2&#34;&gt;Mounting a EFS share to EC2&lt;/h4&gt;
+&lt;h5 id=&#34;on-aws-console&#34;&gt;On AWS Console&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create a EFS share. This is pretty straightforward. Remember to create it
+in the same region as the EC2 instances that you intend to use this share on.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Allows NFS port communication for the EC2 instance.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Open the security group settings attached to the EC2 instance&lt;/li&gt;
+&lt;li&gt;Modify the inbound rule and add a rule with type &lt;code&gt;NFS&lt;/code&gt;. Select source as the security group.&lt;/li&gt;
+&lt;li&gt;Save rules&lt;/li&gt;
+&lt;li&gt;Network traffic will be interrupted if and only if an existing rule is modified
+and that the traffic is using the aforementioned rule&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;on-ec2&#34;&gt;On EC2&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;install &lt;code&gt;nfs-utils&lt;/code&gt; . Skip if the instance is using an AMI.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;mkdir ~/efs&lt;/code&gt; to make a mounting point folder.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;NAME=efs-name REGION=us-east-2 &amp;amp;&amp;amp; sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $NAME.efs.$REGION.amazonaws.com:/ ~/efs&lt;/code&gt; mounts the EFS volume
+to the mounting point folder&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;cd ~/efs &amp;amp;&amp;amp; sudo chmod go+rw .&lt;/code&gt; to give read-write permissions to non-root users.
+You only need to run this command once for a new EFS share.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;s3&#34;&gt;S3&lt;/h2&gt;
+&lt;p&gt;S3 is yet another storage service for file storage. To access the files, you need to use
+&lt;code&gt;aws&lt;/code&gt; commands. As such, it cannot be used as a regular disk like EFS or EBS.&lt;/p&gt;
+&lt;p&gt;For my use case, I find S3
+suitable for sharing large files, such as trained model weights, via HTTPS.
+I&amp;rsquo;ve also seen use cases that use S3 as a data lake. Apache Spark even supports reading
+data directly off S3.&lt;/p&gt;
+&lt;h4 id=&#34;access-s3-bucket-in-ec2&#34;&gt;Access S3 bucket in EC2&lt;/h4&gt;
+&lt;h5 id=&#34;on-aws-console-1&#34;&gt;On AWS Console&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create an S3 bucket in the region you intended to use.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create a IAM role with S3 full access&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In Identity and Access Management (IAM) page, click &lt;strong&gt;Create role&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose &lt;strong&gt;EC2&lt;/strong&gt; as use case&lt;/li&gt;
+&lt;li&gt;In attach permission policies, find &lt;strong&gt;AmazonS3FullAccess&lt;/strong&gt; and check it&lt;/li&gt;
+&lt;li&gt;Save the role and give it a name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Attach the role to the intended EC2 instance&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the instance list, select the instance&lt;/li&gt;
+&lt;li&gt;Choose &lt;strong&gt;Actions, Security, Modify IAM role&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Select the role you just created and choose &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;on-ec2-1&#34;&gt;On EC2&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;aws s3 cp my_copied_file.ext s3://my_bucket/my_folder/my_file.ext&lt;/code&gt; to upload
+files to S3. Reverse the 2 arguments to download files from S3.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;access-s3-objects-from-https&#34;&gt;Access S3 objects from HTTPS&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Go to the S3 console and modify its ACL read permission to be &lt;strong&gt;Everyone&lt;/strong&gt;.
+This is not safe but the files I&amp;rsquo;m sharing aren&amp;rsquo;t going to make sense for others anyway.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Access the file using &lt;code&gt;https://my-bucket.s3.us-east-2.amazonaws.com/my_folder/my_file.ext&lt;/code&gt;.
+This assume that your S3 bucket is created in &lt;code&gt;us-east-2&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
+        <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
+        <link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
+        <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
+        <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
@@ -27,35 +258,204 @@
 &lt;li&gt;Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/li&gt;
 &lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
 &lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
-    </item>
-    
-    <item>
-      <title>Manuscript: Cell Sector Clustering</title>
-      <link>https://chen-zhe.github.io/blog/2019/10/manuscript-cell-sector-clustering/</link>
-      <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/2019/10/manuscript-cell-sector-clustering/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;This paper is accepted by and presented at IEEE Wireless Communications and Networking Conference (WCNC) 2020 as &amp;ldquo;Identifying Cell Sector Clusters Using Massive Mobile Usage Records&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Notes on GraphX and Clique Detection</title>
-      <link>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</link>
-      <pubDate>Sat, 15 Dec 2018 21:05:12 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/2018/12/notes-on-graphx-and-clique-detection/</guid>
-      <description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Apache Spark - Save Time with Less Join Operations</title>
-      <link>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</link>
-      <pubDate>Fri, 28 Sep 2018 21:05:12 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</guid>
-      <description>&lt;p&gt;Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of &lt;code&gt;join&lt;/code&gt; operations.&lt;/p&gt;</description>
-    </item>
-    
-  </channel>
+&lt;/ul&gt;
+&lt;h2 id=&#34;background&#34;&gt;Background&lt;/h2&gt;
+&lt;p&gt;In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product. The new hire would join the Singapore development center that I am part of, which is akin to a boutique: it is not large, but everyone in it is proficient in writing production-ready code (we are developing a software product after all). Thus, the new hire is implicitly expected to have a certain level of coding skills.&lt;/p&gt;
+&lt;p&gt;However, finding a candidate with skills matching our requirements (knows how to use and troubleshoot Spark, knows how to code in Scala) exactly could be difficult, so we wouldn&amp;rsquo;t mind tutoring a fresh grad, as long as he or she is driven to learn and can pick up new knowledge quickly. As it turns out:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Passion to learn is extremely important in maintaining competitiveness&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Because if a candidate don&amp;rsquo;t have highly relevant skills that the job requires and none of the other candidates do too, the interviewers fall back to use &lt;em&gt;passion to learn&lt;/em&gt; as the sole yardstick besides coding skills.&lt;/p&gt;
+&lt;p&gt;So here&amp;rsquo;s the important question that I&amp;rsquo;m trying to reason in this article: if we can only choose a single candidate, who should we hire?&lt;/p&gt;
+&lt;p&gt;First disclaimer: I know we have multiple vacancies and I can only provide inputs to my manager, who will ultimately make the hiring decision. However, the question in the title serves as a good thought experiment and ultimately inspired me to write it here to serve as a reminder to myself, and hopefully not being a waste of time to anyone who read it.&lt;/p&gt;
+&lt;p&gt;Second disclaimer: this article is completely based on my personal experience and does not represent my company at all.&lt;/p&gt;
+&lt;h2 id=&#34;a-resume-gives-the-first-impressions&#34;&gt;A resume gives the first impressions&lt;/h2&gt;
+&lt;p&gt;Judging by their resumes, all candidates have relevant experience in the Data Engineering field, and all of them claim to know Spark (at least PySpark). In terms of industry experience, candidate A has more than 6 years, candidate B has less than 4 years, and candidate C has a few month (a final year student). The instinctive answer for me at this point is to say: hire B or C, simply because their salary requirements are definitely lower. This instinct seems inhumane at first, but when I gave it another thought, the fully learning point came to me:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If a senior candidate cannot provide more &lt;strong&gt;utility&lt;/strong&gt; to the company, the hiring manager will probably choose a junior candidate instead&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In this context, I feel that the word &lt;strong&gt;utility&lt;/strong&gt; would refer to one of these:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;coding and troubleshooting experience in Spark&lt;/li&gt;
+&lt;li&gt;proficiency in Scala&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Notice that I used the word &lt;em&gt;hiring manager&lt;/em&gt; instead of interviewer here, because an interviewer like me should only focus on the technical competencies of a candidate.&lt;/p&gt;
+&lt;p&gt;The gist of this point is that to ensure that my senior self can still be competitive in the job market, I cannot be complacent at all. I have to keep re-learning in order to stay on top of the trend, e.g. what are the new features in Spark 2.4 and Spark 3.0, and at the same time, I have to keep learning other promising technologies, too, e.g. React and Redux for asynchronous UI development (I have little experience in these advanced JavaScript-based languages, but who knows what will replace them in a few years, like how React sort of replaced AngularJS in the mainstream)&lt;/p&gt;
+&lt;p&gt;As for the resume itself, I realized this when I tried to read a 10-page word document about a candidate, possibly provided by a headhunter:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A long resume is harder to scroll till the end, so an interviewer may not read beyond 1~2 pages
+To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep his resume within 1 page. As he gain more experience, the resume can be extended to 2 pages&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The headhunter &amp;ldquo;helpfully&amp;rdquo; put a long table of summary highlighting the candidate&amp;rsquo;s skill set, but it doesn&amp;rsquo;t feel very useful to me, mainly because it listed a very diverse and sometimes inconsistent (e.g. Spark, Livy, Java co-currency, multi-threading, Option) range of technologies. Frankly speaking though, it could help to pass the HR test.&lt;/p&gt;
+&lt;p&gt;I continued to scroll down until the candidate&amp;rsquo;s resume, and quickly read it through. I find that I paid more attention to the first few pages than the rest. This particular candidate spent more than a page at the end to describe the projects he has done, and I merely read the project titles and then stopped reading. The project titles seem to duplicate his working experience and the description is in plain text, not bullet points.&lt;/p&gt;
+&lt;p&gt;But how to keep the resume short when I have so many things to talk about? To quote a career coach:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tailor my resume to each position that I&amp;rsquo;m applying to&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Since I know I&amp;rsquo;m helping to hire a data engineer focusing on Spark, I naturally skipped any projects using Python and TensorFlow, or experience developing iOS apps. So if I were to apply for a job again, I&amp;rsquo;ll just shorten the description to the experiences that doesn&amp;rsquo;t fully match the job description. If I become more senior, I&amp;rsquo;ll probably shorten or remove the extracurricular activities section of my resume.&lt;/p&gt;
+&lt;p&gt;In all, I find that resume is only a conversation starter rather than a decision influencer, so keeping the resume short and easily readable is more important than its layout design, unless of course, I&amp;rsquo;m interviewing for a UI/UX position.&lt;/p&gt;
+&lt;h2 id=&#34;any-interview-can-be-technical&#34;&gt;Any interview can be technical&lt;/h2&gt;
+&lt;p&gt;We have a coding component in our interview process to assess a candidate&amp;rsquo;s ability to solve a practical challenge with code, but don&amp;rsquo;t let your guard down during non-coding portion of the interview! I only attended the non-coding portion of the interview process and it feels equally technical. This portion mainly assesses what this candidate has done in his past and usually starts with one of the recent projects that the candidate has worked on, so:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Both candidate A and B talked about a project in their current company, while candidate C talked about a pet project of his. In essence, it&amp;rsquo;s a conversation starter, so as long as the project has a certain degree of complexity (in our case, it should involve a data pipeline instead of merely loading the data into Pandas and running XGBoost on top of it) and I&amp;rsquo;m very familiar with it, the nature of the project (work or personal) doesn&amp;rsquo;t matter.&lt;/p&gt;
+&lt;p&gt;This means at first, interviewers will ask me to illustrate the design of the said project and shoot out design consideration questions based on that. But if I&amp;rsquo;m familiar with the project, this should be relatively easy.&lt;/p&gt;
+&lt;p&gt;Then, when it&amp;rsquo;s my turn to ask questions, I came up with the following on the fly:&lt;/p&gt;
+&lt;p&gt;To candidate A, I asked:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Which operation will cause a full shuffle, &lt;code&gt;df.coalesce&lt;/code&gt; or &lt;code&gt;df.repartition&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Performance benefit of &lt;code&gt;DataFrame&lt;/code&gt; over &lt;code&gt;RDD&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;These questions are specifically targeted at Spark because he indicated that he has experience with Spark on his resume as well as while describing his project. But inability to provide a satisfactory answer is not the end, it simply means that the interviewer will have to fall back to the &lt;em&gt;lowest common yardstick&lt;/em&gt; to compare the candidates&lt;/p&gt;
+&lt;p&gt;To candidate B and C, I asked&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Element lookup time complexity of &lt;code&gt;List&lt;/code&gt; and &lt;code&gt;Set&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Describe &lt;em&gt;Merge Sort&lt;/em&gt; and &lt;em&gt;Quick Sort&lt;/em&gt; and their time complexity&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Because they don&amp;rsquo;t know much about Spark (one of them haven&amp;rsquo;t even used Java before), I opted to ask these simple data structure and algorithm questions that test one&amp;rsquo;s basic computer science knowledge. As I&amp;rsquo;ve previously mentioned, we fall back to use the basics as the yardstick, hence:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A software engineer shall not forget about the basics of computing (data structure and algorithms)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Remembering how to write a lowest common ancestor function on a binary tree won&amp;rsquo;t be necessary, but the basics of computing shall not be forgotten.&lt;/p&gt;
+&lt;h2 id=&#34;the-final-decision-that-surprises-no-one&#34;&gt;The final decision that surprises no one&lt;/h2&gt;
+&lt;p&gt;Ultimately, based on the interviews, I concluded that all 3 candidates are on similar levels. So how do I make the choice if I were to choose only 1 of them? One character of candidate C made him stand out:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Throughout his interview, he exudes passion for his pet project and actively engages with us interviewers. That ultimately made the difference.&lt;/p&gt;
+&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Manuscript: Cell Sector Clustering</title>
+        <link>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</link>
+        <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</guid>
+        <description>&lt;p&gt;&lt;strong&gt;Presentation video at IEEE WCNC 2020&lt;/strong&gt;&lt;/p&gt;
+&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;https://www.youtube.com/embed/g89n9_uRFck&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;p&gt;When I was with &lt;a class=&#34;link&#34; href=&#34;https://www.dsanalytics.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;DataSpark&lt;/a&gt;, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost. After deploying this feature, I decided to author a paper about this algorithm, together with my manager.&lt;/p&gt;
+&lt;iframe src=&#34;https://chen-zhe.github.io/files/2020-SCUT.pdf&#34; style=&#34;width:100%; height:90vh; border:0;&#34;&gt;&lt;/iframe&gt;</description>
+        </item>
+        <item>
+        <title>Basic usage of GraphX for clique detection</title>
+        <link>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</link>
+        <pubDate>Sat, 15 Dec 2018 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</guid>
+        <description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;
+&lt;p&gt;GraphX requires me to manually assign a &lt;code&gt;VertexId&lt;/code&gt; (which is essentially Scala/Java type &lt;code&gt;Long&lt;/code&gt;) to each vertex, which can be done through Spark DataFrame&amp;rsquo;s &lt;code&gt;monotonically_increasing_id()&lt;/code&gt; function. This function provides unique id but doesn&amp;rsquo;t guarantee continuity (unlike SQL database&amp;rsquo;s auto-incremental primary key). However, since this id relies on partition number, it is NOT stable! The solution, though, is easy: &lt;code&gt;cache&lt;/code&gt; the DataFrame with id (or saving it to disk) will make it persistent across operations (e.g. &lt;code&gt;join&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The following piece of code converts a graph expressed as a DataFrame of edges through source vertex object, destination vertex object and edge weight (a small price (storing redundant objects) to pay for Spark to generate it all in parallel) into GraphX Graph representation.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;k&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.spark.graphx._&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.spark.rdd.RDD&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;case&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Obj&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// graph DataFrame Schema -- src: Struct, dst: Struct, weight: DoubleType
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;union&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;distinct&lt;/span&gt;
+				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;monotonically_increasing_id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;())&lt;/span&gt;
+				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;VertexId&lt;/span&gt;, &lt;span class=&#34;kt&#34;&gt;Obj&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)]&lt;/span&gt;
+				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cache&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vertices&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;RDD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;VertexId&lt;/span&gt;, &lt;span class=&#34;kt&#34;&gt;Cell&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rdd&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;edges&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;RDD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Edge&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Double&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;
+            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;weight&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;attr&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;srcId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;cell.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)),&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dstId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;cell.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)),&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;srcId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;dstId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;attr&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// GraphX&amp;#39;s required fields for an Edge object
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Edge&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Double&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]].&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rdd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cache&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// caching edges is optional
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Graph&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vertices&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;edges&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The case class Obj requires a simple unique id that doesn&amp;rsquo;t have to be a number (if so, it can be used as VertexId directly) as joining case classes are problematic with it. The &lt;code&gt;idx&lt;/code&gt; DataFrame is cached for persistence and then assigned to the edges through join operations. It can also be referred to later for conversion of VertexId back to its corresponding object.&lt;/p&gt;
+&lt;h2 id=&#34;clique-detection-problem&#34;&gt;Clique Detection Problem&lt;/h2&gt;
+&lt;p&gt;Although GraphX supports popular graph algorithms such as PageRank, Connected Components and Strongly Connected Components, Clique Detection is missing from its features. It&amp;rsquo;s probably due to the non-parallel nature of the original Bron-Kerbosch algorithm.&lt;/p&gt;
+&lt;p&gt;Since it&amp;rsquo;s the most suitable algorithm for my task on hand, research papers aren&amp;rsquo;t going to cut it. I found a simple Scala-based implementation, cleaned it up and optimized it for my use. By offloading heavy-lifting work to Spark as much as possible, this tiny recursive function (running on a single core) is surprisingly fast. My runtime for a graph with around 120,000 edges took 45 seconds. The graph is filtered for the important edges (based on the weight I defined) generated in the entirety of Singapore. So, to me, it is probably enough.&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/Chen-Zhe/ade6cb064fc32b9bb013a05fe482fc0b.js&#34;&gt;&lt;/script&gt;
+&lt;p&gt;The function may not perform well in a densely-connected graph, but you should try it before calling it unusable.&lt;/p&gt;
+&lt;p&gt;Larger graph, on the other hand, could be handled through first partitioning the graph based on certain criteria and run multiple instances of this function on difference partitions.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Apache Spark - Save Time with Less Join Operations</title>
+        <link>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</link>
+        <pubDate>Fri, 28 Sep 2018 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</guid>
+        <description>&lt;p&gt;Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of &lt;code&gt;join&lt;/code&gt; operations.&lt;/p&gt;
+&lt;h2 id=&#34;refactoring-joins&#34;&gt;Refactoring Joins&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;join&lt;/code&gt; is a slow operation and everyone knows it, but sometime it’s just unavoidable. So, the real question is, how to prevent unnecessary use of joins. Interestingly, the examples that I discovered in the code base are all related to groupBy operations as well and gist of it can be summarized simply as: use a single groupBy to accomplish as much as possible.
+Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime improvements by removing the &lt;code&gt;join&lt;/code&gt;s&lt;/p&gt;
+&lt;h4 id=&#34;1&#34;&gt;1.&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+          &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+          &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;max&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colC&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// Optimized
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;when&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+       &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;otherwise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sth&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+       &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt;
+       &lt;span class=&#34;n&#34;&gt;max&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;when&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+       &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colC&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Essentially, this code block is trying to get 2 different aggregated statistics of groups from colA based on certain conditions. The join operation then puts the 2 different statistics into the same table column-wise under the same group.&lt;/p&gt;
+&lt;p&gt;In this case, Spark’s (probably borrowed from SQL) When operator can be substituted for conditional filtering. Unless a default value or column is specified through the otherwise operator, when operator returns null. Spark’s built-in aggregation functions (max, sum, avg, etc.) will automatically ignore null values so when combined with when function, it acts as aggregations with conditions. The code snippet below is much more efficient, especially when more conditional aggregations are used.&lt;/p&gt;
+&lt;h4 id=&#34;2&#34;&gt;2.&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+   &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+   &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;
+     &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+     &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+   &lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// Optimized
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pivot&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Seq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;first&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumnRenamed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Understanding what this piece of code is trying to do is important. In short, the code tries to group the table based on column A and then pivot on column B. Pivot operation can be considered as a groupBy on a certain column and transpose the result onto columns instead of rows.&lt;/p&gt;
+&lt;p&gt;With the understanding in mind, we can the proceed to rewrite this piece of code to use pivot operator? Wait, in this piece of code, we are only concerned with a value of 1 or 2 in column B. Worry not, Spark has it all prepared for you. Its pivot operation accepts an optional second parameter (a Sequence of values) and it will create the exact number of columns for every value in the parameter, regardless of the existence of the value in the pivoting column.&lt;/p&gt;
+&lt;p&gt;Since we are sure that for each unique combination of values in Column A and Column B, there’s only a single row, we can use the first aggregation function.&lt;/p&gt;
+&lt;h4 id=&#34;3&#34;&gt;3.&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+         &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Seq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;// Optimized
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt;
+      &lt;span class=&#34;n&#34;&gt;collect_list&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;explode&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This piece of code first calculates an aggregated statistic per group and then use it as a threshold to filter the original dataframe. Optimizations to this example might be counter-intuitive, but in reality, if there are a lot of groups as defined by column A and column B, the join operation would take a significant amount of time.&lt;/p&gt;
+&lt;p&gt;The optimized version uses groupBy to get not only the threshold value, but also a list of values to be used in the filter and select statements later. All values are packed into a single compound column through struct operator and the aggregated list is unpacked through the explode operator, which flattens the list to each row and duplicates every other column. To some extent, the collect_list operation is not extremely efficient, but the overall execution time is still drastically faster.&lt;/p&gt;
+&lt;h2 id=&#34;afterthought&#34;&gt;Afterthought&lt;/h2&gt;
+&lt;p&gt;Perhaps the main culprit here is the shuffling of partitions when executing groupBy and Join statements. As the shuffling might be different for one groupBy operation and one join operation, a third shuffle is required to bring rows of the same key into the same executor. In Spark, partition shuffle might be done over network and hence incurs significant overhead. In contrast, refactoring the operation into a single groupBy operator requires only 1 shuffle and hence runs much faster.&lt;/p&gt;
+&lt;h2 id=&#34;one-actually-two-more-thing&#34;&gt;One (actually two) more thing&lt;/h2&gt;
+&lt;p&gt;While staring at the YARN application tracker UI, I have also discovered a few small steps that might impact performance significantly.&lt;/p&gt;
+&lt;p&gt;Dataframe &lt;code&gt;df.count&lt;/code&gt; operation: count seems to be a harmless function but unlike its counterpart in Pandas, this operation requires a full execution of the SQL plan. In short, getting the count of rows in a Spark dataframe takes approximately the same amount of the time as generating the content of the entire dataframe.&lt;/p&gt;
+&lt;p&gt;Thus, when the dataframe is generated from complex operations, counting from saved parquet or cached content is faster.&lt;/p&gt;
+&lt;p&gt;Dataframe &lt;code&gt;df.cache&lt;/code&gt; operation: caching a large dataset negatively impacts performance, which might stem from the disk I/O overhead due to spilling.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

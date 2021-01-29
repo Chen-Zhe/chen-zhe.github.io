@@ -6,18 +6,14 @@
     <description>Recent content in Optimization on Chen Zhe&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Sep 2018 21:05:12 +0800</lastBuildDate>
-    
-	<atom:link href="https://chen-zhe.github.io/blog/categories/optimization/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 28 Sep 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/optimization/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Apache Spark - Save Time with Less Join Operations</title>
-      <link>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</link>
-      <pubDate>Fri, 28 Sep 2018 21:05:12 +0800</pubDate>
+      <link>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</link>
+      <pubDate>Fri, 28 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/2018/09/apache-spark-save-time-with-less-join-operations/</guid>
-      <description>&lt;p&gt;Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of &lt;code&gt;join&lt;/code&gt; operations.&lt;/p&gt;</description>
+      <guid>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</guid>
+      <description>Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations.</description>
     </item>
     
   </channel>

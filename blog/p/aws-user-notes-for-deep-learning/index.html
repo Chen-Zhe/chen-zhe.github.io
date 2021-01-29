@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently'><title>AWS User Notes for Deep Learning</title>
+
+<link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'><link href='/blog/font/lato-font.css' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" href="/blog/scss/style.min.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
+<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently'>
+<meta property='og:url' content='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
+<meta property='og:site_name' content='Chen Zhe&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-01-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-01-27T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="AWS User Notes for Deep Learning">
+<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently">
+    </head>
+    <body class="">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.body.dataset.scheme = 'dark';
+        } else {
+            document.body.dataset.scheme = 'light';
+        }
+    })();
+</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
+            <aside class="sidebar left-sidebar sticky">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header class="site-info">
+        
+            <figure class="site-avatar">
+                
+                    <img src="/blog/image/personal_icon.png" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+
+                
+                    <span class="emoji">🌏</span>
+                
+            </figure>
+        
+        <h1 class="site-name"><a href="https://chen-zhe.github.io/blog">Chen Zhe&#39;s Blog</a></h1>
+        <h2 class="site-description">也就是个markdown网络笔记本</h2>
+    </header>
+
+    <ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='https://chen-zhe.github.io/blog/'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>main</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='https://chen-zhe.github.io/home'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Site Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='https://chen-zhe.github.io/blog/archives'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='https://chen-zhe.github.io/blog/search'>
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        
+            <li id="dark-mode-toggle">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                <span>Dark Mode</span>
+            </li>
+        
+    </ol>
+</aside>
+
+            <main class="main full-width">
+    <div id="article-toolbar">
+        <a href="https://chen-zhe.github.io/blog" class="back-home">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+            <span>Back</span>
+        </a>
+    </div>
+
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/blog/categories/notes/" >
+                Notes
+            </a>
+        
+            <a href="/blog/categories/cloud/" >
+                Cloud
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/blog/p/aws-user-notes-for-deep-learning/">AWS User Notes for Deep Learning</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently
+    </h3>
+    <footer class="article-time">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <time class="article-time--published">Jan 27, 2021</time>
+    </footer></div>
+</header>
+
+    <section class="article-content">
+    <p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+and here are my notes and observations about the platform for this purpose</p>
+<p>Overall speaking, AWS is a complex platform with a rather steep learning curve
+if I were to take advantage of services other than EC2 itself.</p>
+<p>Here are my notes for services that I&rsquo;ve used throughout the rapid-paced learning journey
+and hopefully they can be of help to others.</p>
+<h2 id="glossary">Glossary</h2>
+<ul>
+<li>EC2: Elastic Compute Cloud</li>
+<li>SSH: Secure Shell</li>
+<li>AMI: Amazon Machine Image</li>
+<li>EBS: Elastic Block Storage</li>
+<li>EFS: Elastic File System</li>
+<li>S3: Simple Storage Service</li>
+<li>IAM: Identity and Access Management</li>
+</ul>
+<h2 id="region">Region</h2>
+<p>AWS regions such as <em>US East (N. Virginia) us-east-1</em> and <em>US East (Ohio) us-east-2</em>
+are basically their data centers located within the region. Network transit within region
+is free-of-charge and is charged otherwise.</p>
+<p>Each region further divide into availability zones, such as <code>us-east-2a</code>. EBS volumes
+created in a specific zone can only be mounted to EC2 instances within the same zone.</p>
+<p>Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
+troublesome to me, so always backup important data in a shared file system like EFS.</p>
+<h2 id="ec2">EC2</h2>
+<p>EC2 is a virtual machine service but you can only choose from their confusingly-named
+presets (CPU and memory combo) as opposed to custom configurations. I assume this is
+to simplify their scheduling algorithm.</p>
+<h4 id="type-selection">Type Selection</h4>
+<p><a class="link" href="https://aws.amazon.com/ec2/instance-types/"  target="_blank" rel="noopener"
+    >EC2 instance type and name list</a></p>
+<p>For machine learning, compute-optimized C5 series makes the most sense due to their
+higher CPU-to-memory ratio. I used <code>c5.24xlarge</code> (with 96 vCores) for tasks that can take advantage of
+multiple cores.</p>
+<p>As a side note, C5a instances uses AMD EPYC processors and there&rsquo;s a limited
+number of them, so one of my extra-large instance using C5a was stopped due to
+insufficient resource and couldn&rsquo;t be resumed, yikes!</p>
+<p>For deep learning, P series is a good choice. Since my task doesn&rsquo;t need multiple GPUs,
+I used <code>p3.2xlarge</code>.</p>
+<h4 id="suspend-vs-stop-vs-terminate">Suspend vs Stop vs Terminate</h4>
+<p>When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
+such that the any task that are running when the instance is suspended can resume once the instance
+is woken up.
+As such, you need to ensure that the boot EBS volume has enough spare capacity
+for storing the entire memory.
+It&rsquo;s like hibernation on Windows.
+However, not all AMIs supports this. The instance&rsquo;s ephemeral IP address will also change, so you&rsquo;d need to use the new IP address for SSH.</p>
+<p>Stopping an EC2 instance <strong>will not</strong> remove its boot EBS volume and it can be restarted again. It&rsquo;s basically
+like shutting down your computer. However, stopping and restarting will change the instance&rsquo;s
+ephemeral IP address, too.</p>
+<p>Terminating an EC2 instance <strong>will</strong> remove its boot EBS volume and it&rsquo;s gone forever!</p>
+<h4 id="vcore-performance">vCore Performance</h4>
+<p>vCores are much lower than physical CPU cores, hence <strong>parallelism is very important</strong>!
+By my estimation, a vCore only runs at 50% of the speed of my laptop&rsquo;s i7-8750H core.
+Make sure your <code>DataLoader</code> can run on as many vCores as possible to keep the Tesla GPU
+from data starvation.</p>
+<h4 id="burstable-cpu">Burstable CPU</h4>
+<p>Burstable CPU is a feature of T2 series general-purpose VMs. It basically means
+you&rsquo;ll be charged extra when you almost always use all cores for compute, but if
+the machine is mostly idle (like a web/database server), this could be a cost-saver.</p>
+<p>This is probably not suitable for training models since you want to push all
+cores to the max (ideally) for the best performance. But if you are running some
+data analysis task using Jupyter Notebook, this type of instance could be a good fit.</p>
+<h4 id="spot-instance">Spot Instance</h4>
+<p><a class="link" href="https://aws.amazon.com/ec2/spot/pricing/"  target="_blank" rel="noopener"
+    >Spot Instance Pricing</a></p>
+<p>Spot instances are much cheaper than regular timed instances. The only downside
+is that it could be stopped by AWS at any time. But my experience shows that
+it doesn&rsquo;t happen very often, at least in <code>us-east-2</code>(Ohio).</p>
+<p>Be sure to check the <strong>Persistent request</strong> box when launching a EC2 instance, otherwise
+the one-time-request spot instance will be terminated directly when it is stopped.</p>
+<h4 id="ssh">SSH</h4>
+<p>Any SSH client would work, but I do highly recommend <a class="link" href="https://mobaxterm.mobatek.net/"  target="_blank" rel="noopener"
+    >MobaXterm</a>
+for Windows users (I&rsquo;m one).</p>
+<p>You would need a key pair to access the EC2 instance. This file can be generated
+when launching the EC2 instance and reused. Each key can only be downloaded once
+so don&rsquo;t lose it. The full command line using ssh would look like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
+</code></pre></div><p>Username would be <code>ec2-user</code> for regular Amazon AMIs and <code>ubuntu</code> for AWS Deep Learning AMI.</p>
+<h4 id="ami">AMI</h4>
+<p>AMI is basically a prepackaged system disk image with pre-configured environment.</p>
+<p>I&rsquo;m really impressed with its boot speed, which only takes a few seconds.
+I certainly feel that it&rsquo;s faster than Google Cloud Compute instances in terms of
+boot speed.</p>
+<p>AWS Deep Learning AMI comes with Anaconda, PyTorch and TensorFlow (with choices of versions, too)
+so that you can run your code straightaway. A big time saver! However, this
+beefy image also requires at least 100GB of boot volume, so EBS cost is going to be a factor
+if you decide to keep the instance for some time.</p>
+<p>However, AWS Deep Learning AMI does not support suspending the instance, so be sure to
+write code for saving to and restoring from checkpoints, in case the spot instance
+was stopped by AWS while your model has not been trained for enough epochs.</p>
+<h4 id="monitoring">Monitoring</h4>
+<p><code>htop</code> for a command-line task manager to monitor CPU usage</p>
+<p><code>nvidia-smi</code> for a summary of GPU usage</p>
+<h2 id="ebs">EBS</h2>
+<p>EBS serves as a hard drive for EC2 instances. Each EC2 instance will have a boot
+EBS volume, but you can attach additional EBS volumes to it.</p>
+<p>Resizing EBS would require filesystem level operations on the instance OS, so
+I would recommend allocate enough storage on the boot volume to start with.</p>
+<p>By default, EBS volumes are SSD-backed <code>gp2</code>. It&rsquo;s not expensive and have pretty good performance
+for my use case,
+so I&rsquo;d just stick with it instead of downgrading to a HDD-backed option.</p>
+<p>Note that the IOPS (I/O operations per second) of an <code>gp2</code> EBS volume is proportional
+to its size (<a class="link" href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html"  target="_blank" rel="noopener"
+    >up to 5,334 GB</a>).
+Therefore, it seems to me that it&rsquo;s better to allocate a large-enough EBS boot volume
+for AMI, training data and some buffer so that you get overall better performance.</p>
+<h4 id="mounting-a-ebs-volume-to-ec2">Mounting a EBS volume to EC2</h4>
+<p>In case you need some temporary storage, you can create a new EBS volume and attach it
+to your EC2 instance (<strong>in the same availability zone</strong>) on AWS console.</p>
+<p>Once you&rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,
+the steps are (assume the volume is detected as <code>/dev/xvdf</code>):</p>
+<ol>
+<li>
+<p><code>ls /dev</code> to find the new EBS volume device. I found that sometimes it has the name
+of <code>xvdf</code> (last character is variable) and other times it has the name of <code>nvme1p1</code>.
+You can compare the output before and after attaching the volume on UI so as
+to identify the new device.</p>
+</li>
+<li>
+<p><code>sudo mkfs -t xfs /dev/xvdf</code> to format the volume. Skip if the volume is
+already formatted (e.g. it was used by another instance earlier).</p>
+</li>
+<li>
+<p><code>sudo mkdir ~/data &amp;&amp; sudo mount /dev/xvdf ~/data</code> to mount the volume in
+a new <code>~/data</code> directory.</p>
+</li>
+<li>
+<p><code>cd ~/data &amp;&amp; sudo chmod go+rw .</code> to give read-write permissions to non-root users.</p>
+</li>
+</ol>
+<h2 id="efs">EFS</h2>
+<p>EFS is a networked filesystem that can be shared across multiple instances in the
+same region. Since it&rsquo;s managed by AWS, it is dynamically sized and charged based on the amount
+of data you stored in EFS. You also don&rsquo;t need to worry about availability zone,
+since it will provide mounting points in all of them.</p>
+<p>I find that it&rsquo;s most convenient as both a shared drive across multiple instances and a backup
+location. The shared drive functionality allows me to run inference in one instance and
+score the result in another. I also backup training data and scripts in EFS such that
+I can terminate my instances but some time later I found that I need to retrain the model.</p>
+<p>Accessing EFS will consume EC2 instance&rsquo;s network bandwidth, so I usually copy the frequently accessed
+files out to the EBS volume. When copying files, it can sustain a read speed of
+close to 1Gbps.</p>
+<p>In terms of pricing, EFS is more expensive than EBS per GB. However, given the flexibility
+and dynamic sizing, it might cost less.</p>
+<h4 id="mounting-a-efs-share-to-ec2">Mounting a EFS share to EC2</h4>
+<h5 id="on-aws-console">On AWS Console</h5>
+<ol>
+<li>
+<p>Create a EFS share. This is pretty straightforward. Remember to create it
+in the same region as the EC2 instances that you intend to use this share on.</p>
+</li>
+<li>
+<p>Allows NFS port communication for the EC2 instance.</p>
+<ul>
+<li>Open the security group settings attached to the EC2 instance</li>
+<li>Modify the inbound rule and add a rule with type <code>NFS</code>. Select source as the security group.</li>
+<li>Save rules</li>
+<li>Network traffic will be interrupted if and only if an existing rule is modified
+and that the traffic is using the aforementioned rule</li>
+</ul>
+</li>
+</ol>
+<h5 id="on-ec2">On EC2</h5>
+<ol>
+<li>
+<p>install <code>nfs-utils</code> . Skip if the instance is using an AMI.</p>
+</li>
+<li>
+<p><code>mkdir ~/efs</code> to make a mounting point folder.</p>
+</li>
+<li>
+<p><code>NAME=efs-name REGION=us-east-2 &amp;&amp; sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $NAME.efs.$REGION.amazonaws.com:/ ~/efs</code> mounts the EFS volume
+to the mounting point folder</p>
+</li>
+<li>
+<p><code>cd ~/efs &amp;&amp; sudo chmod go+rw .</code> to give read-write permissions to non-root users.
+You only need to run this command once for a new EFS share.</p>
+</li>
+</ol>
+<h2 id="s3">S3</h2>
+<p>S3 is yet another storage service for file storage. To access the files, you need to use
+<code>aws</code> commands. As such, it cannot be used as a regular disk like EFS or EBS.</p>
+<p>For my use case, I find S3
+suitable for sharing large files, such as trained model weights, via HTTPS.
+I&rsquo;ve also seen use cases that use S3 as a data lake. Apache Spark even supports reading
+data directly off S3.</p>
+<h4 id="access-s3-bucket-in-ec2">Access S3 bucket in EC2</h4>
+<h5 id="on-aws-console-1">On AWS Console</h5>
+<ol>
+<li>
+<p>Create an S3 bucket in the region you intended to use.</p>
+</li>
+<li>
+<p>Create a IAM role with S3 full access</p>
+<ul>
+<li>In Identity and Access Management (IAM) page, click <strong>Create role</strong></li>
+<li>Choose <strong>EC2</strong> as use case</li>
+<li>In attach permission policies, find <strong>AmazonS3FullAccess</strong> and check it</li>
+<li>Save the role and give it a name</li>
+</ul>
+</li>
+<li>
+<p>Attach the role to the intended EC2 instance</p>
+<ul>
+<li>In the instance list, select the instance</li>
+<li>Choose <strong>Actions, Security, Modify IAM role</strong></li>
+<li>Select the role you just created and choose <strong>Save</strong></li>
+</ul>
+</li>
+</ol>
+<h5 id="on-ec2-1">On EC2</h5>
+<ol>
+<li><code>aws s3 cp my_copied_file.ext s3://my_bucket/my_folder/my_file.ext</code> to upload
+files to S3. Reverse the 2 arguments to download files from S3.</li>
+</ol>
+<h4 id="access-s3-objects-from-https">Access S3 objects from HTTPS</h4>
+<ol>
+<li>
+<p>Go to the S3 console and modify its ACL read permission to be <strong>Everyone</strong>.
+This is not safe but the files I&rsquo;m sharing aren&rsquo;t going to make sense for others anyway.</p>
+</li>
+<li>
+<p>Access the file using <code>https://my-bucket.s3.us-east-2.amazonaws.com/my_folder/my_file.ext</code>.
+This assume that your S3 bucket is created in <code>us-east-2</code></p>
+</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">Related contents</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/blog/p/basic-usage-of-graphx-for-clique-detection/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Basic usage of GraphX for clique detection</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "chen-zhe" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 Chen Zhe
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> |
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.0.1">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css">
+            </main>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"
+    integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin="anonymous"></script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
+
+    </body>
+</html>

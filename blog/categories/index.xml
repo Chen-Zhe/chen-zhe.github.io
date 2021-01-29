@@ -6,24 +6,29 @@
     <description>Recent content in Categories on Chen Zhe&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Mar 2020 19:05:12 +0800</lastBuildDate>
-    
-	<atom:link href="https://chen-zhe.github.io/blog/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>blog</title>
-      <link>https://chen-zhe.github.io/blog/categories/blog/</link>
-      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
+      <title>Cloud</title>
+      <link>https://chen-zhe.github.io/blog/categories/cloud/</link>
+      <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/categories/blog/</guid>
+      <guid>https://chen-zhe.github.io/blog/categories/cloud/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>interview</title>
+      <title>Notes</title>
+      <link>https://chen-zhe.github.io/blog/categories/notes/</link>
+      <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/categories/notes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Interview</title>
       <link>https://chen-zhe.github.io/blog/categories/interview/</link>
-      <pubDate>Sun, 15 Mar 2020 19:05:12 +0800</pubDate>
+      <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/categories/interview/</guid>
       <description></description>
@@ -32,43 +37,34 @@
     <item>
       <title>Graph Cliques</title>
       <link>https://chen-zhe.github.io/blog/categories/graph-cliques/</link>
-      <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
+      <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/categories/graph-cliques/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Sector Cluster</title>
-      <link>https://chen-zhe.github.io/blog/categories/sector-cluster/</link>
-      <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
+      <title>Paper</title>
+      <link>https://chen-zhe.github.io/blog/categories/paper/</link>
+      <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/categories/sector-cluster/</guid>
+      <guid>https://chen-zhe.github.io/blog/categories/paper/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spark</title>
       <link>https://chen-zhe.github.io/blog/categories/spark/</link>
-      <pubDate>Sat, 05 Oct 2019 12:05:00 +0800</pubDate>
+      <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/categories/spark/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Code</title>
-      <link>https://chen-zhe.github.io/blog/categories/code/</link>
-      <pubDate>Sat, 15 Dec 2018 21:05:12 +0800</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/categories/code/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Optimization</title>
       <link>https://chen-zhe.github.io/blog/categories/optimization/</link>
-      <pubDate>Fri, 28 Sep 2018 21:05:12 +0800</pubDate>
+      <pubDate>Fri, 28 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/categories/optimization/</guid>
       <description></description>
