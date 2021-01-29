@@ -314,7 +314,8 @@ var Grid = (function() {
           description : $itemEl.data( 'description' ),
           exif : $itemEl.data( 'exif' ),
           buttontext : $itemEl.data( 'buttontext' ),
-          collectionName : $itemEl.data( 'collection' )
+          collectionName : $itemEl.data( 'collection' ),
+          isVideo: $itemEl.data( 'is-video' )
         };
 
       this.$title.html( eldata.title );
@@ -345,17 +346,21 @@ var Grid = (function() {
 
       if( self.$fullimage.is( ':visible' ) ) {
         this.$loading.show();
-        $( '<img/>' ).on("load", function() {
-          var $img = $( this );
-          if( $img.attr( 'src' ) === self.$item.children('a').data( 'largesrc' ) ) {
+        if (eldata.isVideo) {
+          // iframe load will only happen when it's appended to page
+          $( '<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen/>' ).on("load", function() {
+            self.$loading.hide();
+          }).attr( 'src', eldata.largesrc ).fadeIn( 350 ).appendTo(self.$fullimage);
+        } else {
+          $( '<img/>' ).on("load", function() {
+            var $img = $( this );
             self.$loading.hide();
             self.$fullimage.find( 'img' ).remove();
             self.$largeImg = $img.fadeIn( 350 );
             self.$fullimage.append( self.$largeImg );
-          }
-        } ).attr( 'src', eldata.largesrc );
+          }).attr( 'src', eldata.largesrc );
+        }
       }
-
     },
     open : function() {
 

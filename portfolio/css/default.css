@@ -74,3 +74,26 @@ img.lazy{
 	display: block;
 	height: 250px;
 }
+
+footer {
+	padding: 0.5em;
+}
+
+span.video-icon svg {
+	z-index: 1;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 60px;
+	height: 60px;
+	margin-top: -30px;
+	margin-left: -30px;
+	opacity: 86%;
+	transition: 0.2s;
+}
+
+.og-grid li > a:hover span.video-icon svg,
+.og-grid li > a:focus span.video-icon svg{
+	filter: invert(90%) contrast(97%);
+}
+

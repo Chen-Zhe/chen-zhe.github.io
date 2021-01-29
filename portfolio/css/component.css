@@ -105,10 +105,17 @@
 	text-align: center;
 }
 
-.og-fullimg img {
+.og-fullimg img,
+.og-fullimg iframe {
 	display: inline-block;
 	max-height: 100%;
 	max-width: 100%;
+}
+
+.og-fullimg iframe {
+	border: none;
+	height: 100%;
+	width: 100%;
 }
 
 .og-details h3 {
