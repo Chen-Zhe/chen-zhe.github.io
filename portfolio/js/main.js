@@ -360,6 +360,11 @@ var Grid = (function() {
             self.$fullimage.append( self.$largeImg );
           }).attr( 'src', eldata.largesrc );
         }
+      } else {
+        if (eldata.isVideo){
+          // show video link when iframe is not displayed due to screen size
+          $("<a/>").attr("href", eldata.largesrc ).appendTo(self.$title);
+        }
       }
     },
     open : function() {
