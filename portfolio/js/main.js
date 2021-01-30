@@ -363,7 +363,7 @@ var Grid = (function() {
       } else {
         if (eldata.isVideo){
           // show video link when iframe is not displayed due to screen size
-          $("<a/>").attr("href", eldata.largesrc ).appendTo(self.$title);
+          $('<a target="_blank"/>').attr("href", eldata.largesrc ).appendTo(self.$title);
         }
       }
     },
