@@ -100,8 +100,7 @@ span.video-icon svg {
 	transition: 0.2s;
 }
 
-.og-grid li > a:hover span.video-icon svg,
-.og-grid li > a:focus span.video-icon svg{
-	filter: invert(90%) contrast(97%);
+.og-grid li > a:hover span.video-icon svg{
+	filter: invert(90%);
 }
 
