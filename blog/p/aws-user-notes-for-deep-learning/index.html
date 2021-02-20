@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently'><title>AWS User Notes for Deep Learning</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.'><title>AWS User Notes for Deep Learning</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'><link href='/blog/font/lato-font.css' rel='stylesheet' type='text/css'>
 
 
 <link rel="stylesheet" href="/blog/scss/style.min.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
-<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently'>
+<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
-<meta property='og:site_name' content='Chen Zhe&#39;s Blog'>
+<meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-01-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-01-27T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="AWS User Notes for Deep Learning">
-<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently">
+<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
     </head>
@@ -58,7 +58,7 @@
                 
             </figure>
         
-        <h1 class="site-name"><a href="https://chen-zhe.github.io/blog">Chen Zhe&#39;s Blog</a></h1>
+        <h1 class="site-name"><a href="https://chen-zhe.github.io/blog">大白鲸笔记本</a></h1>
         <h2 class="site-description">也就是个markdown网络笔记本</h2>
     </header>
 
@@ -202,7 +202,7 @@
 
     
     <h3 class="article-subtitle">
-        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently
+        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.
     </h3>
     <footer class="article-time">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -218,21 +218,43 @@
 </header>
 
     <section class="article-content">
-    <p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+    <p><em>Updates on 2021-02-20: furnish missing details</em></p>
+<p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose</p>
 <p>Overall speaking, AWS is a complex platform with a rather steep learning curve
 if I were to take advantage of services other than EC2 itself.</p>
 <p>Here are my notes for services that I&rsquo;ve used throughout the rapid-paced learning journey
 and hopefully they can be of help to others.</p>
+<h2 id="tldr-my-workflow">TL;DR. My Workflow</h2>
+<p>Step 1: I installed miniconda3 on an EC2 instance and installed all necessary packages:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh
+chmod +x Miniconda3-py37_4.9.2-Linux-x86_64.sh
+./Miniconda3-py37_4.9.2-Linux-x86_64.sh <span class="c1"># start installer</span>
+
+conda install pytorch pandas scikit-learn jupyter-lab matplotlib
+conda install -c conda-forge tqdm
+pip install <span class="nv">kaggle</span><span class="o">==</span>1.5.3
+
+conda clean -a <span class="c1"># remove downloaded package zips</span>
+</code></pre></div><p>Step 2: Configure Kaggle key in the <code>.kaggle</code> folder.
+Configure Jupyter Lab password <code>jupyter server password</code> (not <code>jupyter notebook password</code>!) and
+other properties such as binding port and binding network interface</p>
+<p>Step 3: Tar the environment and save to EFS</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+</code></pre></div><p>Step 4: Launch a new instance with pre-configured security group and run</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS</span>
+tar -xf efs/dl-env.tar
+<span class="nb">source</span> .bashrc
+</code></pre></div><p>Voila, the conda environment is up and running!</p>
 <h2 id="glossary">Glossary</h2>
 <ul>
-<li>EC2: Elastic Compute Cloud</li>
-<li>SSH: Secure Shell</li>
-<li>AMI: Amazon Machine Image</li>
-<li>EBS: Elastic Block Storage</li>
-<li>EFS: Elastic File System</li>
-<li>S3: Simple Storage Service</li>
-<li>IAM: Identity and Access Management</li>
+<li><a class="link" href="#ec2" >EC2</a>: Elastic Compute Cloud</li>
+<li><a class="link" href="#ssh" >SSH</a>: Secure Shell</li>
+<li><a class="link" href="#ami" >AMI</a>: Amazon Machine Image</li>
+<li><a class="link" href="#ebs" >EBS</a>: Elastic Block Storage</li>
+<li><a class="link" href="#efs" >EFS</a>: Elastic File System</li>
+<li><a class="link" href="#s3" >S3</a>: Simple Storage Service</li>
+<li><a class="link" href="#access-s3-bucket-in-ec2" >IAM</a>: Identity and Access Management</li>
 </ul>
 <h2 id="region">Region</h2>
 <p>AWS regions such as <em>US East (N. Virginia) us-east-1</em> and <em>US East (Ohio) us-east-2</em>
@@ -246,6 +268,100 @@ troublesome to me, so always backup important data in a shared file system like 
 <p>EC2 is a virtual machine service but you can only choose from their confusingly-named
 presets (CPU and memory combo) as opposed to custom configurations. I assume this is
 to simplify their scheduling algorithm.</p>
+<h4 id="increase-limit">Increase Limit</h4>
+<p>Newly registered AWS users have to first manually increase their limits/service quota
+in order to launch bigger instances or use GPU-backed instances.</p>
+<p>Here&rsquo;s the <a class="link" href="https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:"  target="_blank" rel="noopener"
+    >URL</a>
+to AWS console&rsquo;s limit page such that you can increase it. Here are the ones you need to make request
+for:</p>
+<ul>
+<li>Running On-Demand All G instances</li>
+<li>Running On-Demand All P instances</li>
+<li>Running On-Demand All Standard (A, C, D, H, I, M, R, T, Z) instances</li>
+<li>All G Spot Instance Requests</li>
+<li>All P Spot Instance Requests</li>
+<li>All Standard (A, C, D, H, I, M, R, T, Z) Spot Instance Requests</li>
+</ul>
+<h2 id="security-group">Security Group</h2>
+<p>It&rsquo;s basically like an old-school firewall that allows network access on specific ports.</p>
+<p>Necessary inbound rules</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Protocol</th>
+<th>Port Range</th>
+<th>Source</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSH</td>
+<td>(auto)</td>
+<td>(auto)</td>
+<td>your.ip/32</td>
+<td>SSH access restricted your own place</td>
+</tr>
+<tr>
+<td>NFS</td>
+<td>(auto)</td>
+<td>(auto)</td>
+<td>Security group attached to EC2 (I just use the same one)</td>
+<td>Allow EFS access</td>
+</tr>
+<tr>
+<td>Custom TCP</td>
+<td>TCP</td>
+<td>8888</td>
+<td>your.ip/32</td>
+<td>Jupyter Lab access restricted to your own place. Change this if you configured Jupyter Lab to use a different port</td>
+</tr>
+</tbody>
+</table>
+<p>Necessary outbound rules</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Protocol</th>
+<th>Port Range</th>
+<th>Destination</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP</td>
+<td>(auto)</td>
+<td>(auto)</td>
+<td>0.0.0.0/0</td>
+<td>Allow EC2 to download external data</td>
+</tr>
+<tr>
+<td>HTTPS</td>
+<td>(auto)</td>
+<td>(auto)</td>
+<td>0.0.0.0/0</td>
+<td>Allow EC2 to download external data</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>(auto)</td>
+<td>(auto)</td>
+<td>your.ip/32</td>
+<td>Automatically added</td>
+</tr>
+<tr>
+<td>NFS</td>
+<td>(auto)</td>
+<td>(auto)</td>
+<td>Security group attached to EC2</td>
+<td>Automatically added</td>
+</tr>
+</tbody>
+</table>
 <h4 id="type-selection">Type Selection</h4>
 <p><a class="link" href="https://aws.amazon.com/ec2/instance-types/"  target="_blank" rel="noopener"
     >EC2 instance type and name list</a></p>
@@ -255,8 +371,19 @@ multiple cores.</p>
 <p>As a side note, C5a instances uses AMD EPYC processors and there&rsquo;s a limited
 number of them, so one of my extra-large instance using C5a was stopped due to
 insufficient resource and couldn&rsquo;t be resumed, yikes!</p>
-<p>For deep learning, P series is a good choice. Since my task doesn&rsquo;t need multiple GPUs,
-I used <code>p3.2xlarge</code>.</p>
+<p>For deep learning, G series is a good choice. Specifically for single GPU training:</p>
+<ul>
+<li><code>g4dn.xlarge</code>: 4 vCores, 16GB memory and a Tesla T4
+<ul>
+<li>Spot pricing: ~0.158 USD/Hour</li>
+</ul>
+</li>
+<li><code>p3.2xlarge</code>: 8 vCores, 61GB memory and a Tesla V100
+<ul>
+<li>Spot pricing: ~0.918 USD/Hour</li>
+</ul>
+</li>
+</ul>
 <h4 id="suspend-vs-stop-vs-terminate">Suspend vs Stop vs Terminate</h4>
 <p>When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
 such that the any task that are running when the instance is suspended can resume once the instance
@@ -287,8 +414,12 @@ data analysis task using Jupyter Notebook, this type of instance could be a good
 <p>Spot instances are much cheaper than regular timed instances. The only downside
 is that it could be stopped by AWS at any time. But my experience shows that
 it doesn&rsquo;t happen very often, at least in <code>us-east-2</code>(Ohio).</p>
-<p>Be sure to check the <strong>Persistent request</strong> box when launching a EC2 instance, otherwise
+<p>If you do not check the <strong>Persistent request</strong> box when launching a EC2 instance,
 the one-time-request spot instance will be terminated directly when it is stopped.</p>
+<p>You must cancel the request from the <a class="link" href="https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot"  target="_blank" rel="noopener"
+    >Spot Requests</a> page when you want to terminate the instance. Otherwise,
+a persistent request will relaunch the instance when you terminated it from the EC2
+management console.</p>
 <h4 id="ssh">SSH</h4>
 <p>Any SSH client would work, but I do highly recommend <a class="link" href="https://mobaxterm.mobatek.net/"  target="_blank" rel="noopener"
     >MobaXterm</a>
@@ -310,6 +441,10 @@ if you decide to keep the instance for some time.</p>
 <p>However, AWS Deep Learning AMI does not support suspending the instance, so be sure to
 write code for saving to and restoring from checkpoints, in case the spot instance
 was stopped by AWS while your model has not been trained for enough epochs.</p>
+<p>AWS Deep Learning Base AMI is a slimmed-down version of the AWS Deep Learning AMI.
+It requires a minimum EBS disk size of 60GB and comes with necessary GPU drivers and
+linear algebra packs. However, it doesn&rsquo;t come with any deep learning environment, so you
+need to configure one on your own.</p>
 <h4 id="monitoring">Monitoring</h4>
 <p><code>htop</code> for a command-line task manager to monitor CPU usage</p>
 <p><code>nvidia-smi</code> for a summary of GPU usage</p>
@@ -370,6 +505,9 @@ and dynamic sizing, it might cost less.</p>
 <li>
 <p>Create a EFS share. This is pretty straightforward. Remember to create it
 in the same region as the EC2 instances that you intend to use this share on.</p>
+<ul>
+<li>If you are not using your default security group, you have to add the security group to all network availability zones under the <code>network</code> tab of the EFS share management page</li>
+</ul>
 </li>
 <li>
 <p>Allows NFS port communication for the EC2 instance.</p>
@@ -391,7 +529,7 @@ and that the traffic is using the aforementioned rule</li>
 <p><code>mkdir ~/efs</code> to make a mounting point folder.</p>
 </li>
 <li>
-<p><code>NAME=efs-name REGION=us-east-2 &amp;&amp; sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $NAME.efs.$REGION.amazonaws.com:/ ~/efs</code> mounts the EFS volume
+<p><code>FS_ID=file-system-id REGION=us-east-2 &amp;&amp; sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $FS_ID.efs.$REGION.amazonaws.com:/ ~/efs</code> mounts the EFS volume
 to the mounting point folder</p>
 </li>
 <li>
@@ -550,7 +688,7 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
         
             2018 - 
         
-        2021 Chen Zhe
+        2021 陈哲 Chen Zhe
     </section>
     
     <section class="powerby">

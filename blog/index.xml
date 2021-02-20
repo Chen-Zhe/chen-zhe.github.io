@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Chen Zhe&#39;s Blog</title>
+        <title>大白鲸笔记本</title>
         <link>https://chen-zhe.github.io/blog/</link>
-        <description>Recent content on Chen Zhe&#39;s Blog</description>
+        <description>Recent content on 大白鲸笔记本</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml" /><item>
@@ -12,21 +12,43 @@
         <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
         
         <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
-        <description>&lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+        <description>&lt;p&gt;&lt;em&gt;Updates on 2021-02-20: furnish missing details&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose&lt;/p&gt;
 &lt;p&gt;Overall speaking, AWS is a complex platform with a rather steep learning curve
 if I were to take advantage of services other than EC2 itself.&lt;/p&gt;
 &lt;p&gt;Here are my notes for services that I&amp;rsquo;ve used throughout the rapid-paced learning journey
 and hopefully they can be of help to others.&lt;/p&gt;
+&lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow&lt;/h2&gt;
+&lt;p&gt;Step 1: I installed miniconda3 on an EC2 instance and installed all necessary packages:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh
+chmod +x Miniconda3-py37_4.9.2-Linux-x86_64.sh
+./Miniconda3-py37_4.9.2-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
+
+conda install pytorch pandas scikit-learn jupyter-lab matplotlib
+conda install -c conda-forge tqdm
+pip install &lt;span class=&#34;nv&#34;&gt;kaggle&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;==&lt;/span&gt;1.5.3
+
+conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 2: Configure Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.
+Configure Jupyter Lab password &lt;code&gt;jupyter server password&lt;/code&gt; (not &lt;code&gt;jupyter notebook password&lt;/code&gt;!) and
+other properties such as binding port and binding network interface&lt;/p&gt;
+&lt;p&gt;Step 3: Tar the environment and save to EFS&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 4: Launch a new instance with pre-configured security group and run&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS&lt;/span&gt;
+tar -xf efs/dl-env.tar
+&lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt; .bashrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Voila, the conda environment is up and running!&lt;/p&gt;
 &lt;h2 id=&#34;glossary&#34;&gt;Glossary&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;EC2: Elastic Compute Cloud&lt;/li&gt;
-&lt;li&gt;SSH: Secure Shell&lt;/li&gt;
-&lt;li&gt;AMI: Amazon Machine Image&lt;/li&gt;
-&lt;li&gt;EBS: Elastic Block Storage&lt;/li&gt;
-&lt;li&gt;EFS: Elastic File System&lt;/li&gt;
-&lt;li&gt;S3: Simple Storage Service&lt;/li&gt;
-&lt;li&gt;IAM: Identity and Access Management&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ssh&#34; &gt;SSH&lt;/a&gt;: Secure Shell&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ami&#34; &gt;AMI&lt;/a&gt;: Amazon Machine Image&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ebs&#34; &gt;EBS&lt;/a&gt;: Elastic Block Storage&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#efs&#34; &gt;EFS&lt;/a&gt;: Elastic File System&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#s3&#34; &gt;S3&lt;/a&gt;: Simple Storage Service&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#access-s3-bucket-in-ec2&#34; &gt;IAM&lt;/a&gt;: Identity and Access Management&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;region&#34;&gt;Region&lt;/h2&gt;
 &lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia) us-east-1&lt;/em&gt; and &lt;em&gt;US East (Ohio) us-east-2&lt;/em&gt;
@@ -40,6 +62,100 @@ troublesome to me, so always backup important data in a shared file system like 
 &lt;p&gt;EC2 is a virtual machine service but you can only choose from their confusingly-named
 presets (CPU and memory combo) as opposed to custom configurations. I assume this is
 to simplify their scheduling algorithm.&lt;/p&gt;
+&lt;h4 id=&#34;increase-limit&#34;&gt;Increase Limit&lt;/h4&gt;
+&lt;p&gt;Newly registered AWS users have to first manually increase their limits/service quota
+in order to launch bigger instances or use GPU-backed instances.&lt;/p&gt;
+&lt;p&gt;Here&amp;rsquo;s the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;URL&lt;/a&gt;
+to AWS console&amp;rsquo;s limit page such that you can increase it. Here are the ones you need to make request
+for:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Running On-Demand All G instances&lt;/li&gt;
+&lt;li&gt;Running On-Demand All P instances&lt;/li&gt;
+&lt;li&gt;Running On-Demand All Standard (A, C, D, H, I, M, R, T, Z) instances&lt;/li&gt;
+&lt;li&gt;All G Spot Instance Requests&lt;/li&gt;
+&lt;li&gt;All P Spot Instance Requests&lt;/li&gt;
+&lt;li&gt;All Standard (A, C, D, H, I, M, R, T, Z) Spot Instance Requests&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;security-group&#34;&gt;Security Group&lt;/h2&gt;
+&lt;p&gt;It&amp;rsquo;s basically like an old-school firewall that allows network access on specific ports.&lt;/p&gt;
+&lt;p&gt;Necessary inbound rules&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Protocol&lt;/th&gt;
+&lt;th&gt;Port Range&lt;/th&gt;
+&lt;th&gt;Source&lt;/th&gt;
+&lt;th&gt;Reason&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;SSH&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;your.ip/32&lt;/td&gt;
+&lt;td&gt;SSH access restricted your own place&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;Security group attached to EC2 (I just use the same one)&lt;/td&gt;
+&lt;td&gt;Allow EFS access&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Custom TCP&lt;/td&gt;
+&lt;td&gt;TCP&lt;/td&gt;
+&lt;td&gt;8888&lt;/td&gt;
+&lt;td&gt;your.ip/32&lt;/td&gt;
+&lt;td&gt;Jupyter Lab access restricted to your own place. Change this if you configured Jupyter Lab to use a different port&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Necessary outbound rules&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Protocol&lt;/th&gt;
+&lt;th&gt;Port Range&lt;/th&gt;
+&lt;th&gt;Destination&lt;/th&gt;
+&lt;th&gt;Reason&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTP&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SSH&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;your.ip/32&lt;/td&gt;
+&lt;td&gt;Automatically added&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;Security group attached to EC2&lt;/td&gt;
+&lt;td&gt;Automatically added&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 &lt;h4 id=&#34;type-selection&#34;&gt;Type Selection&lt;/h4&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/instance-types/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;EC2 instance type and name list&lt;/a&gt;&lt;/p&gt;
@@ -49,8 +165,19 @@ multiple cores.&lt;/p&gt;
 &lt;p&gt;As a side note, C5a instances uses AMD EPYC processors and there&amp;rsquo;s a limited
 number of them, so one of my extra-large instance using C5a was stopped due to
 insufficient resource and couldn&amp;rsquo;t be resumed, yikes!&lt;/p&gt;
-&lt;p&gt;For deep learning, P series is a good choice. Since my task doesn&amp;rsquo;t need multiple GPUs,
-I used &lt;code&gt;p3.2xlarge&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;For deep learning, G series is a good choice. Specifically for single GPU training:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;g4dn.xlarge&lt;/code&gt;: 4 vCores, 16GB memory and a Tesla T4
+&lt;ul&gt;
+&lt;li&gt;Spot pricing: ~0.158 USD/Hour&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;p3.2xlarge&lt;/code&gt;: 8 vCores, 61GB memory and a Tesla V100
+&lt;ul&gt;
+&lt;li&gt;Spot pricing: ~0.918 USD/Hour&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h4 id=&#34;suspend-vs-stop-vs-terminate&#34;&gt;Suspend vs Stop vs Terminate&lt;/h4&gt;
 &lt;p&gt;When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
 such that the any task that are running when the instance is suspended can resume once the instance
@@ -81,8 +208,12 @@ data analysis task using Jupyter Notebook, this type of instance could be a good
 &lt;p&gt;Spot instances are much cheaper than regular timed instances. The only downside
 is that it could be stopped by AWS at any time. But my experience shows that
 it doesn&amp;rsquo;t happen very often, at least in &lt;code&gt;us-east-2&lt;/code&gt;(Ohio).&lt;/p&gt;
-&lt;p&gt;Be sure to check the &lt;strong&gt;Persistent request&lt;/strong&gt; box when launching a EC2 instance, otherwise
+&lt;p&gt;If you do not check the &lt;strong&gt;Persistent request&lt;/strong&gt; box when launching a EC2 instance,
 the one-time-request spot instance will be terminated directly when it is stopped.&lt;/p&gt;
+&lt;p&gt;You must cancel the request from the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Spot Requests&lt;/a&gt; page when you want to terminate the instance. Otherwise,
+a persistent request will relaunch the instance when you terminated it from the EC2
+management console.&lt;/p&gt;
 &lt;h4 id=&#34;ssh&#34;&gt;SSH&lt;/h4&gt;
 &lt;p&gt;Any SSH client would work, but I do highly recommend &lt;a class=&#34;link&#34; href=&#34;https://mobaxterm.mobatek.net/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;MobaXterm&lt;/a&gt;
@@ -104,6 +235,10 @@ if you decide to keep the instance for some time.&lt;/p&gt;
 &lt;p&gt;However, AWS Deep Learning AMI does not support suspending the instance, so be sure to
 write code for saving to and restoring from checkpoints, in case the spot instance
 was stopped by AWS while your model has not been trained for enough epochs.&lt;/p&gt;
+&lt;p&gt;AWS Deep Learning Base AMI is a slimmed-down version of the AWS Deep Learning AMI.
+It requires a minimum EBS disk size of 60GB and comes with necessary GPU drivers and
+linear algebra packs. However, it doesn&amp;rsquo;t come with any deep learning environment, so you
+need to configure one on your own.&lt;/p&gt;
 &lt;h4 id=&#34;monitoring&#34;&gt;Monitoring&lt;/h4&gt;
 &lt;p&gt;&lt;code&gt;htop&lt;/code&gt; for a command-line task manager to monitor CPU usage&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nvidia-smi&lt;/code&gt; for a summary of GPU usage&lt;/p&gt;
@@ -164,6 +299,9 @@ and dynamic sizing, it might cost less.&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;Create a EFS share. This is pretty straightforward. Remember to create it
 in the same region as the EC2 instances that you intend to use this share on.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you are not using your default security group, you have to add the security group to all network availability zones under the &lt;code&gt;network&lt;/code&gt; tab of the EFS share management page&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Allows NFS port communication for the EC2 instance.&lt;/p&gt;
@@ -185,7 +323,7 @@ and that the traffic is using the aforementioned rule&lt;/li&gt;
 &lt;p&gt;&lt;code&gt;mkdir ~/efs&lt;/code&gt; to make a mounting point folder.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;code&gt;NAME=efs-name REGION=us-east-2 &amp;amp;&amp;amp; sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $NAME.efs.$REGION.amazonaws.com:/ ~/efs&lt;/code&gt; mounts the EFS volume
+&lt;p&gt;&lt;code&gt;FS_ID=file-system-id REGION=us-east-2 &amp;amp;&amp;amp; sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $FS_ID.efs.$REGION.amazonaws.com:/ ~/efs&lt;/code&gt; mounts the EFS volume
 to the mounting point folder&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;

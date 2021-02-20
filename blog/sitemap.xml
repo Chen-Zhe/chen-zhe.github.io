@@ -13,11 +13,6 @@
   </url>
   
   <url>
-    <loc>https://chen-zhe.github.io/blog/</loc>
-    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://chen-zhe.github.io/blog/categories/cloud/</loc>
     <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
@@ -29,6 +24,11 @@
   
   <url>
     <loc>https://chen-zhe.github.io/blog/post/</loc>
+    <lastmod>2021-01-27T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://chen-zhe.github.io/blog/</loc>
     <lastmod>2021-01-27T00:00:00+00:00</lastmod>
   </url>
   
