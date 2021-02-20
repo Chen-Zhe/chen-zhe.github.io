@@ -71,7 +71,7 @@ in order to launch bigger instances or use GPU-backed instances.&lt;/p&gt;
 &lt;p&gt;Here&amp;rsquo;s the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;URL&lt;/a&gt;
 to AWS console&amp;rsquo;s limit page such that you can increase it. Here are the ones you need to make request
-for:&lt;/p&gt;
+to increase. Just request for 64 vCores on all of them:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Running On-Demand All G instances&lt;/li&gt;
 &lt;li&gt;Running On-Demand All P instances&lt;/li&gt;
@@ -80,7 +80,7 @@ for:&lt;/p&gt;
 &lt;li&gt;All P Spot Instance Requests&lt;/li&gt;
 &lt;li&gt;All Standard (A, C, D, H, I, M, R, T, Z) Spot Instance Requests&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;security-group&#34;&gt;Security Group&lt;/h2&gt;
+&lt;h4 id=&#34;security-group&#34;&gt;Security Group&lt;/h4&gt;
 &lt;p&gt;It&amp;rsquo;s basically like an old-school firewall that allows network access on specific ports.&lt;/p&gt;
 &lt;p&gt;Necessary inbound rules&lt;/p&gt;
 &lt;table&gt;
