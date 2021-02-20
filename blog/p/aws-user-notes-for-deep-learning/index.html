@@ -243,10 +243,13 @@ other properties such as binding port and binding network interface</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 </code></pre></div><p>Step 4: Launch a new instance with pre-configured security group and run</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS</span>
-tar -xf efs/dl-env.tar
+tar -xf efs/dl-env.tar <span class="c1"># will run for ~2 minutes</span>
 <span class="nb">source</span> .bashrc
 </code></pre></div><p>Voila, the conda environment is up and running!</p>
-<h2 id="glossary">Glossary</h2>
+<p>Step 4.1: If you made any changes to your environment, e.g. installed new packages,
+run the following command to (incrementally) update the tar</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">tar -uvf efs/dl-env.tar miniconda3/ .conda <span class="c1"># assuming environment update</span>
+</code></pre></div><h2 id="glossary">Glossary</h2>
 <ul>
 <li><a class="link" href="#ec2" >EC2</a>: Elastic Compute Cloud</li>
 <li><a class="link" href="#ssh" >SSH</a>: Secure Shell</li>

@@ -37,10 +37,13 @@ other properties such as binding port and binding network interface&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 4: Launch a new instance with pre-configured security group and run&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS&lt;/span&gt;
-tar -xf efs/dl-env.tar
+tar -xf efs/dl-env.tar &lt;span class=&#34;c1&#34;&gt;# will run for ~2 minutes&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt; .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Voila, the conda environment is up and running!&lt;/p&gt;
-&lt;h2 id=&#34;glossary&#34;&gt;Glossary&lt;/h2&gt;
+&lt;p&gt;Step 4.1: If you made any changes to your environment, e.g. installed new packages,
+run the following command to (incrementally) update the tar&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;glossary&#34;&gt;Glossary&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ssh&#34; &gt;SSH&lt;/a&gt;: Secure Shell&lt;/li&gt;
