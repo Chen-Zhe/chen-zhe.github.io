@@ -30,10 +30,17 @@ conda install -c conda-forge tqdm
 pip install &lt;span class=&#34;nv&#34;&gt;kaggle&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;==&lt;/span&gt;1.5.3
 
 conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 2: Configure Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.
-Configure Jupyter Lab password &lt;code&gt;jupyter server password&lt;/code&gt; (not &lt;code&gt;jupyter notebook password&lt;/code&gt;!) and
-other properties such as binding port and binding network interface&lt;/p&gt;
-&lt;p&gt;Step 3: Tar the environment and save to EFS&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 2:&lt;/p&gt;
+&lt;p&gt;Configure Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.&lt;/p&gt;
+&lt;p&gt;Refer to Jupyter Lab &lt;a class=&#34;link&#34; href=&#34;https://jupyter-notebook.readthedocs.io/en/stable/public_server.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docs&lt;/a&gt; for configuring external access.
+Note that you need to generate Jupyter Lab password with &lt;code&gt;jupyter server password&lt;/code&gt; and not &lt;code&gt;jupyter notebook password&lt;/code&gt;!.
+Here are the 4 properties you need to set in &lt;code&gt;jupyter_notebook_config.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha1:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy from the jupyter_notebook_config.json file&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 3: Tar the environment and save to EFS&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 4: Launch a new instance with pre-configured security group and run&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS&lt;/span&gt;

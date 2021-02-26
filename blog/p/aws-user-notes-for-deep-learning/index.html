@@ -236,10 +236,17 @@ conda install -c conda-forge tqdm
 pip install <span class="nv">kaggle</span><span class="o">==</span>1.5.3
 
 conda clean -a <span class="c1"># remove downloaded package zips</span>
-</code></pre></div><p>Step 2: Configure Kaggle key in the <code>.kaggle</code> folder.
-Configure Jupyter Lab password <code>jupyter server password</code> (not <code>jupyter notebook password</code>!) and
-other properties such as binding port and binding network interface</p>
-<p>Step 3: Tar the environment and save to EFS</p>
+</code></pre></div><p>Step 2:</p>
+<p>Configure Kaggle key in the <code>.kaggle</code> folder.</p>
+<p>Refer to Jupyter Lab <a class="link" href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html"  target="_blank" rel="noopener"
+    >docs</a> for configuring external access.
+Note that you need to generate Jupyter Lab password with <code>jupyter server password</code> and not <code>jupyter notebook password</code>!.
+Here are the 4 properties you need to set in <code>jupyter_notebook_config.py</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
+<span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha1:bcd259ccf...&lt;your hashed password here&gt;&#39;</span> <span class="c1"># copy from the jupyter_notebook_config.json file</span>
+<span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># or any other ports you&#39;d like</span>
+</code></pre></div><p>Step 3: Tar the environment and save to EFS</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 </code></pre></div><p>Step 4: Launch a new instance with pre-configured security group and run</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS</span>
