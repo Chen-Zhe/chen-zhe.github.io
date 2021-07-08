@@ -12,34 +12,41 @@
         <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
         
         <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
-        <description>&lt;p&gt;&lt;em&gt;Updates on 2021-02-20: furnish missing details&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+        <description>&lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose&lt;/p&gt;
 &lt;p&gt;Overall speaking, AWS is a complex platform with a rather steep learning curve
 if I were to take advantage of services other than EC2 itself.&lt;/p&gt;
 &lt;p&gt;Here are my notes for services that I&amp;rsquo;ve used throughout the rapid-paced learning journey
 and hopefully they can be of help to others.&lt;/p&gt;
 &lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow&lt;/h2&gt;
-&lt;p&gt;Step 1: I installed miniconda3 on an EC2 instance and installed all necessary packages:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh
-chmod +x Miniconda3-py37_4.9.2-Linux-x86_64.sh
-./Miniconda3-py37_4.9.2-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
+&lt;p&gt;Step 1: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
+and installed all necessary packages:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# make it executable&lt;/span&gt;
+./Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
 
-conda install pytorch pandas scikit-learn jupyter-lab matplotlib
+&lt;span class=&#34;c1&#34;&gt;# install PyTorch 1.9 with cudatoolkit 11.1&lt;/span&gt;
+conda install pytorch torchvision torchaudio &lt;span class=&#34;nv&#34;&gt;cudatoolkit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;11.1 -c pytorch -c nvidia
+conda install pandas scikit-learn jupyterlab matplotlib
 conda install -c conda-forge tqdm
-pip install &lt;span class=&#34;nv&#34;&gt;kaggle&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;==&lt;/span&gt;1.5.3
+pip install kaggle
 
 conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 2:&lt;/p&gt;
-&lt;p&gt;Configure Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.&lt;/p&gt;
-&lt;p&gt;Refer to Jupyter Lab &lt;a class=&#34;link&#34; href=&#34;https://jupyter-notebook.readthedocs.io/en/stable/public_server.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;docs&lt;/a&gt; for configuring external access.
-Note that you need to generate Jupyter Lab password with &lt;code&gt;jupyter server password&lt;/code&gt; and not &lt;code&gt;jupyter notebook password&lt;/code&gt;!.
-Here are the 4 properties you need to set in &lt;code&gt;jupyter_notebook_config.py&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha1:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy from the jupyter_notebook_config.json file&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;NotebookApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;While installing Jupyter Lab, Conda will automatically install its dependencies,
+such as &lt;code&gt;ipython&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Step 2:&lt;/p&gt;
+&lt;p&gt;Store Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.&lt;/p&gt;
+&lt;p&gt;For Jupyter Lab, follow the &lt;a class=&#34;link&#34; href=&#34;https://jupyter-notebook.readthedocs.io/en/stable/public_server.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docs&lt;/a&gt; to configuring external access. But the following shows a simpler version:&lt;/p&gt;
+&lt;p&gt;Generate Jupyter Lab password with &lt;code&gt;jupyter server password&lt;/code&gt; (not &lt;code&gt;jupyter notebook password&lt;/code&gt;),
+which writes the password to &lt;code&gt;jupyter_server_config.json&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;Then create a new file &lt;code&gt;jupyter_server_config.py&lt;/code&gt; under &lt;code&gt;.jupyter&lt;/code&gt; folder
+in the home directory with the following content:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha1:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy from the jupyter_server_config.json file&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 3: Tar the environment and save to EFS&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 4: Launch a new instance with pre-configured security group and run&lt;/p&gt;
@@ -63,7 +70,7 @@ run the following command to (incrementally) update the tar&lt;/p&gt;
 &lt;h2 id=&#34;region&#34;&gt;Region&lt;/h2&gt;
 &lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia) us-east-1&lt;/em&gt; and &lt;em&gt;US East (Ohio) us-east-2&lt;/em&gt;
 are basically their data centers located within the region. Network transit within region
-is free-of-charge and is charged otherwise.&lt;/p&gt;
+is free of charge but is chargeable otherwise.&lt;/p&gt;
 &lt;p&gt;Each region further divide into availability zones, such as &lt;code&gt;us-east-2a&lt;/code&gt;. EBS volumes
 created in a specific zone can only be mounted to EC2 instances within the same zone.&lt;/p&gt;
 &lt;p&gt;Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
@@ -78,14 +85,22 @@ in order to launch bigger instances or use GPU-backed instances.&lt;/p&gt;
 &lt;p&gt;Here&amp;rsquo;s the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;URL&lt;/a&gt;
 to AWS console&amp;rsquo;s limit page such that you can increase it. Here are the ones you need to make request
-to increase. Just request for 64 vCores on all of them:&lt;/p&gt;
+to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Running instances
 &lt;ul&gt;
 &lt;li&gt;Running On-Demand All G instances&lt;/li&gt;
 &lt;li&gt;Running On-Demand All P instances&lt;/li&gt;
 &lt;li&gt;Running On-Demand All Standard (A, C, D, H, I, M, R, T, Z) instances&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Requested instances
+&lt;ul&gt;
 &lt;li&gt;All G Spot Instance Requests&lt;/li&gt;
 &lt;li&gt;All P Spot Instance Requests&lt;/li&gt;
 &lt;li&gt;All Standard (A, C, D, H, I, M, R, T, Z) Spot Instance Requests&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id=&#34;security-group&#34;&gt;Security Group&lt;/h4&gt;
 &lt;p&gt;It&amp;rsquo;s basically like an old-school firewall that allows network access on specific ports.&lt;/p&gt;
@@ -327,7 +342,8 @@ and that the traffic is using the aforementioned rule&lt;/li&gt;
 &lt;h5 id=&#34;on-ec2&#34;&gt;On EC2&lt;/h5&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;install &lt;code&gt;nfs-utils&lt;/code&gt; . Skip if the instance is using an AMI.&lt;/p&gt;
+&lt;p&gt;Install NFS client &lt;code&gt;nfs-utils&lt;/code&gt; (for CentOS or REHL) or &lt;code&gt;nfs-common&lt;/code&gt; (for vanilla Ubuntu).
+Skip this step if the instance is using an AMI.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;code&gt;mkdir ~/efs&lt;/code&gt; to make a mounting point folder.&lt;/p&gt;

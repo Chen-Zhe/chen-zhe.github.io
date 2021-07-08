@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.'><title>AWS User Notes for Deep Learning</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.'><title>AWS User Notes for Deep Learning</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'><link href='/blog/font/lato-font.css' rel='stylesheet' type='text/css'>
 
 
 <link rel="stylesheet" href="/blog/scss/style.min.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
-<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.'>
+<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-01-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-01-27T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="AWS User Notes for Deep Learning">
-<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.">
+<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
     </head>
@@ -202,7 +202,7 @@
 
     
     <h3 class="article-subtitle">
-        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-02-20.
+        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.
     </h3>
     <footer class="article-time">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -218,34 +218,41 @@
 </header>
 
     <section class="article-content">
-    <p><em>Updates on 2021-02-20: furnish missing details</em></p>
-<p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+    <p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose</p>
 <p>Overall speaking, AWS is a complex platform with a rather steep learning curve
 if I were to take advantage of services other than EC2 itself.</p>
 <p>Here are my notes for services that I&rsquo;ve used throughout the rapid-paced learning journey
 and hopefully they can be of help to others.</p>
 <h2 id="tldr-my-workflow">TL;DR. My Workflow</h2>
-<p>Step 1: I installed miniconda3 on an EC2 instance and installed all necessary packages:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh
-chmod +x Miniconda3-py37_4.9.2-Linux-x86_64.sh
-./Miniconda3-py37_4.9.2-Linux-x86_64.sh <span class="c1"># start installer</span>
+<p>Step 1: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
+and installed all necessary packages:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Miniconda with Python 3.8</span>
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+chmod u+x Miniconda3-latest-Linux-x86_64.sh <span class="c1"># make it executable</span>
+./Miniconda3-latest-Linux-x86_64.sh <span class="c1"># start installer</span>
 
-conda install pytorch pandas scikit-learn jupyter-lab matplotlib
+<span class="c1"># install PyTorch 1.9 with cudatoolkit 11.1</span>
+conda install pytorch torchvision torchaudio <span class="nv">cudatoolkit</span><span class="o">=</span>11.1 -c pytorch -c nvidia
+conda install pandas scikit-learn jupyterlab matplotlib
 conda install -c conda-forge tqdm
-pip install <span class="nv">kaggle</span><span class="o">==</span>1.5.3
+pip install kaggle
 
 conda clean -a <span class="c1"># remove downloaded package zips</span>
-</code></pre></div><p>Step 2:</p>
-<p>Configure Kaggle key in the <code>.kaggle</code> folder.</p>
-<p>Refer to Jupyter Lab <a class="link" href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html"  target="_blank" rel="noopener"
-    >docs</a> for configuring external access.
-Note that you need to generate Jupyter Lab password with <code>jupyter server password</code> and not <code>jupyter notebook password</code>!.
-Here are the 4 properties you need to set in <code>jupyter_notebook_config.py</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
-<span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha1:bcd259ccf...&lt;your hashed password here&gt;&#39;</span> <span class="c1"># copy from the jupyter_notebook_config.json file</span>
-<span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="bp">False</span>
-<span class="n">c</span><span class="o">.</span><span class="n">NotebookApp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># or any other ports you&#39;d like</span>
+</code></pre></div><p>While installing Jupyter Lab, Conda will automatically install its dependencies,
+such as <code>ipython</code>.</p>
+<p>Step 2:</p>
+<p>Store Kaggle key in the <code>.kaggle</code> folder.</p>
+<p>For Jupyter Lab, follow the <a class="link" href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html"  target="_blank" rel="noopener"
+    >docs</a> to configuring external access. But the following shows a simpler version:</p>
+<p>Generate Jupyter Lab password with <code>jupyter server password</code> (not <code>jupyter notebook password</code>),
+which writes the password to <code>jupyter_server_config.json</code> file.</p>
+<p>Then create a new file <code>jupyter_server_config.py</code> under <code>.jupyter</code> folder
+in the home directory with the following content:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
+<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha1:bcd259ccf...&lt;your hashed password here&gt;&#39;</span> <span class="c1"># copy from the jupyter_server_config.json file</span>
+<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># or any other ports you&#39;d like</span>
 </code></pre></div><p>Step 3: Tar the environment and save to EFS</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 </code></pre></div><p>Step 4: Launch a new instance with pre-configured security group and run</p>
@@ -269,7 +276,7 @@ run the following command to (incrementally) update the tar</p>
 <h2 id="region">Region</h2>
 <p>AWS regions such as <em>US East (N. Virginia) us-east-1</em> and <em>US East (Ohio) us-east-2</em>
 are basically their data centers located within the region. Network transit within region
-is free-of-charge and is charged otherwise.</p>
+is free of charge but is chargeable otherwise.</p>
 <p>Each region further divide into availability zones, such as <code>us-east-2a</code>. EBS volumes
 created in a specific zone can only be mounted to EC2 instances within the same zone.</p>
 <p>Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
@@ -284,14 +291,22 @@ in order to launch bigger instances or use GPU-backed instances.</p>
 <p>Here&rsquo;s the <a class="link" href="https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:"  target="_blank" rel="noopener"
     >URL</a>
 to AWS console&rsquo;s limit page such that you can increase it. Here are the ones you need to make request
-to increase. Just request for 64 vCores on all of them:</p>
+to increase. Just request for 64 vCores on all of following:</p>
+<ul>
+<li>Running instances
 <ul>
 <li>Running On-Demand All G instances</li>
 <li>Running On-Demand All P instances</li>
 <li>Running On-Demand All Standard (A, C, D, H, I, M, R, T, Z) instances</li>
+</ul>
+</li>
+<li>Requested instances
+<ul>
 <li>All G Spot Instance Requests</li>
 <li>All P Spot Instance Requests</li>
 <li>All Standard (A, C, D, H, I, M, R, T, Z) Spot Instance Requests</li>
+</ul>
+</li>
 </ul>
 <h4 id="security-group">Security Group</h4>
 <p>It&rsquo;s basically like an old-school firewall that allows network access on specific ports.</p>
@@ -533,7 +548,8 @@ and that the traffic is using the aforementioned rule</li>
 <h5 id="on-ec2">On EC2</h5>
 <ol>
 <li>
-<p>install <code>nfs-utils</code> . Skip if the instance is using an AMI.</p>
+<p>Install NFS client <code>nfs-utils</code> (for CentOS or REHL) or <code>nfs-common</code> (for vanilla Ubuntu).
+Skip this step if the instance is using an AMI.</p>
 </li>
 <li>
 <p><code>mkdir ~/efs</code> to make a mounting point folder.</p>
