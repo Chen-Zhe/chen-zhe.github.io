@@ -19,7 +19,7 @@ if I were to take advantage of services other than EC2 itself.&lt;/p&gt;
 &lt;p&gt;Here are my notes for services that I&amp;rsquo;ve used throughout the rapid-paced learning journey
 and hopefully they can be of help to others.&lt;/p&gt;
 &lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow&lt;/h2&gt;
-&lt;p&gt;Step 1: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt;: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
 and installed all necessary packages:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -35,8 +35,7 @@ pip install kaggle
 conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;While installing Jupyter Lab, Conda will automatically install its dependencies,
 such as &lt;code&gt;ipython&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Step 2:&lt;/p&gt;
-&lt;p&gt;Store Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt;: Store Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.&lt;/p&gt;
 &lt;p&gt;For Jupyter Lab, follow the &lt;a class=&#34;link&#34; href=&#34;https://jupyter-notebook.readthedocs.io/en/stable/public_server.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;docs&lt;/a&gt; to configuring external access. But the following shows a simpler version:&lt;/p&gt;
 &lt;p&gt;Generate Jupyter Lab password with &lt;code&gt;jupyter server password&lt;/code&gt; (not &lt;code&gt;jupyter notebook password&lt;/code&gt;),
@@ -47,14 +46,18 @@ in the home directory with the following content:&lt;/p&gt;
 &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha1:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy from the jupyter_server_config.json file&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 3: Tar the environment and save to EFS&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt;: Tar the environment and save to EFS.&lt;/p&gt;
+&lt;p&gt;Note that I didn&amp;rsquo;t use the &lt;code&gt;z&lt;/code&gt; option to compress the files, as my tests showed that
+due to the sheer number of files that I&amp;rsquo;m putting into this archive,
+adding compression &lt;em&gt;significantly&lt;/em&gt; slows down the tar/untar process and time is
+much more valuable than the cost of extra storage space required.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Step 4: Launch a new instance with pre-configured security group and run&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt;: Launch a new instance with pre-configured security group and run&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS&lt;/span&gt;
 tar -xf efs/dl-env.tar &lt;span class=&#34;c1&#34;&gt;# will run for ~2 minutes&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt; .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Voila, the conda environment is up and running!&lt;/p&gt;
-&lt;p&gt;Step 4.1: If you made any changes to your environment, e.g. installed new packages,
+&lt;p&gt;&lt;strong&gt;Step 4.1&lt;/strong&gt;: If you made any changes to your environment, e.g. installed new packages,
 run the following command to (incrementally) update the tar&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;glossary&#34;&gt;Glossary&lt;/h2&gt;
