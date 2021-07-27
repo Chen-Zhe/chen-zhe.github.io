@@ -28,8 +28,7 @@ chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# mak
 
 &lt;span class=&#34;c1&#34;&gt;# install PyTorch 1.9 with cudatoolkit 11.1&lt;/span&gt;
 conda install pytorch torchvision torchaudio &lt;span class=&#34;nv&#34;&gt;cudatoolkit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;11.1 -c pytorch -c nvidia
-conda install pandas scikit-learn jupyterlab matplotlib
-conda install -c conda-forge tqdm
+conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
 pip install kaggle
 
 conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
