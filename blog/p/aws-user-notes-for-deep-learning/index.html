@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.'><title>AWS User Notes for Deep Learning</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.'><title>AWS User Notes for Deep Learning</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'><link href='/blog/font/lato-font.css' rel='stylesheet' type='text/css'>
 
 
 <link rel="stylesheet" href="/blog/scss/style.min.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
-<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.'>
+<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-01-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-01-27T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="AWS User Notes for Deep Learning">
-<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.">
+<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
     </head>
@@ -202,7 +202,7 @@
 
     
     <h3 class="article-subtitle">
-        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2021-07-08.
+        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.
     </h3>
     <footer class="article-time">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -218,7 +218,10 @@
 </header>
 
     <section class="article-content">
-    <p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+    <h2 id="updates">Updates</h2>
+<p>2022-01-04: To quote AWS support, &ldquo;Over the last few months, we have seen a rapid increase in customer demand for our high-performance GPU instances. Several AWS teams are still working around the clock to provision additional capacity for our customers and remediate this situation.&rdquo; Currently it has been very difficult to launch <code>g4dn.xlarge</code> spot instances without getting spot capacity error. I advise wait until night at East Coast to try again and launch <code>g4dn.2xlarge</code> instead. Hopefully this situation gets improved before Spring semester starts.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose</p>
 <p>Overall speaking, AWS is a complex platform with a rather steep learning curve
 if I were to take advantage of services other than EC2 itself.</p>
