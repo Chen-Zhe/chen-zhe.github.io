@@ -32,16 +32,17 @@ h4{font-size:1.65rem;}
 @media only screen and (min-width:768px){
 #about #about-card{width:80%;}
 }
-#cover{position:fixed;width:100%;height:100%;background-repeat:no-repeat;background-size:cover;top:0;left:0;z-index:-1;}
+#cover{position:fixed;width:100%;height:100%;z-index:-1;}
+#cover>img{object-fit:cover;width:100%;height:100%;filter:blur(3px);}
 </style>
 </head>
 <body>
 <div id="about" style="display: block">
 <div id="about-card" style="top: 25%">    
 <h4 id="about-card-name">Index Out of Bounds Exception</h4>    
-<div id="about-card-bio">Oops, you are seeing a 404 Message. You'll be redirected back <a href="/home">home</a> in 3 seconds.</div>
+<div id="about-card-bio">Oops, you are trying to visit a non-existent page. You'll be redirected back <a href="/home">home</a> in 3 seconds.</div>
 </div>
 </div>
-<div id="cover" style="background-image:url('https://chen-zhe.github.io/home/images/background.jpg');background-size:cover;filter:blur(3px);height:100%;"></div>
+<div id="cover"><img src="https://chen-zhe.github.io//home/images/background.jpg" alt="background"></div>
 </body>
 </html>
