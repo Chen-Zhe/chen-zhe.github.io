@@ -3,10 +3,9 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.'><title>AWS User Notes for Deep Learning</title>
 
-<link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'><link href='/blog/font/lato-font.css' rel='stylesheet' type='text/css'>
+<link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 
-
-<link rel="stylesheet" href="/blog/scss/style.min.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
+<link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
 <meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
@@ -15,8 +14,23 @@
 <meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
+<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-151866646-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
     </head>
-    <body class="">
+    <body class="
+    article-page has-toc
+">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -33,151 +47,32 @@
         if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
             
 
-            document.body.dataset.scheme = 'dark';
+            document.documentElement.dataset.scheme = 'dark';
         } else {
-            document.body.dataset.scheme = 'light';
+            document.documentElement.dataset.scheme = 'light';
         }
     })();
-</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
-            <aside class="sidebar left-sidebar sticky">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header class="site-info">
-        
-            <figure class="site-avatar">
-                
-                    <img src="/blog/image/personal_icon.png" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
-                
-
-                
-                    <span class="emoji">🌏</span>
-                
-            </figure>
-        
-        <h1 class="site-name"><a href="https://chen-zhe.github.io/blog">大白鲸笔记本</a></h1>
-        <h2 class="site-description">也就是个markdown网络笔记本</h2>
-    </header>
-
-    <ol class="menu" id="main-menu">
-        
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/blog/'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="5 12 3 12 12 3 21 12 19 12" />
-  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-</svg>
-
-
-
-                
-                <span>main</span>
-            </a>
-        </li>
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/home'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
-  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
-</svg>
-
-
-
-                
-                <span>Site Home</span>
-            </a>
-        </li>
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/blog/archives'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <rect x="3" y="4" width="18" height="4" rx="2" />
-  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
-  <line x1="10" y1="12" x2="14" y2="12" />
-</svg>
-
-
-
-                
-                <span>Archives</span>
-            </a>
-        </li>
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/blog/search'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
-</svg>
-
-
-
-                
-                <span>Search</span>
-            </a>
-        </li>
-        
-
-        
-            <li id="dark-mode-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                <span>Dark Mode</span>
-            </li>
-        
-    </ol>
-</aside>
-
-            <main class="main full-width">
-    <div id="article-toolbar">
-        <a href="https://chen-zhe.github.io/blog" class="back-home">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/blog" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <polyline points="15 6 9 12 15 18" />
 </svg>
 
 
 
-            <span>Back</span>
-        </a>
-    </div>
-
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
     <article class="main-article">
     <header class="article-header">
 
@@ -204,8 +99,28 @@
     <h3 class="article-subtitle">
         The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.
     </h3>
+    
+
+    
     <footer class="article-time">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 27, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="12" cy="12" r="9" />
   <polyline points="12 7 12 12 15 15" />
@@ -213,8 +128,14 @@
 
 
 
-        <time class="article-time--published">Jan 27, 2021</time>
-    </footer></div>
+                <time class="article-time--reading">
+                    13 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
 </header>
 
     <section class="article-content">
@@ -230,7 +151,7 @@ and hopefully they can be of help to others.</p>
 <h2 id="tldr-my-workflow">TL;DR. My Workflow</h2>
 <p><strong>Step 1</strong>: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
 and installed all necessary packages:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Miniconda with Python 3.8</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Miniconda with Python 3.8</span>
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod u+x Miniconda3-latest-Linux-x86_64.sh <span class="c1"># make it executable</span>
 ./Miniconda3-latest-Linux-x86_64.sh <span class="c1"># start installer</span>
@@ -250,24 +171,24 @@ such as <code>ipython</code>.</p>
 which writes the password to <code>jupyter_server_config.json</code> file.</p>
 <p>Then create a new file <code>jupyter_server_config.py</code> under <code>.jupyter</code> folder
 in the home directory with the following content:</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
 <span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha1:bcd259ccf...&lt;your hashed password here&gt;&#39;</span> <span class="c1"># copy from the jupyter_server_config.json file</span>
-<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># or any other ports you&#39;d like</span>
 </code></pre></div><p><strong>Step 3</strong>: Tar the environment and save to EFS.</p>
 <p>Note that I didn&rsquo;t use the <code>z</code> option to compress the files, as my tests showed that
 due to the sheer number of files that I&rsquo;m putting into this archive,
 adding compression <em>significantly</em> slows down the tar/untar process and time is
 much more valuable than the cost of extra storage space required.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 </code></pre></div><p><strong>Step 4</strong>: Launch a new instance with pre-configured security group and run</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS</span>
 tar -xf efs/dl-env.tar <span class="c1"># will run for ~2 minutes</span>
 <span class="nb">source</span> .bashrc
 </code></pre></div><p>Voila, the conda environment is up and running!</p>
 <p><strong>Step 4.1</strong>: If you made any changes to your environment, e.g. installed new packages,
 run the following command to (incrementally) update the tar</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">tar -uvf efs/dl-env.tar miniconda3/ .conda <span class="c1"># assuming environment update</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -uvf efs/dl-env.tar miniconda3/ .conda <span class="c1"># assuming environment update</span>
 </code></pre></div><h2 id="glossary">Glossary</h2>
 <ul>
 <li><a class="link" href="#ec2" >EC2</a>: Elastic Compute Cloud</li>
@@ -290,7 +211,7 @@ troublesome to me, so always backup important data in a shared file system like 
 <p>EC2 is a virtual machine service but you can only choose from their confusingly-named
 presets (CPU and memory combo) as opposed to custom configurations. I assume this is
 to simplify their scheduling algorithm.</p>
-<h4 id="increase-limit">Increase Limit</h4>
+<h3 id="increase-limit">Increase Limit</h3>
 <p>Newly registered AWS users have to first manually increase their limits/service quota
 in order to launch bigger instances or use GPU-backed instances.</p>
 <p>Here&rsquo;s the <a class="link" href="https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:"  target="_blank" rel="noopener"
@@ -313,7 +234,7 @@ to increase. Just request for 64 vCores on all of following:</p>
 </ul>
 </li>
 </ul>
-<h4 id="security-group">Security Group</h4>
+<h3 id="security-group">Security Group</h3>
 <p>It&rsquo;s basically like an old-school firewall that allows network access on specific ports.</p>
 <p>Necessary inbound rules</p>
 <table>
@@ -392,7 +313,7 @@ to increase. Just request for 64 vCores on all of following:</p>
 </tr>
 </tbody>
 </table>
-<h4 id="type-selection">Type Selection</h4>
+<h3 id="type-selection">Type Selection</h3>
 <p><a class="link" href="https://aws.amazon.com/ec2/instance-types/"  target="_blank" rel="noopener"
     >EC2 instance type and name list</a></p>
 <p>For machine learning, compute-optimized C5 series makes the most sense due to their
@@ -414,7 +335,7 @@ insufficient resource and couldn&rsquo;t be resumed, yikes!</p>
 </ul>
 </li>
 </ul>
-<h4 id="suspend-vs-stop-vs-terminate">Suspend vs Stop vs Terminate</h4>
+<h3 id="suspend-vs-stop-vs-terminate">Suspend vs Stop vs Terminate</h3>
 <p>When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
 such that the any task that are running when the instance is suspended can resume once the instance
 is woken up.
@@ -426,7 +347,7 @@ However, not all AMIs supports this. The instance&rsquo;s ephemeral IP address w
 like shutting down your computer. However, stopping and restarting will change the instance&rsquo;s
 ephemeral IP address, too.</p>
 <p>Terminating an EC2 instance <strong>will</strong> remove its boot EBS volume and it&rsquo;s gone forever!</p>
-<h4 id="vcore-performance">vCore Performance</h4>
+<h3 id="vcore-performance">vCore Performance</h3>
 <p>vCores are much lower than physical CPU cores, hence <strong>parallelism is very important</strong>!
 By my estimation, a vCore only runs at 50% of the speed of my laptop&rsquo;s i7-8750H core.
 Make sure your <code>DataLoader</code> can run on as many vCores as possible to keep the Tesla GPU
@@ -438,7 +359,7 @@ the machine is mostly idle (like a web/database server), this could be a cost-sa
 <p>This is probably not suitable for training models since you want to push all
 cores to the max (ideally) for the best performance. But if you are running some
 data analysis task using Jupyter Notebook, this type of instance could be a good fit.</p>
-<h4 id="spot-instance">Spot Instance</h4>
+<h3 id="spot-instance">Spot Instance</h3>
 <p><a class="link" href="https://aws.amazon.com/ec2/spot/pricing/"  target="_blank" rel="noopener"
     >Spot Instance Pricing</a></p>
 <p>Spot instances are much cheaper than regular timed instances. The only downside
@@ -450,16 +371,16 @@ the one-time-request spot instance will be terminated directly when it is stoppe
     >Spot Requests</a> page when you want to terminate the instance. Otherwise,
 a persistent request will relaunch the instance when you terminated it from the EC2
 management console.</p>
-<h4 id="ssh">SSH</h4>
+<h3 id="ssh">SSH</h3>
 <p>Any SSH client would work, but I do highly recommend <a class="link" href="https://mobaxterm.mobatek.net/"  target="_blank" rel="noopener"
     >MobaXterm</a>
 for Windows users (I&rsquo;m one).</p>
 <p>You would need a key pair to access the EC2 instance. This file can be generated
 when launching the EC2 instance and reused. Each key can only be downloaded once
 so don&rsquo;t lose it. The full command line using ssh would look like:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
 </code></pre></div><p>Username would be <code>ec2-user</code> for regular Amazon AMIs and <code>ubuntu</code> for AWS Deep Learning AMI.</p>
-<h4 id="ami">AMI</h4>
+<h3 id="ami">AMI</h3>
 <p>AMI is basically a prepackaged system disk image with pre-configured environment.</p>
 <p>I&rsquo;m really impressed with its boot speed, which only takes a few seconds.
 I certainly feel that it&rsquo;s faster than Google Cloud Compute instances in terms of
@@ -475,7 +396,7 @@ was stopped by AWS while your model has not been trained for enough epochs.</p>
 It requires a minimum EBS disk size of 60GB and comes with necessary GPU drivers and
 linear algebra packs. However, it doesn&rsquo;t come with any deep learning environment, so you
 need to configure one on your own.</p>
-<h4 id="monitoring">Monitoring</h4>
+<h3 id="monitoring">Monitoring</h3>
 <p><code>htop</code> for a command-line task manager to monitor CPU usage</p>
 <p><code>nvidia-smi</code> for a summary of GPU usage</p>
 <h2 id="ebs">EBS</h2>
@@ -491,7 +412,7 @@ to its size (<a class="link" href="https://docs.aws.amazon.com/AWSEC2/latest/Use
     >up to 5,334 GB</a>).
 Therefore, it seems to me that it&rsquo;s better to allocate a large-enough EBS boot volume
 for AMI, training data and some buffer so that you get overall better performance.</p>
-<h4 id="mounting-a-ebs-volume-to-ec2">Mounting a EBS volume to EC2</h4>
+<h3 id="mounting-a-ebs-volume-to-ec2">Mounting a EBS volume to EC2</h3>
 <p>In case you need some temporary storage, you can create a new EBS volume and attach it
 to your EC2 instance (<strong>in the same availability zone</strong>) on AWS console.</p>
 <p>Once you&rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,
@@ -529,7 +450,7 @@ files out to the EBS volume. When copying files, it can sustain a read speed of
 close to 1Gbps.</p>
 <p>In terms of pricing, EFS is more expensive than EBS per GB. However, given the flexibility
 and dynamic sizing, it might cost less.</p>
-<h4 id="mounting-a-efs-share-to-ec2">Mounting a EFS share to EC2</h4>
+<h3 id="mounting-a-efs-share-to-ec2">Mounting a EFS share to EC2</h3>
 <h5 id="on-aws-console">On AWS Console</h5>
 <ol>
 <li>
@@ -575,8 +496,8 @@ You only need to run this command once for a new EFS share.</p>
 suitable for sharing large files, such as trained model weights, via HTTPS.
 I&rsquo;ve also seen use cases that use S3 as a data lake. Apache Spark even supports reading
 data directly off S3.</p>
-<h4 id="access-s3-bucket-in-ec2">Access S3 bucket in EC2</h4>
-<h5 id="on-aws-console-1">On AWS Console</h5>
+<h3 id="access-s3-bucket-in-ec2">Access S3 bucket in EC2</h3>
+<h4 id="on-aws-console-1">On AWS Console</h4>
 <ol>
 <li>
 <p>Create an S3 bucket in the region you intended to use.</p>
@@ -599,12 +520,12 @@ data directly off S3.</p>
 </ul>
 </li>
 </ol>
-<h5 id="on-ec2-1">On EC2</h5>
+<h4 id="on-ec2-1">On EC2</h4>
 <ol>
 <li><code>aws s3 cp my_copied_file.ext s3://my_bucket/my_folder/my_file.ext</code> to upload
 files to S3. Reverse the 2 arguments to download files from S3.</li>
 </ol>
-<h4 id="access-s3-objects-from-https">Access S3 objects from HTTPS</h4>
+<h3 id="access-s3-objects-from-https">Access S3 objects from HTTPS</h3>
 <ol>
 <li>
 <p>Go to the S3 console and modify its ACL read permission to be <strong>Everyone</strong>.
@@ -636,8 +557,11 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
     </section>
     </footer>
 
+
     
 </article>
+
+    
 
     <aside class="related-contents--wrapper">
     
@@ -675,7 +599,7 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
     
 </aside>
 
-
+     
     
         
     <div class="disqus-container">
@@ -710,6 +634,15 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
     }
 </style>
 
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof(DISQUS) != 'undefined' && DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
 
     
 
@@ -723,10 +656,13 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
     </section>
     
     <section class="powerby">
-        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> |
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.0.1">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.6.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
+
+
+    
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
     
@@ -788,32 +724,90 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
 
     </div>
 
-</div>
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
 
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css">
             </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#updates">Updates</a></li>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#tldr-my-workflow">TL;DR. My Workflow</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+    <li><a href="#region">Region</a></li>
+    <li><a href="#ec2">EC2</a>
+      <ul>
+        <li><a href="#increase-limit">Increase Limit</a></li>
+        <li><a href="#security-group">Security Group</a></li>
+        <li><a href="#type-selection">Type Selection</a></li>
+        <li><a href="#suspend-vs-stop-vs-terminate">Suspend vs Stop vs Terminate</a></li>
+        <li><a href="#vcore-performance">vCore Performance</a></li>
+        <li><a href="#spot-instance">Spot Instance</a></li>
+        <li><a href="#ssh">SSH</a></li>
+        <li><a href="#ami">AMI</a></li>
+        <li><a href="#monitoring">Monitoring</a></li>
+      </ul>
+    </li>
+    <li><a href="#ebs">EBS</a>
+      <ul>
+        <li><a href="#mounting-a-ebs-volume-to-ec2">Mounting a EBS volume to EC2</a></li>
+      </ul>
+    </li>
+    <li><a href="#efs">EFS</a>
+      <ul>
+        <li><a href="#mounting-a-efs-share-to-ec2">Mounting a EFS share to EC2</a></li>
+      </ul>
+    </li>
+    <li><a href="#s3">S3</a>
+      <ul>
+        <li><a href="#access-s3-bucket-in-ec2">Access S3 bucket in EC2</a></li>
+        <li><a href="#access-s3-objects-from-https">Access S3 objects from HTTPS</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"
-    integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin="anonymous"></script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-151866646-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
 
     </body>
 </html>

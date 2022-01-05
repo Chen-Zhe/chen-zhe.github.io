@@ -3,10 +3,9 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Some of my surprising findings when optimizing Spark code'><title>Apache Spark - Save Time with Less Join Operations</title>
 
-<link rel='canonical' href='https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/'><link href='/blog/font/lato-font.css' rel='stylesheet' type='text/css'>
+<link rel='canonical' href='https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/'>
 
-
-<link rel="stylesheet" href="/blog/scss/style.min.css"><meta property='og:title' content='Apache Spark - Save Time with Less Join Operations'>
+<link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='Apache Spark - Save Time with Less Join Operations'>
 <meta property='og:description' content='Some of my surprising findings when optimizing Spark code'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
@@ -15,8 +14,23 @@
 <meta name="twitter:description" content="Some of my surprising findings when optimizing Spark code">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
+<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-151866646-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
     </head>
-    <body class="">
+    <body class="
+    article-page has-toc
+">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -33,151 +47,32 @@
         if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
             
 
-            document.body.dataset.scheme = 'dark';
+            document.documentElement.dataset.scheme = 'dark';
         } else {
-            document.body.dataset.scheme = 'light';
+            document.documentElement.dataset.scheme = 'light';
         }
     })();
-</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
-            <aside class="sidebar left-sidebar sticky">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
-        <span class="hamburger-box">
-            <span class="hamburger-inner"></span>
-        </span>
-    </button>
-
-    <header class="site-info">
-        
-            <figure class="site-avatar">
-                
-                    <img src="/blog/image/personal_icon.png" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
-                
-
-                
-                    <span class="emoji">🌏</span>
-                
-            </figure>
-        
-        <h1 class="site-name"><a href="https://chen-zhe.github.io/blog">大白鲸笔记本</a></h1>
-        <h2 class="site-description">也就是个markdown网络笔记本</h2>
-    </header>
-
-    <ol class="menu" id="main-menu">
-        
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/blog/'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="5 12 3 12 12 3 21 12 19 12" />
-  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-</svg>
-
-
-
-                
-                <span>main</span>
-            </a>
-        </li>
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/home'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
-  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
-</svg>
-
-
-
-                
-                <span>Site Home</span>
-            </a>
-        </li>
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/blog/archives'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <rect x="3" y="4" width="18" height="4" rx="2" />
-  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
-  <line x1="10" y1="12" x2="14" y2="12" />
-</svg>
-
-
-
-                
-                <span>Archives</span>
-            </a>
-        </li>
-        
-        
-
-        <li >
-            <a href='https://chen-zhe.github.io/blog/search'>
-                
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
-</svg>
-
-
-
-                
-                <span>Search</span>
-            </a>
-        </li>
-        
-
-        
-            <li id="dark-mode-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="8" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="16" cy="12" r="2" />
-  <rect x="2" y="6" width="20" height="12" rx="6" />
-</svg>
-
-
-
-                <span>Dark Mode</span>
-            </li>
-        
-    </ol>
-</aside>
-
-            <main class="main full-width">
-    <div id="article-toolbar">
-        <a href="https://chen-zhe.github.io/blog" class="back-home">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/blog" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <polyline points="15 6 9 12 15 18" />
 </svg>
 
 
 
-            <span>Back</span>
-        </a>
-    </div>
-
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
     <article class="main-article">
     <header class="article-header">
 
@@ -204,8 +99,28 @@
     <h3 class="article-subtitle">
         Some of my surprising findings when optimizing Spark code
     </h3>
+    
+
+    
     <footer class="article-time">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 28, 2018</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="12" cy="12" r="9" />
   <polyline points="12 7 12 12 15 15" />
@@ -213,8 +128,14 @@
 
 
 
-        <time class="article-time--published">Sep 28, 2018</time>
-    </footer></div>
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
 </header>
 
     <section class="article-content">
@@ -223,7 +144,7 @@
 <p><code>join</code> is a slow operation and everyone knows it, but sometime it’s just unavoidable. So, the real question is, how to prevent unnecessary use of joins. Interestingly, the examples that I discovered in the code base are all related to groupBy operations as well and gist of it can be summarized simply as: use a single groupBy to accomplish as much as possible.
 Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime improvements by removing the <code>join</code>s</p>
 <h4 id="1">1.</h4>
-<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="c1">// Original
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="c1">// Original
 </span><span class="c1"></span><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">cond1</span><span class="o">)</span>
   <span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">colA</span><span class="o">)</span>
   <span class="o">.</span><span class="n">agg</span><span class="o">(</span><span class="n">sum</span><span class="o">(</span><span class="n">colB</span><span class="o">).</span><span class="n">as</span><span class="o">(</span><span class="n">colB</span><span class="o">))</span>
@@ -242,7 +163,7 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 </code></pre></div><p>Essentially, this code block is trying to get 2 different aggregated statistics of groups from colA based on certain conditions. The join operation then puts the 2 different statistics into the same table column-wise under the same group.</p>
 <p>In this case, Spark’s (probably borrowed from SQL) When operator can be substituted for conditional filtering. Unless a default value or column is specified through the otherwise operator, when operator returns null. Spark’s built-in aggregation functions (max, sum, avg, etc.) will automatically ignore null values so when combined with when function, it acts as aggregations with conditions. The code snippet below is much more efficient, especially when more conditional aggregations are used.</p>
 <h4 id="2">2.</h4>
-<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="c1">// Original
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="c1">// Original
 </span><span class="c1"></span><span class="n">res</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span>
         <span class="o">.</span><span class="n">agg</span><span class="o">(...</span><span class="n">as</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
 <span class="n">res</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">b</span><span class="o">===</span><span class="mi">1</span><span class="o">)</span>
@@ -261,7 +182,7 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 <p>With the understanding in mind, we can the proceed to rewrite this piece of code to use pivot operator? Wait, in this piece of code, we are only concerned with a value of 1 or 2 in column B. Worry not, Spark has it all prepared for you. Its pivot operation accepts an optional second parameter (a Sequence of values) and it will create the exact number of columns for every value in the parameter, regardless of the existence of the value in the pivoting column.</p>
 <p>Since we are sure that for each unique combination of values in Column A and Column B, there’s only a single row, we can use the first aggregation function.</p>
 <h4 id="3">3.</h4>
-<div class="highlight"><pre class="chroma"><code class="language-scala" data-lang="scala"><span class="c1">// Original
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="c1">// Original
 </span><span class="c1"></span><span class="n">impt</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span>
          <span class="o">.</span><span class="n">agg</span><span class="o">(...</span><span class="n">as</span><span class="o">(</span><span class="n">impt_val</span><span class="o">))</span>
 <span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">impt</span><span class="o">,</span> <span class="nc">Seq</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">))</span>
@@ -314,8 +235,11 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
     </section>
     </footer>
 
+
     
 </article>
+
+    
 
     <aside class="related-contents--wrapper">
     
@@ -353,7 +277,7 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
     
 </aside>
 
-
+     
     
         
     <div class="disqus-container">
@@ -388,6 +312,15 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
     }
 </style>
 
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof(DISQUS) != 'undefined' && DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
 
     
 
@@ -401,10 +334,13 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
     </section>
     
     <section class="powerby">
-        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> |
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.0.1">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.6.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
+
+
+    
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
     
@@ -466,32 +402,63 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 
     </div>
 
-</div>
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
 
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css">
             </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#refactoring-joins">Refactoring Joins</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#afterthought">Afterthought</a></li>
+    <li><a href="#one-actually-two-more-thing">One (actually two) more thing</a></li>
+  </ul>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"
-    integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin="anonymous"></script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-151866646-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
 
     </body>
 </html>

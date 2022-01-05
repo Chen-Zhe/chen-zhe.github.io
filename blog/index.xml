@@ -24,7 +24,7 @@ and hopefully they can be of help to others.&lt;/p&gt;
 &lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt;: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
 and installed all necessary packages:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# make it executable&lt;/span&gt;
 ./Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
@@ -44,24 +44,24 @@ such as &lt;code&gt;ipython&lt;/code&gt;.&lt;/p&gt;
 which writes the password to &lt;code&gt;jupyter_server_config.json&lt;/code&gt; file.&lt;/p&gt;
 &lt;p&gt;Then create a new file &lt;code&gt;jupyter_server_config.py&lt;/code&gt; under &lt;code&gt;.jupyter&lt;/code&gt; folder
 in the home directory with the following content:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha1:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy from the jupyter_server_config.json file&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt;: Tar the environment and save to EFS.&lt;/p&gt;
 &lt;p&gt;Note that I didn&amp;rsquo;t use the &lt;code&gt;z&lt;/code&gt; option to compress the files, as my tests showed that
 due to the sheer number of files that I&amp;rsquo;m putting into this archive,
 adding compression &lt;em&gt;significantly&lt;/em&gt; slows down the tar/untar process and time is
 much more valuable than the cost of extra storage space required.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt;: Launch a new instance with pre-configured security group and run&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS&lt;/span&gt;
 tar -xf efs/dl-env.tar &lt;span class=&#34;c1&#34;&gt;# will run for ~2 minutes&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt; .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Voila, the conda environment is up and running!&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 4.1&lt;/strong&gt;: If you made any changes to your environment, e.g. installed new packages,
 run the following command to (incrementally) update the tar&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;glossary&#34;&gt;Glossary&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
@@ -84,7 +84,7 @@ troublesome to me, so always backup important data in a shared file system like 
 &lt;p&gt;EC2 is a virtual machine service but you can only choose from their confusingly-named
 presets (CPU and memory combo) as opposed to custom configurations. I assume this is
 to simplify their scheduling algorithm.&lt;/p&gt;
-&lt;h4 id=&#34;increase-limit&#34;&gt;Increase Limit&lt;/h4&gt;
+&lt;h3 id=&#34;increase-limit&#34;&gt;Increase Limit&lt;/h3&gt;
 &lt;p&gt;Newly registered AWS users have to first manually increase their limits/service quota
 in order to launch bigger instances or use GPU-backed instances.&lt;/p&gt;
 &lt;p&gt;Here&amp;rsquo;s the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -107,7 +107,7 @@ to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;security-group&#34;&gt;Security Group&lt;/h4&gt;
+&lt;h3 id=&#34;security-group&#34;&gt;Security Group&lt;/h3&gt;
 &lt;p&gt;It&amp;rsquo;s basically like an old-school firewall that allows network access on specific ports.&lt;/p&gt;
 &lt;p&gt;Necessary inbound rules&lt;/p&gt;
 &lt;table&gt;
@@ -186,7 +186,7 @@ to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h4 id=&#34;type-selection&#34;&gt;Type Selection&lt;/h4&gt;
+&lt;h3 id=&#34;type-selection&#34;&gt;Type Selection&lt;/h3&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/instance-types/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;EC2 instance type and name list&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;For machine learning, compute-optimized C5 series makes the most sense due to their
@@ -208,7 +208,7 @@ insufficient resource and couldn&amp;rsquo;t be resumed, yikes!&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;suspend-vs-stop-vs-terminate&#34;&gt;Suspend vs Stop vs Terminate&lt;/h4&gt;
+&lt;h3 id=&#34;suspend-vs-stop-vs-terminate&#34;&gt;Suspend vs Stop vs Terminate&lt;/h3&gt;
 &lt;p&gt;When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
 such that the any task that are running when the instance is suspended can resume once the instance
 is woken up.
@@ -220,7 +220,7 @@ However, not all AMIs supports this. The instance&amp;rsquo;s ephemeral IP addre
 like shutting down your computer. However, stopping and restarting will change the instance&amp;rsquo;s
 ephemeral IP address, too.&lt;/p&gt;
 &lt;p&gt;Terminating an EC2 instance &lt;strong&gt;will&lt;/strong&gt; remove its boot EBS volume and it&amp;rsquo;s gone forever!&lt;/p&gt;
-&lt;h4 id=&#34;vcore-performance&#34;&gt;vCore Performance&lt;/h4&gt;
+&lt;h3 id=&#34;vcore-performance&#34;&gt;vCore Performance&lt;/h3&gt;
 &lt;p&gt;vCores are much lower than physical CPU cores, hence &lt;strong&gt;parallelism is very important&lt;/strong&gt;!
 By my estimation, a vCore only runs at 50% of the speed of my laptop&amp;rsquo;s i7-8750H core.
 Make sure your &lt;code&gt;DataLoader&lt;/code&gt; can run on as many vCores as possible to keep the Tesla GPU
@@ -232,7 +232,7 @@ the machine is mostly idle (like a web/database server), this could be a cost-sa
 &lt;p&gt;This is probably not suitable for training models since you want to push all
 cores to the max (ideally) for the best performance. But if you are running some
 data analysis task using Jupyter Notebook, this type of instance could be a good fit.&lt;/p&gt;
-&lt;h4 id=&#34;spot-instance&#34;&gt;Spot Instance&lt;/h4&gt;
+&lt;h3 id=&#34;spot-instance&#34;&gt;Spot Instance&lt;/h3&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/spot/pricing/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Spot Instance Pricing&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Spot instances are much cheaper than regular timed instances. The only downside
@@ -244,16 +244,16 @@ the one-time-request spot instance will be terminated directly when it is stoppe
     &gt;Spot Requests&lt;/a&gt; page when you want to terminate the instance. Otherwise,
 a persistent request will relaunch the instance when you terminated it from the EC2
 management console.&lt;/p&gt;
-&lt;h4 id=&#34;ssh&#34;&gt;SSH&lt;/h4&gt;
+&lt;h3 id=&#34;ssh&#34;&gt;SSH&lt;/h3&gt;
 &lt;p&gt;Any SSH client would work, but I do highly recommend &lt;a class=&#34;link&#34; href=&#34;https://mobaxterm.mobatek.net/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;MobaXterm&lt;/a&gt;
 for Windows users (I&amp;rsquo;m one).&lt;/p&gt;
 &lt;p&gt;You would need a key pair to access the EC2 instance. This file can be generated
 when launching the EC2 instance and reused. Each key can only be downloaded once
 so don&amp;rsquo;t lose it. The full command line using ssh would look like:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Username would be &lt;code&gt;ec2-user&lt;/code&gt; for regular Amazon AMIs and &lt;code&gt;ubuntu&lt;/code&gt; for AWS Deep Learning AMI.&lt;/p&gt;
-&lt;h4 id=&#34;ami&#34;&gt;AMI&lt;/h4&gt;
+&lt;h3 id=&#34;ami&#34;&gt;AMI&lt;/h3&gt;
 &lt;p&gt;AMI is basically a prepackaged system disk image with pre-configured environment.&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;m really impressed with its boot speed, which only takes a few seconds.
 I certainly feel that it&amp;rsquo;s faster than Google Cloud Compute instances in terms of
@@ -269,7 +269,7 @@ was stopped by AWS while your model has not been trained for enough epochs.&lt;/
 It requires a minimum EBS disk size of 60GB and comes with necessary GPU drivers and
 linear algebra packs. However, it doesn&amp;rsquo;t come with any deep learning environment, so you
 need to configure one on your own.&lt;/p&gt;
-&lt;h4 id=&#34;monitoring&#34;&gt;Monitoring&lt;/h4&gt;
+&lt;h3 id=&#34;monitoring&#34;&gt;Monitoring&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;htop&lt;/code&gt; for a command-line task manager to monitor CPU usage&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nvidia-smi&lt;/code&gt; for a summary of GPU usage&lt;/p&gt;
 &lt;h2 id=&#34;ebs&#34;&gt;EBS&lt;/h2&gt;
@@ -285,7 +285,7 @@ to its size (&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/AW
     &gt;up to 5,334 GB&lt;/a&gt;).
 Therefore, it seems to me that it&amp;rsquo;s better to allocate a large-enough EBS boot volume
 for AMI, training data and some buffer so that you get overall better performance.&lt;/p&gt;
-&lt;h4 id=&#34;mounting-a-ebs-volume-to-ec2&#34;&gt;Mounting a EBS volume to EC2&lt;/h4&gt;
+&lt;h3 id=&#34;mounting-a-ebs-volume-to-ec2&#34;&gt;Mounting a EBS volume to EC2&lt;/h3&gt;
 &lt;p&gt;In case you need some temporary storage, you can create a new EBS volume and attach it
 to your EC2 instance (&lt;strong&gt;in the same availability zone&lt;/strong&gt;) on AWS console.&lt;/p&gt;
 &lt;p&gt;Once you&amp;rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,
@@ -323,7 +323,7 @@ files out to the EBS volume. When copying files, it can sustain a read speed of
 close to 1Gbps.&lt;/p&gt;
 &lt;p&gt;In terms of pricing, EFS is more expensive than EBS per GB. However, given the flexibility
 and dynamic sizing, it might cost less.&lt;/p&gt;
-&lt;h4 id=&#34;mounting-a-efs-share-to-ec2&#34;&gt;Mounting a EFS share to EC2&lt;/h4&gt;
+&lt;h3 id=&#34;mounting-a-efs-share-to-ec2&#34;&gt;Mounting a EFS share to EC2&lt;/h3&gt;
 &lt;h5 id=&#34;on-aws-console&#34;&gt;On AWS Console&lt;/h5&gt;
 &lt;ol&gt;
 &lt;li&gt;
@@ -369,8 +369,8 @@ You only need to run this command once for a new EFS share.&lt;/p&gt;
 suitable for sharing large files, such as trained model weights, via HTTPS.
 I&amp;rsquo;ve also seen use cases that use S3 as a data lake. Apache Spark even supports reading
 data directly off S3.&lt;/p&gt;
-&lt;h4 id=&#34;access-s3-bucket-in-ec2&#34;&gt;Access S3 bucket in EC2&lt;/h4&gt;
-&lt;h5 id=&#34;on-aws-console-1&#34;&gt;On AWS Console&lt;/h5&gt;
+&lt;h3 id=&#34;access-s3-bucket-in-ec2&#34;&gt;Access S3 bucket in EC2&lt;/h3&gt;
+&lt;h4 id=&#34;on-aws-console-1&#34;&gt;On AWS Console&lt;/h4&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Create an S3 bucket in the region you intended to use.&lt;/p&gt;
@@ -393,12 +393,12 @@ data directly off S3.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h5 id=&#34;on-ec2-1&#34;&gt;On EC2&lt;/h5&gt;
+&lt;h4 id=&#34;on-ec2-1&#34;&gt;On EC2&lt;/h4&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;code&gt;aws s3 cp my_copied_file.ext s3://my_bucket/my_folder/my_file.ext&lt;/code&gt; to upload
 files to S3. Reverse the 2 arguments to download files from S3.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h4 id=&#34;access-s3-objects-from-https&#34;&gt;Access S3 objects from HTTPS&lt;/h4&gt;
+&lt;h3 id=&#34;access-s3-objects-from-https&#34;&gt;Access S3 objects from HTTPS&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Go to the S3 console and modify its ACL read permission to be &lt;strong&gt;Everyone&lt;/strong&gt;.
@@ -521,7 +521,7 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
         <description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;
 &lt;p&gt;GraphX requires me to manually assign a &lt;code&gt;VertexId&lt;/code&gt; (which is essentially Scala/Java type &lt;code&gt;Long&lt;/code&gt;) to each vertex, which can be done through Spark DataFrame&amp;rsquo;s &lt;code&gt;monotonically_increasing_id()&lt;/code&gt; function. This function provides unique id but doesn&amp;rsquo;t guarantee continuity (unlike SQL database&amp;rsquo;s auto-incremental primary key). However, since this id relies on partition number, it is NOT stable! The solution, though, is easy: &lt;code&gt;cache&lt;/code&gt; the DataFrame with id (or saving it to disk) will make it persistent across operations (e.g. &lt;code&gt;join&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;The following piece of code converts a graph expressed as a DataFrame of edges through source vertex object, destination vertex object and edge weight (a small price (storing redundant objects) to pay for Spark to generate it all in parallel) into GraphX Graph representation.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;k&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.spark.graphx._&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;k&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.spark.graphx._&lt;/span&gt;
 &lt;span class=&#34;k&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.spark.rdd.RDD&lt;/span&gt;
 
 &lt;span class=&#34;k&#34;&gt;case&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Obj&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
@@ -565,7 +565,7 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
 &lt;p&gt;&lt;code&gt;join&lt;/code&gt; is a slow operation and everyone knows it, but sometime it’s just unavoidable. So, the real question is, how to prevent unnecessary use of joins. Interestingly, the examples that I discovered in the code base are all related to groupBy operations as well and gist of it can be summarized simply as: use a single groupBy to accomplish as much as possible.
 Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime improvements by removing the &lt;code&gt;join&lt;/code&gt;s&lt;/p&gt;
 &lt;h4 id=&#34;1&#34;&gt;1.&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
   &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
   &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
@@ -584,7 +584,7 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Essentially, this code block is trying to get 2 different aggregated statistics of groups from colA based on certain conditions. The join operation then puts the 2 different statistics into the same table column-wise under the same group.&lt;/p&gt;
 &lt;p&gt;In this case, Spark’s (probably borrowed from SQL) When operator can be substituted for conditional filtering. Unless a default value or column is specified through the otherwise operator, when operator returns null. Spark’s built-in aggregation functions (max, sum, avg, etc.) will automatically ignore null values so when combined with when function, it acts as aggregations with conditions. The code snippet below is much more efficient, especially when more conditional aggregations are used.&lt;/p&gt;
 &lt;h4 id=&#34;2&#34;&gt;2.&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
         &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
@@ -603,7 +603,7 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 &lt;p&gt;With the understanding in mind, we can the proceed to rewrite this piece of code to use pivot operator? Wait, in this piece of code, we are only concerned with a value of 1 or 2 in column B. Worry not, Spark has it all prepared for you. Its pivot operation accepts an optional second parameter (a Sequence of values) and it will create the exact number of columns for every value in the parameter, regardless of the existence of the value in the pivoting column.&lt;/p&gt;
 &lt;p&gt;Since we are sure that for each unique combination of values in Column A and Column B, there’s only a single row, we can use the first aggregation function.&lt;/p&gt;
 &lt;h4 id=&#34;3&#34;&gt;3.&lt;/h4&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
 &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
          &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Seq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;

@@ -3,10 +3,9 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='This paper is accepted by and presented at IEEE Wireless Communications and Networking Conference (WCNC) 2020 as &#34;Identifying Cell Sector Clusters Using Massive Mobile Usage Records'><title>Manuscript: Cell Sector Clustering</title>
 
-<link rel='canonical' href='https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/'><link href='/blog/font/lato-font.css' rel='stylesheet' type='text/css'>
+<link rel='canonical' href='https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/'>
 
-
-<link rel="stylesheet" href="/blog/scss/style.min.css"><meta property='og:title' content='Manuscript: Cell Sector Clustering'>
+<link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='Manuscript: Cell Sector Clustering'>
 <meta property='og:description' content='This paper is accepted by and presented at IEEE Wireless Communications and Networking Conference (WCNC) 2020 as &#34;Identifying Cell Sector Clusters Using Massive Mobile Usage Records'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
@@ -15,8 +14,23 @@
 <meta name="twitter:description" content="This paper is accepted by and presented at IEEE Wireless Communications and Networking Conference (WCNC) 2020 as &#34;Identifying Cell Sector Clusters Using Massive Mobile Usage Records">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
+<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-151866646-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
     </head>
-    <body class="">
+    <body class="
+    article-page 
+">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -33,13 +47,19 @@
         if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
             
 
-            document.body.dataset.scheme = 'dark';
+            document.documentElement.dataset.scheme = 'dark';
         } else {
-            document.body.dataset.scheme = 'light';
+            document.documentElement.dataset.scheme = 'light';
         }
     })();
-</script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
-            <aside class="sidebar left-sidebar sticky">
+</script>
+<div class="container main-container flex 
+    
+        on-phone--column extended
+    
+">
+    
+        <aside class="sidebar left-sidebar sticky">
     <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
         <span class="hamburger-box">
             <span class="hamburger-inner"></span>
@@ -48,6 +68,7 @@
 
     <header class="site-info">
         
+            
             <figure class="site-avatar">
                 
                     <img src="/blog/image/personal_icon.png" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
@@ -57,18 +78,20 @@
                     <span class="emoji">🌏</span>
                 
             </figure>
+            
         
-        <h1 class="site-name"><a href="https://chen-zhe.github.io/blog">大白鲸笔记本</a></h1>
-        <h2 class="site-description">也就是个markdown网络笔记本</h2>
-    </header>
+        
+        <h1 class="site-name"><a href="/blog">大白鲸笔记本</a></h1>
+        <h2 class="site-description">也就是个markdown网络笔记本</h2></header>
 
     <ol class="menu" id="main-menu">
         
         
-        
 
         <li >
-            <a href='https://chen-zhe.github.io/blog/'>
+            <a href='https://chen-zhe.github.io/blog/' >
+                
+                
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -80,32 +103,34 @@
 
 
                 
-                <span>main</span>
+                <span>Blog Home</span>
             </a>
         </li>
         
-        
 
         <li >
-            <a href='https://chen-zhe.github.io/home'>
+            <a href='https://chen-zhe.github.io/blog/search/' >
                 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
-  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
-  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
 </svg>
 
 
 
                 
-                <span>Site Home</span>
+                <span>Search</span>
             </a>
         </li>
         
-        
 
         <li >
-            <a href='https://chen-zhe.github.io/blog/archives'>
+            <a href='https://chen-zhe.github.io/blog/archives/' >
+                
+                
                 
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
@@ -121,21 +146,22 @@
             </a>
         </li>
         
-        
 
         <li >
-            <a href='https://chen-zhe.github.io/blog/search'>
+            <a href='https://chen-zhe.github.io/home/' >
                 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
-  <circle cx="10" cy="10" r="7" />
-  <line x1="21" y1="21" x2="15" y2="15" />
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
 </svg>
 
 
 
                 
-                <span>Search</span>
+                <span>Site Home</span>
             </a>
         </li>
         
@@ -164,20 +190,8 @@
     </ol>
 </aside>
 
-            <main class="main full-width">
-    <div id="article-toolbar">
-        <a href="https://chen-zhe.github.io/blog" class="back-home">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="15 6 9 12 15 18" />
-</svg>
-
-
-
-            <span>Back</span>
-        </a>
-    </div>
-
+    
+<main class="main full-width">
     <article class="main-article">
     <header class="article-header">
 
@@ -208,8 +222,28 @@
     <h3 class="article-subtitle">
         This paper is accepted by and presented at IEEE Wireless Communications and Networking Conference (WCNC) 2020 as &#34;Identifying Cell Sector Clusters Using Massive Mobile Usage Records
     </h3>
+    
+
+    
     <footer class="article-time">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Oct 05, 2019</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="12" cy="12" r="9" />
   <polyline points="12 7 12 12 15 15" />
@@ -217,8 +251,14 @@
 
 
 
-        <time class="article-time--published">Oct 05, 2019</time>
-    </footer></div>
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
 </header>
 
     <section class="article-content">
@@ -251,8 +291,11 @@
     </section>
     </footer>
 
+
     
 </article>
+
+    
 
     <aside class="related-contents--wrapper">
     
@@ -290,7 +333,7 @@
     
 </aside>
 
-
+     
     
         
     <div class="disqus-container">
@@ -325,6 +368,15 @@
     }
 </style>
 
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof(DISQUS) != 'undefined' && DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
 
     
 
@@ -338,10 +390,13 @@
     </section>
     
     <section class="powerby">
-        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> |
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="2.0.1">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.6.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
+
+
+    
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
     
@@ -403,32 +458,31 @@
 
     </div>
 
-</div>
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
 
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css">
             </main>
+    
+
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"
-    integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g=" crossorigin="anonymous"></script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'UA-151866646-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
 
     </body>
 </html>
