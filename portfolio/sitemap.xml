@@ -1,37 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://chen-zhe.github.io/portfolio/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chen-zhe.github.io/portfolio/photo/4-fireworks/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chen-zhe.github.io/portfolio/photo/2-in-flight/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chen-zhe.github.io/portfolio/photo/3-macro/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chen-zhe.github.io/portfolio/photo/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chen-zhe.github.io/portfolio/tags/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chen-zhe.github.io/portfolio/photo/1-vantage-point/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chen-zhe.github.io/portfolio/</loc>
   </url>
-  
 </urlset>
