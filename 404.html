@@ -8,7 +8,7 @@
 <link rel="icon" href="https://chen-zhe.github.io/favicon.png">
 <title>404 Not Found</title>
 <style>
-body{width:100%;height:100%;margin:0;padding:0;background:#fff;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;,sans-serif;font-size:1.6rem;line-height:1.9em;letter-spacing:.01em;-webkit-font-smoothing:subpixel-antialiased;font-smoothing:subpixel-antialiased;}
+body{width:100%;height:100%;margin:0;padding:0;background:#fff;font-family:Segoe UI,sans-serif;font-size:1.6rem;line-height:1.9em;letter-spacing:.01em;}
 h4{letter-spacing:-.04em;font-weight:700;line-height:1.45em;color:#4a4a4a;}
 h4{margin:1em 0 .5em 0;}
 h4{font-size:1.8rem;}
@@ -20,8 +20,8 @@ h4{font-size:1.6rem;}
 @media only screen and (min-width:768px) and (max-width:1023px){
 h4{font-size:1.65rem;}
 }
-#about{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,26,35,0);text-align:center;line-height:100%;overflow-y:auto;overflow-x:hidden;z-index:30;}
-#about #about-card{position:relative;top:-1000px;display:block;background:#fff;max-width:500px;margin:15px auto;border-radius:3px;padding:30px 0;-webkit-box-shadow:0 0 5px rgba(0,0,0,.5);-moz-box-shadow:0 0 5px rgba(0,0,0,.5);box-shadow:0 0 5px rgba(0,0,0,.5);}
+#about{display:block;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(17,26,35,0);text-align:center;line-height:100%;overflow-y:auto;overflow-x:hidden;z-index:30;}
+#about #about-card{position:relative;top:25%;display:block;background:#fff;max-width:500px;margin:15px auto;border-radius:3px;padding:30px 0;-webkit-box-shadow:0 0 5px rgba(0,0,0,.5);-moz-box-shadow:0 0 5px rgba(0,0,0,.5);box-shadow:0 0 5px rgba(0,0,0,.5);}
 #about #about-card #about-card-name{margin-top:0;margin-bottom:20px;}
 #about #about-card #about-card-bio{padding:0 30px;margin:0 0 30px 0;}
 #about #about-card #about-card-bio{font-size:1.2rem;line-height:1.9em;font-weight:400;color:#5d686f;}
@@ -36,8 +36,8 @@ h4{font-size:1.65rem;}
 </style>
 </head>
 <body>
-<div id="about" style="display: block">
-<div id="about-card" style="top: 25%">    
+<div id="about">
+<div id="about-card">    
 <h4 id="about-card-name">Index Out of Bounds Exception</h4>    
 <div id="about-card-bio">Oops, you are trying to visit a non-existent URL. You'll be redirected back <a href="/home">home</a> in 3 seconds.</div>
 </div>
