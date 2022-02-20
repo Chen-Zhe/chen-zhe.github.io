@@ -21,8 +21,19 @@ and here are my notes and observations about the platform for this purpose&lt;/p
 if I were to take advantage of services other than EC2 itself.&lt;/p&gt;
 &lt;p&gt;Here are my notes for services that I&amp;rsquo;ve used throughout the rapid-paced learning journey
 and hopefully they can be of help to others.&lt;/p&gt;
+&lt;h2 id=&#34;glossary-with-section-link&#34;&gt;Glossary with Section Link&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ssh&#34; &gt;SSH&lt;/a&gt;: Secure Shell&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ami&#34; &gt;AMI&lt;/a&gt;: Amazon Machine Image&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ebs&#34; &gt;EBS&lt;/a&gt;: Elastic Block Storage&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#efs&#34; &gt;EFS&lt;/a&gt;: Elastic File System&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#s3&#34; &gt;S3&lt;/a&gt;: Simple Storage Service&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#access-s3-bucket-in-ec2&#34; &gt;IAM&lt;/a&gt;: Identity and Access Management&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt;: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
+&lt;h3 id=&#34;1-configure-custom-deep-learning-environment&#34;&gt;1. Configure Custom Deep Learning Environment&lt;/h3&gt;
+&lt;p&gt;Install miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
 and installed all necessary packages:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -37,42 +48,42 @@ pip install kaggle
 conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;While installing Jupyter Lab, Conda will automatically install its dependencies,
 such as &lt;code&gt;ipython&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt;: Store Kaggle key in the &lt;code&gt;.kaggle&lt;/code&gt; folder.&lt;/p&gt;
+&lt;h3 id=&#34;2-configure-kaggle-and-jupyter-lab-access&#34;&gt;2. Configure Kaggle and Jupyter Lab Access&lt;/h3&gt;
+&lt;p&gt;Store your Kaggle key (&lt;code&gt;kaggle.json&lt;/code&gt;) in the &lt;code&gt;.kaggle&lt;/code&gt; folder under &lt;code&gt;/home/ubuntu/&lt;/code&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;jupyter-lab-access-method-1-external-access&#34;&gt;Jupyter Lab Access Method 1: External Access&lt;/h4&gt;
 &lt;p&gt;For Jupyter Lab, follow the &lt;a class=&#34;link&#34; href=&#34;https://jupyter-notebook.readthedocs.io/en/stable/public_server.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;docs&lt;/a&gt; to configuring external access. But the following shows a simpler version:&lt;/p&gt;
-&lt;p&gt;Generate Jupyter Lab password with &lt;code&gt;jupyter server password&lt;/code&gt; (not &lt;code&gt;jupyter notebook password&lt;/code&gt;),
-which writes the password to &lt;code&gt;jupyter_server_config.json&lt;/code&gt; file.&lt;/p&gt;
-&lt;p&gt;Then create a new file &lt;code&gt;jupyter_server_config.py&lt;/code&gt; under &lt;code&gt;.jupyter&lt;/code&gt; folder
+&lt;p&gt;Generate hashed Jupyter Lab password by running the following piece of Python code:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;notebook.auth&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;my_password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;password&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# set your desired password here&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;hashed_password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;passphrase&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;my_password&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;algorithm&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha256&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hashed_password&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy the hashed password&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then create a new file &lt;code&gt;jupyter_server_config.py&lt;/code&gt; under &lt;code&gt;.jupyter&lt;/code&gt; folder
 in the home directory with the following content:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha1:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy from the jupyter_server_config.json file&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha256:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt;: Tar the environment and save to EFS.&lt;/p&gt;
-&lt;p&gt;Note that I didn&amp;rsquo;t use the &lt;code&gt;z&lt;/code&gt; option to compress the files, as my tests showed that
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;jupyter-lab-access-method-2-port-forwarding&#34;&gt;Jupyter Lab Access Method 2: Port Forwarding&lt;/h4&gt;
+&lt;p&gt;Alternatively, you can use SSH port forwarding with the following command running on your local computer. In this case, access &lt;code&gt;127.0.0.1:8889&lt;/code&gt; or &lt;code&gt;localhost:8889&lt;/code&gt; while this command is running. Here, I have changed the local forwarding port to 8889 to avoid potential port conflict with your local Jupyter.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;ssh -N -L 8889:localhost:8888 -i your-aws.pem ubuntu@your-ec2-ip-address
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;3-tar-the-configured-environment-and-save-to-efs&#34;&gt;3. Tar the configured environment and save to EFS&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Note that I didn&amp;rsquo;t use the &lt;code&gt;z&lt;/code&gt; option to compress the files, as my tests showed that
 due to the sheer number of files that I&amp;rsquo;m putting into this archive,
 adding compression &lt;em&gt;significantly&lt;/em&gt; slows down the tar/untar process and time is
 much more valuable than the cost of extra storage space required.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt;: Launch a new instance with pre-configured security group and run&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS&lt;/span&gt;
+&lt;h3 id=&#34;4-deploy-saved-environment-in-a-new-ec2-instance&#34;&gt;4. Deploy Saved Environment in a new EC2 instance&lt;/h3&gt;
+&lt;p&gt;Launch a new instance with pre-configured security group and run&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS and with working directory as ~&lt;/span&gt;
 tar -xf efs/dl-env.tar &lt;span class=&#34;c1&#34;&gt;# will run for ~2 minutes&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt; .bashrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Voila, the conda environment is up and running!&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Step 4.1&lt;/strong&gt;: If you made any changes to your environment, e.g. installed new packages,
+&lt;h3 id=&#34;5-update-saved-environment&#34;&gt;5. Update Saved Environment&lt;/h3&gt;
+&lt;p&gt;If you made any changes to your environment, e.g. installed new packages,
 run the following command to (incrementally) update the tar&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;glossary&#34;&gt;Glossary&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ssh&#34; &gt;SSH&lt;/a&gt;: Secure Shell&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ami&#34; &gt;AMI&lt;/a&gt;: Amazon Machine Image&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ebs&#34; &gt;EBS&lt;/a&gt;: Elastic Block Storage&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#efs&#34; &gt;EFS&lt;/a&gt;: Elastic File System&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#s3&#34; &gt;S3&lt;/a&gt;: Simple Storage Service&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#access-s3-bucket-in-ec2&#34; &gt;IAM&lt;/a&gt;: Identity and Access Management&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;region&#34;&gt;Region&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;region&#34;&gt;Region&lt;/h2&gt;
 &lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia) us-east-1&lt;/em&gt; and &lt;em&gt;US East (Ohio) us-east-2&lt;/em&gt;
 are basically their data centers located within the region. Network transit within region
 is free of charge but is chargeable otherwise.&lt;/p&gt;

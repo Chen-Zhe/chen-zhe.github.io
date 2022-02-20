@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.'><title>AWS User Notes for Deep Learning</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.'><title>AWS User Notes for Deep Learning</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 
 <link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
-<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.'>
+<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-01-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-01-27T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="AWS User Notes for Deep Learning">
-<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.">
+<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
 <link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
@@ -97,7 +97,7 @@ if (!doNotTrack) {
 
     
     <h3 class="article-subtitle">
-        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-01-04.
+        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.
     </h3>
     
 
@@ -148,8 +148,19 @@ and here are my notes and observations about the platform for this purpose</p>
 if I were to take advantage of services other than EC2 itself.</p>
 <p>Here are my notes for services that I&rsquo;ve used throughout the rapid-paced learning journey
 and hopefully they can be of help to others.</p>
+<h2 id="glossary-with-section-link">Glossary with Section Link</h2>
+<ul>
+<li><a class="link" href="#ec2" >EC2</a>: Elastic Compute Cloud</li>
+<li><a class="link" href="#ssh" >SSH</a>: Secure Shell</li>
+<li><a class="link" href="#ami" >AMI</a>: Amazon Machine Image</li>
+<li><a class="link" href="#ebs" >EBS</a>: Elastic Block Storage</li>
+<li><a class="link" href="#efs" >EFS</a>: Elastic File System</li>
+<li><a class="link" href="#s3" >S3</a>: Simple Storage Service</li>
+<li><a class="link" href="#access-s3-bucket-in-ec2" >IAM</a>: Identity and Access Management</li>
+</ul>
 <h2 id="tldr-my-workflow">TL;DR. My Workflow</h2>
-<p><strong>Step 1</strong>: I installed miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
+<h3 id="1-configure-custom-deep-learning-environment">1. Configure Custom Deep Learning Environment</h3>
+<p>Install miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
 and installed all necessary packages:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Miniconda with Python 3.8</span>
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -164,42 +175,42 @@ pip install kaggle
 conda clean -a <span class="c1"># remove downloaded package zips</span>
 </code></pre></div><p>While installing Jupyter Lab, Conda will automatically install its dependencies,
 such as <code>ipython</code>.</p>
-<p><strong>Step 2</strong>: Store Kaggle key in the <code>.kaggle</code> folder.</p>
+<h3 id="2-configure-kaggle-and-jupyter-lab-access">2. Configure Kaggle and Jupyter Lab Access</h3>
+<p>Store your Kaggle key (<code>kaggle.json</code>) in the <code>.kaggle</code> folder under <code>/home/ubuntu/</code>.</p>
+<h4 id="jupyter-lab-access-method-1-external-access">Jupyter Lab Access Method 1: External Access</h4>
 <p>For Jupyter Lab, follow the <a class="link" href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html"  target="_blank" rel="noopener"
     >docs</a> to configuring external access. But the following shows a simpler version:</p>
-<p>Generate Jupyter Lab password with <code>jupyter server password</code> (not <code>jupyter notebook password</code>),
-which writes the password to <code>jupyter_server_config.json</code> file.</p>
-<p>Then create a new file <code>jupyter_server_config.py</code> under <code>.jupyter</code> folder
+<p>Generate hashed Jupyter Lab password by running the following piece of Python code:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">notebook.auth</span> <span class="kn">import</span> <span class="n">passwd</span>
+<span class="n">my_password</span> <span class="o">=</span> <span class="s2">&#34;password&#34;</span> <span class="c1"># set your desired password here</span>
+<span class="n">hashed_password</span> <span class="o">=</span> <span class="n">passwd</span><span class="p">(</span><span class="n">passphrase</span><span class="o">=</span><span class="n">my_password</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hashed_password</span><span class="p">)</span> <span class="c1"># copy the hashed password</span>
+</code></pre></div><p>Then create a new file <code>jupyter_server_config.py</code> under <code>.jupyter</code> folder
 in the home directory with the following content:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
-<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha1:bcd259ccf...&lt;your hashed password here&gt;&#39;</span> <span class="c1"># copy from the jupyter_server_config.json file</span>
+<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha256:bcd259ccf...&lt;your hashed password here&gt;&#39;</span>
 <span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># or any other ports you&#39;d like</span>
-</code></pre></div><p><strong>Step 3</strong>: Tar the environment and save to EFS.</p>
-<p>Note that I didn&rsquo;t use the <code>z</code> option to compress the files, as my tests showed that
+</code></pre></div><h4 id="jupyter-lab-access-method-2-port-forwarding">Jupyter Lab Access Method 2: Port Forwarding</h4>
+<p>Alternatively, you can use SSH port forwarding with the following command running on your local computer. In this case, access <code>127.0.0.1:8889</code> or <code>localhost:8889</code> while this command is running. Here, I have changed the local forwarding port to 8889 to avoid potential port conflict with your local Jupyter.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">ssh -N -L 8889:localhost:8888 -i your-aws.pem ubuntu@your-ec2-ip-address
+</code></pre></div><h3 id="3-tar-the-configured-environment-and-save-to-efs">3. Tar the configured environment and save to EFS</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+</code></pre></div><p>Note that I didn&rsquo;t use the <code>z</code> option to compress the files, as my tests showed that
 due to the sheer number of files that I&rsquo;m putting into this archive,
 adding compression <em>significantly</em> slows down the tar/untar process and time is
 much more valuable than the cost of extra storage space required.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
-</code></pre></div><p><strong>Step 4</strong>: Launch a new instance with pre-configured security group and run</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS</span>
+<h3 id="4-deploy-saved-environment-in-a-new-ec2-instance">4. Deploy Saved Environment in a new EC2 instance</h3>
+<p>Launch a new instance with pre-configured security group and run</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS and with working directory as ~</span>
 tar -xf efs/dl-env.tar <span class="c1"># will run for ~2 minutes</span>
 <span class="nb">source</span> .bashrc
 </code></pre></div><p>Voila, the conda environment is up and running!</p>
-<p><strong>Step 4.1</strong>: If you made any changes to your environment, e.g. installed new packages,
+<h3 id="5-update-saved-environment">5. Update Saved Environment</h3>
+<p>If you made any changes to your environment, e.g. installed new packages,
 run the following command to (incrementally) update the tar</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -uvf efs/dl-env.tar miniconda3/ .conda <span class="c1"># assuming environment update</span>
-</code></pre></div><h2 id="glossary">Glossary</h2>
-<ul>
-<li><a class="link" href="#ec2" >EC2</a>: Elastic Compute Cloud</li>
-<li><a class="link" href="#ssh" >SSH</a>: Secure Shell</li>
-<li><a class="link" href="#ami" >AMI</a>: Amazon Machine Image</li>
-<li><a class="link" href="#ebs" >EBS</a>: Elastic Block Storage</li>
-<li><a class="link" href="#efs" >EFS</a>: Elastic File System</li>
-<li><a class="link" href="#s3" >S3</a>: Simple Storage Service</li>
-<li><a class="link" href="#access-s3-bucket-in-ec2" >IAM</a>: Identity and Access Management</li>
-</ul>
-<h2 id="region">Region</h2>
+</code></pre></div><h2 id="region">Region</h2>
 <p>AWS regions such as <em>US East (N. Virginia) us-east-1</em> and <em>US East (Ohio) us-east-2</em>
 are basically their data centers located within the region. Network transit within region
 is free of charge but is chargeable otherwise.</p>
@@ -763,8 +774,16 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
   <ul>
     <li><a href="#updates">Updates</a></li>
     <li><a href="#introduction">Introduction</a></li>
-    <li><a href="#tldr-my-workflow">TL;DR. My Workflow</a></li>
-    <li><a href="#glossary">Glossary</a></li>
+    <li><a href="#glossary-with-section-link">Glossary with Section Link</a></li>
+    <li><a href="#tldr-my-workflow">TL;DR. My Workflow</a>
+      <ul>
+        <li><a href="#1-configure-custom-deep-learning-environment">1. Configure Custom Deep Learning Environment</a></li>
+        <li><a href="#2-configure-kaggle-and-jupyter-lab-access">2. Configure Kaggle and Jupyter Lab Access</a></li>
+        <li><a href="#3-tar-the-configured-environment-and-save-to-efs">3. Tar the configured environment and save to EFS</a></li>
+        <li><a href="#4-deploy-saved-environment-in-a-new-ec2-instance">4. Deploy Saved Environment in a new EC2 instance</a></li>
+        <li><a href="#5-update-saved-environment">5. Update Saved Environment</a></li>
+      </ul>
+    </li>
     <li><a href="#region">Region</a></li>
     <li><a href="#ec2">EC2</a>
       <ul>
