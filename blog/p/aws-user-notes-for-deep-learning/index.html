@@ -161,14 +161,14 @@ and hopefully they can be of help to others.</p>
 <h2 id="tldr-my-workflow">TL;DR. My Workflow</h2>
 <h3 id="1-configure-custom-deep-learning-environment">1. Configure Custom Deep Learning Environment</h3>
 <p>Install miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
-and installed all necessary packages:</p>
+and installed all necessary packages such as PyTorch and pandas:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Miniconda with Python 3.8</span>
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod u+x Miniconda3-latest-Linux-x86_64.sh <span class="c1"># make it executable</span>
 ./Miniconda3-latest-Linux-x86_64.sh <span class="c1"># start installer</span>
 
-<span class="c1"># install PyTorch 1.9 with cudatoolkit 11.1</span>
-conda install pytorch torchvision torchaudio <span class="nv">cudatoolkit</span><span class="o">=</span>11.1 -c pytorch -c nvidia
+<span class="c1"># install latest PyTorch with CUDA Toolkit. Adapted from https://pytorch.org/get-started/locally/</span>
+conda install pytorch torchvision torchaudio cudatoolkit -c pytorch
 conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
 pip install kaggle
 

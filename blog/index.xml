@@ -34,14 +34,14 @@ and hopefully they can be of help to others.&lt;/p&gt;
 &lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow&lt;/h2&gt;
 &lt;h3 id=&#34;1-configure-custom-deep-learning-environment&#34;&gt;1. Configure Custom Deep Learning Environment&lt;/h3&gt;
 &lt;p&gt;Install miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
-and installed all necessary packages:&lt;/p&gt;
+and installed all necessary packages such as PyTorch and pandas:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# make it executable&lt;/span&gt;
 ./Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
 
-&lt;span class=&#34;c1&#34;&gt;# install PyTorch 1.9 with cudatoolkit 11.1&lt;/span&gt;
-conda install pytorch torchvision torchaudio &lt;span class=&#34;nv&#34;&gt;cudatoolkit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;11.1 -c pytorch -c nvidia
+&lt;span class=&#34;c1&#34;&gt;# install latest PyTorch with CUDA Toolkit. Adapted from https://pytorch.org/get-started/locally/&lt;/span&gt;
+conda install pytorch torchvision torchaudio cudatoolkit -c pytorch
 conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
 pip install kaggle
 
