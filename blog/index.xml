@@ -41,8 +41,8 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# make it executable&lt;/span&gt;
 ./Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
 
-&lt;span class=&#34;c1&#34;&gt;# install latest PyTorch with CUDA Toolkit. Adapted from https://pytorch.org/get-started/locally/&lt;/span&gt;
-conda install pytorch torchvision torchaudio cudatoolkit -c pytorch
+&lt;span class=&#34;c1&#34;&gt;# Check https://pytorch.org/get-started/locally/ for the latest install command&lt;/span&gt;
+conda install pytorch torchvision torchaudio &lt;span class=&#34;nv&#34;&gt;cudatoolkit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;11.3 -c pytorch
 conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
 pip install kaggle
 
