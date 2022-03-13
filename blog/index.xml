@@ -14,6 +14,7 @@
         <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
         <description>&lt;h2 id=&#34;updates&#34;&gt;Updates&lt;/h2&gt;
 &lt;p&gt;2022-01-04: To quote AWS support, &amp;ldquo;Over the last few months, we have seen a rapid increase in customer demand for our high-performance GPU instances. Several AWS teams are still working around the clock to provision additional capacity for our customers and remediate this situation.&amp;rdquo; Currently it has been very difficult to launch &lt;code&gt;g4dn.xlarge&lt;/code&gt; spot instances without getting spot capacity error. I advise wait until night at East Coast to try again and launch &lt;code&gt;g4dn.2xlarge&lt;/code&gt; instead. Hopefully this situation gets improved before Spring semester starts.&lt;/p&gt;
+&lt;p&gt;2022-03-12: The resource crunch situation in &lt;code&gt;us-east-2&lt;/code&gt; seem to be improved.&lt;/p&gt;
 &lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose&lt;/p&gt;
@@ -136,8 +137,8 @@ to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
 &lt;td&gt;SSH&lt;/td&gt;
 &lt;td&gt;(auto)&lt;/td&gt;
 &lt;td&gt;(auto)&lt;/td&gt;
-&lt;td&gt;your.ip/32&lt;/td&gt;
-&lt;td&gt;SSH access restricted your own place&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Unrestricted in case your IP address changed&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;NFS&lt;/td&gt;
@@ -150,8 +151,8 @@ to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
 &lt;td&gt;Custom TCP&lt;/td&gt;
 &lt;td&gt;TCP&lt;/td&gt;
 &lt;td&gt;8888&lt;/td&gt;
-&lt;td&gt;your.ip/32&lt;/td&gt;
-&lt;td&gt;Jupyter Lab access restricted to your own place. Change this if you configured Jupyter Lab to use a different port&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Unrestricted Jupyter Lab access in case you want to access it from different IPs. Change this if you configured Jupyter Lab to use a different port. Not needed if you use the SSH port forwarding approach&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -185,7 +186,7 @@ to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
 &lt;td&gt;SSH&lt;/td&gt;
 &lt;td&gt;(auto)&lt;/td&gt;
 &lt;td&gt;(auto)&lt;/td&gt;
-&lt;td&gt;your.ip/32&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
 &lt;td&gt;Automatically added&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
@@ -219,6 +220,16 @@ insufficient resource and couldn&amp;rsquo;t be resumed, yikes!&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;h4 id=&#34;using-ephemeral-drive&#34;&gt;Using Ephemeral Drive&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;g4dn&lt;/code&gt; series comes with a ephemeral drive that can be used to store temporary data,
+such as unzipped training data. Be warned that any data stored in this drive will be erased
+when the instance is stopped, hence the name &amp;ldquo;ephemeral&amp;rdquo;. Its size varies with instance types.
+For example, &lt;code&gt;g4dn.xlarge&lt;/code&gt; comes with a 125GB drive and &lt;code&gt;g4dn.2xlarge&lt;/code&gt; comes with a 250GB drive.&lt;/p&gt;
+&lt;p&gt;Ephemeral drive is usually detected by Ubuntu OS as &lt;code&gt;/dev/nvme1n1&lt;/code&gt;. Follow the
+&lt;a class=&#34;link&#34; href=&#34;#mounting-an-ebs-volume-to-ec2&#34; &gt;guide&lt;/a&gt;
+below on mounting EBS volumes to mount this drive.
+In cases where this device name is occupied by a secondary EBS volume, it might be renamed as
+&lt;code&gt;/dev/nvme2n1&lt;/code&gt;.&lt;/p&gt;
 &lt;h3 id=&#34;suspend-vs-stop-vs-terminate&#34;&gt;Suspend vs Stop vs Terminate&lt;/h3&gt;
 &lt;p&gt;When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
 such that the any task that are running when the instance is suspended can resume once the instance
@@ -296,7 +307,7 @@ to its size (&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/AW
     &gt;up to 5,334 GB&lt;/a&gt;).
 Therefore, it seems to me that it&amp;rsquo;s better to allocate a large-enough EBS boot volume
 for AMI, training data and some buffer so that you get overall better performance.&lt;/p&gt;
-&lt;h3 id=&#34;mounting-a-ebs-volume-to-ec2&#34;&gt;Mounting a EBS volume to EC2&lt;/h3&gt;
+&lt;h3 id=&#34;mounting-an-ebs-volume-to-ec2&#34;&gt;Mounting an EBS volume to EC2&lt;/h3&gt;
 &lt;p&gt;In case you need some temporary storage, you can create a new EBS volume and attach it
 to your EC2 instance (&lt;strong&gt;in the same availability zone&lt;/strong&gt;) on AWS console.&lt;/p&gt;
 &lt;p&gt;Once you&amp;rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,

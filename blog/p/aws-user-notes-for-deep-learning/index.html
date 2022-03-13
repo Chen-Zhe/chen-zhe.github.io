@@ -129,7 +129,7 @@ if (!doNotTrack) {
 
 
                 <time class="article-time--reading">
-                    13 minute read
+                    14 minute read
                 </time>
             </div>
         
@@ -141,6 +141,7 @@ if (!doNotTrack) {
     <section class="article-content">
     <h2 id="updates">Updates</h2>
 <p>2022-01-04: To quote AWS support, &ldquo;Over the last few months, we have seen a rapid increase in customer demand for our high-performance GPU instances. Several AWS teams are still working around the clock to provision additional capacity for our customers and remediate this situation.&rdquo; Currently it has been very difficult to launch <code>g4dn.xlarge</code> spot instances without getting spot capacity error. I advise wait until night at East Coast to try again and launch <code>g4dn.2xlarge</code> instead. Hopefully this situation gets improved before Spring semester starts.</p>
+<p>2022-03-12: The resource crunch situation in <code>us-east-2</code> seem to be improved.</p>
 <h2 id="introduction">Introduction</h2>
 <p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose</p>
@@ -263,8 +264,8 @@ to increase. Just request for 64 vCores on all of following:</p>
 <td>SSH</td>
 <td>(auto)</td>
 <td>(auto)</td>
-<td>your.ip/32</td>
-<td>SSH access restricted your own place</td>
+<td>0.0.0.0/0</td>
+<td>Unrestricted in case your IP address changed</td>
 </tr>
 <tr>
 <td>NFS</td>
@@ -277,8 +278,8 @@ to increase. Just request for 64 vCores on all of following:</p>
 <td>Custom TCP</td>
 <td>TCP</td>
 <td>8888</td>
-<td>your.ip/32</td>
-<td>Jupyter Lab access restricted to your own place. Change this if you configured Jupyter Lab to use a different port</td>
+<td>0.0.0.0/0</td>
+<td>Unrestricted Jupyter Lab access in case you want to access it from different IPs. Change this if you configured Jupyter Lab to use a different port. Not needed if you use the SSH port forwarding approach</td>
 </tr>
 </tbody>
 </table>
@@ -312,7 +313,7 @@ to increase. Just request for 64 vCores on all of following:</p>
 <td>SSH</td>
 <td>(auto)</td>
 <td>(auto)</td>
-<td>your.ip/32</td>
+<td>0.0.0.0/0</td>
 <td>Automatically added</td>
 </tr>
 <tr>
@@ -346,6 +347,16 @@ insufficient resource and couldn&rsquo;t be resumed, yikes!</p>
 </ul>
 </li>
 </ul>
+<h4 id="using-ephemeral-drive">Using Ephemeral Drive</h4>
+<p><code>g4dn</code> series comes with a ephemeral drive that can be used to store temporary data,
+such as unzipped training data. Be warned that any data stored in this drive will be erased
+when the instance is stopped, hence the name &ldquo;ephemeral&rdquo;. Its size varies with instance types.
+For example, <code>g4dn.xlarge</code> comes with a 125GB drive and <code>g4dn.2xlarge</code> comes with a 250GB drive.</p>
+<p>Ephemeral drive is usually detected by Ubuntu OS as <code>/dev/nvme1n1</code>. Follow the
+<a class="link" href="#mounting-an-ebs-volume-to-ec2" >guide</a>
+below on mounting EBS volumes to mount this drive.
+In cases where this device name is occupied by a secondary EBS volume, it might be renamed as
+<code>/dev/nvme2n1</code>.</p>
 <h3 id="suspend-vs-stop-vs-terminate">Suspend vs Stop vs Terminate</h3>
 <p>When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
 such that the any task that are running when the instance is suspended can resume once the instance
@@ -423,7 +434,7 @@ to its size (<a class="link" href="https://docs.aws.amazon.com/AWSEC2/latest/Use
     >up to 5,334 GB</a>).
 Therefore, it seems to me that it&rsquo;s better to allocate a large-enough EBS boot volume
 for AMI, training data and some buffer so that you get overall better performance.</p>
-<h3 id="mounting-a-ebs-volume-to-ec2">Mounting a EBS volume to EC2</h3>
+<h3 id="mounting-an-ebs-volume-to-ec2">Mounting an EBS volume to EC2</h3>
 <p>In case you need some temporary storage, you can create a new EBS volume and attach it
 to your EC2 instance (<strong>in the same availability zone</strong>) on AWS console.</p>
 <p>Once you&rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,
@@ -800,7 +811,7 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
     </li>
     <li><a href="#ebs">EBS</a>
       <ul>
-        <li><a href="#mounting-a-ebs-volume-to-ec2">Mounting a EBS volume to EC2</a></li>
+        <li><a href="#mounting-an-ebs-volume-to-ec2">Mounting an EBS volume to EC2</a></li>
       </ul>
     </li>
     <li><a href="#efs">EFS</a>
