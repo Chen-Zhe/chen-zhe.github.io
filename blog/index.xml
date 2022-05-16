@@ -12,16 +12,27 @@
         <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
         
         <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
-        <description>&lt;h2 id=&#34;updates&#34;&gt;Updates&lt;/h2&gt;
-&lt;p&gt;2022-01-04: To quote AWS support, &amp;ldquo;Over the last few months, we have seen a rapid increase in customer demand for our high-performance GPU instances. Several AWS teams are still working around the clock to provision additional capacity for our customers and remediate this situation.&amp;rdquo; Currently it has been very difficult to launch &lt;code&gt;g4dn.xlarge&lt;/code&gt; spot instances without getting spot capacity error. I advise wait until night at East Coast to try again and launch &lt;code&gt;g4dn.2xlarge&lt;/code&gt; instead. Hopefully this situation gets improved before Spring semester starts.&lt;/p&gt;
-&lt;p&gt;2022-03-12: The resource crunch situation in &lt;code&gt;us-east-2&lt;/code&gt; seem to be improved.&lt;/p&gt;
-&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
-and here are my notes and observations about the platform for this purpose&lt;/p&gt;
+and here are my notes and observations about the platform for this purpose.&lt;/p&gt;
 &lt;p&gt;Overall speaking, AWS is a complex platform with a rather steep learning curve
-if I were to take advantage of services other than EC2 itself.&lt;/p&gt;
-&lt;p&gt;Here are my notes for services that I&amp;rsquo;ve used throughout the rapid-paced learning journey
+if I were to take advantage of services other than EC2 itself.
+Here are my notes for services that I&amp;rsquo;ve used throughout the fast-paced learning journey
 and hopefully they can be of help to others.&lt;/p&gt;
+&lt;p&gt;There are other platforms that offer competitive pricing for deep learning applications
+such as &lt;a class=&#34;link&#34; href=&#34;https://vast.ai/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;vast.ai&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://datacrunch.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;DataCrunch.io&lt;/a&gt;,
+but the basics of using remote machines for the purpose of deep learning should be
+transferrable.&lt;/p&gt;
+&lt;h3 id=&#34;recitation-videos-youtube&#34;&gt;Recitation Videos (YouTube)&lt;/h3&gt;
+&lt;p&gt;This is the recitation video series that I&amp;rsquo;ve made for
+the Fall 2021 version of 11-785 Introduction to Deep Learning at Carnegie Mellon University.
+It includes hands-on setups of a GPU-backed EC2 spot instance and a Conda+PyTorch environment using Deep Learning Base AMI (Ubuntu 18.04).&lt;/p&gt;
+&lt;p&gt;The following blog post is the companion writeup of this video series, though this post can also be referred to independently.&lt;/p&gt;
+&lt;p style=&#34;text-align:center&#34;&gt;
+&lt;iframe width=&#34;80%&#34; height=&#34;400&#34; src=&#34;https://www.youtube.com/embed/videoseries?list=PLjd84g1GiDh2HcLTo02dcpBKg2Wtmt3AD&#34; title=&#34;YouTube video player&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;glossary-with-section-link&#34;&gt;Glossary with Section Link&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
@@ -85,13 +96,13 @@ tar -xf efs/dl-env.tar &lt;span class=&#34;c1&#34;&gt;# will run for ~2 minutes&
 run the following command to (incrementally) update the tar&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;region&#34;&gt;Region&lt;/h2&gt;
-&lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia) us-east-1&lt;/em&gt; and &lt;em&gt;US East (Ohio) us-east-2&lt;/em&gt;
+&lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia)&lt;/em&gt; &lt;code&gt;us-east-1&lt;/code&gt; and &lt;em&gt;US East (Ohio)&lt;/em&gt; &lt;code&gt;us-east-2&lt;/code&gt;
 are basically their data centers located within the region. Network transit within region
 is free of charge but is chargeable otherwise.&lt;/p&gt;
 &lt;p&gt;Each region further divide into availability zones, such as &lt;code&gt;us-east-2a&lt;/code&gt;. EBS volumes
 created in a specific zone can only be mounted to EC2 instances within the same zone.&lt;/p&gt;
 &lt;p&gt;Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
-troublesome to me, so always backup important data in a shared file system like EFS.&lt;/p&gt;
+troublesome to me, so I recommend always backing up important data in a region-shared file system like EFS.&lt;/p&gt;
 &lt;h2 id=&#34;ec2&#34;&gt;EC2&lt;/h2&gt;
 &lt;p&gt;EC2 is a virtual machine service but you can only choose from their confusingly-named
 presets (CPU and memory combo) as opposed to custom configurations. I assume this is
@@ -262,10 +273,11 @@ is that it could be stopped by AWS at any time. But my experience shows that
 it doesn&amp;rsquo;t happen very often, at least in &lt;code&gt;us-east-2&lt;/code&gt;(Ohio).&lt;/p&gt;
 &lt;p&gt;If you do not check the &lt;strong&gt;Persistent request&lt;/strong&gt; box when launching a EC2 instance,
 the one-time-request spot instance will be terminated directly when it is stopped.&lt;/p&gt;
-&lt;p&gt;You must cancel the request from the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;p&gt;You &lt;strong&gt;must&lt;/strong&gt; cancel the request from the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Spot Requests&lt;/a&gt; page when you want to terminate the instance. Otherwise,
 a persistent request will relaunch the instance when you terminated it from the EC2
 management console.&lt;/p&gt;
+&lt;p&gt;If you are getting a &amp;ldquo;spot capacity error&amp;rdquo; message when launching &lt;code&gt;g4dn.xlarge&lt;/code&gt; spot instances, I advise waiting until nightfall at US East Coast and then try again, or try launching &lt;code&gt;g4dn.2xlarge&lt;/code&gt; instead.&lt;/p&gt;
 &lt;h3 id=&#34;ssh&#34;&gt;SSH&lt;/h3&gt;
 &lt;p&gt;Any SSH client would work, but I do highly recommend &lt;a class=&#34;link&#34; href=&#34;https://mobaxterm.mobatek.net/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;MobaXterm&lt;/a&gt;

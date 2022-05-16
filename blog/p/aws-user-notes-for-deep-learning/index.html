@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.'><title>AWS User Notes for Deep Learning</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-05-16.'><title>AWS User Notes for Deep Learning</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 
 <link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='AWS User Notes for Deep Learning'>
-<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.'>
+<meta property='og:description' content='The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-05-16.'>
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-01-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2021-01-27T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="AWS User Notes for Deep Learning">
-<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.">
+<meta name="twitter:description" content="The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-05-16.">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
 <link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
@@ -97,7 +97,7 @@ if (!doNotTrack) {
 
     
     <h3 class="article-subtitle">
-        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-02-19.
+        The meanings of some of the AWS terminologies and how to use these technologies effectively and efficiently for deep learning. Updated on 2022-05-16.
     </h3>
     
 
@@ -139,16 +139,27 @@ if (!doNotTrack) {
 </header>
 
     <section class="article-content">
-    <h2 id="updates">Updates</h2>
-<p>2022-01-04: To quote AWS support, &ldquo;Over the last few months, we have seen a rapid increase in customer demand for our high-performance GPU instances. Several AWS teams are still working around the clock to provision additional capacity for our customers and remediate this situation.&rdquo; Currently it has been very difficult to launch <code>g4dn.xlarge</code> spot instances without getting spot capacity error. I advise wait until night at East Coast to try again and launch <code>g4dn.2xlarge</code> instead. Hopefully this situation gets improved before Spring semester starts.</p>
-<p>2022-03-12: The resource crunch situation in <code>us-east-2</code> seem to be improved.</p>
-<h2 id="introduction">Introduction</h2>
+    <h2 id="introduction">Introduction</h2>
 <p>Recently I&rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
-and here are my notes and observations about the platform for this purpose</p>
+and here are my notes and observations about the platform for this purpose.</p>
 <p>Overall speaking, AWS is a complex platform with a rather steep learning curve
-if I were to take advantage of services other than EC2 itself.</p>
-<p>Here are my notes for services that I&rsquo;ve used throughout the rapid-paced learning journey
+if I were to take advantage of services other than EC2 itself.
+Here are my notes for services that I&rsquo;ve used throughout the fast-paced learning journey
 and hopefully they can be of help to others.</p>
+<p>There are other platforms that offer competitive pricing for deep learning applications
+such as <a class="link" href="https://vast.ai/"  target="_blank" rel="noopener"
+    >vast.ai</a> and <a class="link" href="https://datacrunch.io/"  target="_blank" rel="noopener"
+    >DataCrunch.io</a>,
+but the basics of using remote machines for the purpose of deep learning should be
+transferrable.</p>
+<h3 id="recitation-videos-youtube">Recitation Videos (YouTube)</h3>
+<p>This is the recitation video series that I&rsquo;ve made for
+the Fall 2021 version of 11-785 Introduction to Deep Learning at Carnegie Mellon University.
+It includes hands-on setups of a GPU-backed EC2 spot instance and a Conda+PyTorch environment using Deep Learning Base AMI (Ubuntu 18.04).</p>
+<p>The following blog post is the companion writeup of this video series, though this post can also be referred to independently.</p>
+<p style="text-align:center">
+<iframe width="80%" height="400" src="https://www.youtube.com/embed/videoseries?list=PLjd84g1GiDh2HcLTo02dcpBKg2Wtmt3AD" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</p>
 <h2 id="glossary-with-section-link">Glossary with Section Link</h2>
 <ul>
 <li><a class="link" href="#ec2" >EC2</a>: Elastic Compute Cloud</li>
@@ -212,13 +223,13 @@ tar -xf efs/dl-env.tar <span class="c1"># will run for ~2 minutes</span>
 run the following command to (incrementally) update the tar</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -uvf efs/dl-env.tar miniconda3/ .conda <span class="c1"># assuming environment update</span>
 </code></pre></div><h2 id="region">Region</h2>
-<p>AWS regions such as <em>US East (N. Virginia) us-east-1</em> and <em>US East (Ohio) us-east-2</em>
+<p>AWS regions such as <em>US East (N. Virginia)</em> <code>us-east-1</code> and <em>US East (Ohio)</em> <code>us-east-2</code>
 are basically their data centers located within the region. Network transit within region
 is free of charge but is chargeable otherwise.</p>
 <p>Each region further divide into availability zones, such as <code>us-east-2a</code>. EBS volumes
 created in a specific zone can only be mounted to EC2 instances within the same zone.</p>
 <p>Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
-troublesome to me, so always backup important data in a shared file system like EFS.</p>
+troublesome to me, so I recommend always backing up important data in a region-shared file system like EFS.</p>
 <h2 id="ec2">EC2</h2>
 <p>EC2 is a virtual machine service but you can only choose from their confusingly-named
 presets (CPU and memory combo) as opposed to custom configurations. I assume this is
@@ -389,10 +400,11 @@ is that it could be stopped by AWS at any time. But my experience shows that
 it doesn&rsquo;t happen very often, at least in <code>us-east-2</code>(Ohio).</p>
 <p>If you do not check the <strong>Persistent request</strong> box when launching a EC2 instance,
 the one-time-request spot instance will be terminated directly when it is stopped.</p>
-<p>You must cancel the request from the <a class="link" href="https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot"  target="_blank" rel="noopener"
+<p>You <strong>must</strong> cancel the request from the <a class="link" href="https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot"  target="_blank" rel="noopener"
     >Spot Requests</a> page when you want to terminate the instance. Otherwise,
 a persistent request will relaunch the instance when you terminated it from the EC2
 management console.</p>
+<p>If you are getting a &ldquo;spot capacity error&rdquo; message when launching <code>g4dn.xlarge</code> spot instances, I advise waiting until nightfall at US East Coast and then try again, or try launching <code>g4dn.2xlarge</code> instead.</p>
 <h3 id="ssh">SSH</h3>
 <p>Any SSH client would work, but I do highly recommend <a class="link" href="https://mobaxterm.mobatek.net/"  target="_blank" rel="noopener"
     >MobaXterm</a>
@@ -783,8 +795,11 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
                 <div class="widget--toc">
                     <nav id="TableOfContents">
   <ul>
-    <li><a href="#updates">Updates</a></li>
-    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#introduction">Introduction</a>
+      <ul>
+        <li><a href="#recitation-videos-youtube">Recitation Videos (YouTube)</a></li>
+      </ul>
+    </li>
     <li><a href="#glossary-with-section-link">Glossary with Section Link</a></li>
     <li><a href="#tldr-my-workflow">TL;DR. My Workflow</a>
       <ul>

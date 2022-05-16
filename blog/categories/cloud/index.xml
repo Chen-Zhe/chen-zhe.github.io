@@ -13,7 +13,8 @@
       <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
-      <description>Updates 2022-01-04: To quote AWS support, &amp;ldquo;Over the last few months, we have seen a rapid increase in customer demand for our high-performance GPU instances. Several AWS teams are still working around the clock to provision additional capacity for our customers and remediate this situation.&amp;rdquo; Currently it has been very difficult to launch g4dn.xlarge spot instances without getting spot capacity error. I advise wait until night at East Coast to try again and launch g4dn.</description>
+      <description>Introduction Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences, and here are my notes and observations about the platform for this purpose.
+Overall speaking, AWS is a complex platform with a rather steep learning curve if I were to take advantage of services other than EC2 itself. Here are my notes for services that I&amp;rsquo;ve used throughout the fast-paced learning journey and hopefully they can be of help to others.</description>
     </item>
     
   </channel>
