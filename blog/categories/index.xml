@@ -6,7 +6,16 @@
     <description>Recent content in Categories on 大白鲸笔记本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 23 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Notes</title>
+      <link>https://chen-zhe.github.io/blog/categories/notes/</link>
+      <pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://chen-zhe.github.io/blog/categories/notes/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Cloud</title>
       <link>https://chen-zhe.github.io/blog/categories/cloud/</link>
@@ -17,11 +26,11 @@
     </item>
     
     <item>
-      <title>Notes</title>
-      <link>https://chen-zhe.github.io/blog/categories/notes/</link>
+      <title>Deep Learning</title>
+      <link>https://chen-zhe.github.io/blog/categories/deep-learning/</link>
       <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/categories/notes/</guid>
+      <guid>https://chen-zhe.github.io/blog/categories/deep-learning/</guid>
       <description></description>
     </item>
     
@@ -58,15 +67,6 @@
       <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://chen-zhe.github.io/blog/categories/spark/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Optimization</title>
-      <link>https://chen-zhe.github.io/blog/categories/optimization/</link>
-      <pubDate>Fri, 28 Sep 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/categories/optimization/</guid>
       <description></description>
     </item>
     

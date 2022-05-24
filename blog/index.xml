@@ -6,7 +6,75 @@
         <description>Recent content on 大白鲸笔记本</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 23 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to be a better software engineer</title>
+        <link>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</link>
+        <pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid>
+        <description>&lt;p&gt;After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professor
+to understand how I can be a better software engineer in the future. Here are his advice
+that I feel are words to remember:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Know the full stack, not just how to build applications&lt;/p&gt;
+&lt;p&gt;The article I will refer to later had a few perfect examples: a bug in web indexing was
+ultimately traced to faulty hardware. Jeff Dean&amp;rsquo;s&amp;rsquo;background in compilers helped him
+to optimize code performance in applications that he helped to build later.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Do more than what you&amp;rsquo;re asked&lt;/p&gt;
+&lt;p&gt;If you do the same kinds of work as your next-level seniors, you would have more chance to
+get promoted to the next level.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Know the big picture, not just the piece of work that you are assigned to&lt;/p&gt;
+&lt;p&gt;There are people in every team who know the overall application architecture with a good amount of details,
+and everyone else depends on them
+whenever a new feature needs to be added or a bug needs to be ironed out.
+Be one of those people.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Present your work in an easy-to-understand manner&lt;/p&gt;
+&lt;p&gt;Most people can&amp;rsquo;t follow a presentation that is convoluted and complex, no matter how good the idea that was presented is.
+Presenting the same idea multiple times to different people can help you to improve the presentation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Learn from other people&amp;rsquo;s experience&lt;/p&gt;
+&lt;p&gt;Participate in CMU alumni events.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Professor recommended &lt;a class=&#34;link&#34; href=&#34;https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&amp;ldquo;The Friendship That Made Google Huge&amp;rdquo;&lt;/a&gt;&lt;/strong&gt;,
+which is long but well-written and insightful. It writes about the friendship of Jeff Dean and Sanjay Ghemawat, and how they
+they transformed Google, from the early days of debugging web indexing code,
+to building the scalable and fault-tolerant distributed computing framework &lt;em&gt;MapReduce&lt;/em&gt;,
+and deep learning framework &lt;em&gt;TensorFlow&lt;/em&gt;. Here are my notes on this reading:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Jeff’s Ph.D. focussed on compilers, but he ended up working on application frameworks unrelated to the field that
+he was trained on. Yet, what he learned was still helpful in certain ways. I learned that the concept of &lt;code&gt;map&lt;/code&gt; and &lt;code&gt;reduce&lt;/code&gt;
+came from Lisp, and knowing details close to the hardware helped him to write more efficient code. It probably also helped him to understand TPU chip designs.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Barbara Liskov, who is Sanjay&amp;rsquo;s advisor, studied the the management of complex code bases. She believes that best code is like a good piece of writing. It needs a carefully realized structure; every word should do work. Programming this way requires empathy with readers. Code files should have the right balance of information density on a single screen. Hooks can be placed in code for future additions of new functionalities (perhaps instead of simply optimizing for simplicity at the time of coding).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Latency Numbers Every Programmer Should Know: an L1 cache reference usually takes 0.5ns; reading 1MB sequentially from memory takes 250ms.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pair programming, not for redundancy but for collaboration, worked really well for Jeff and Sanjay. François Jacob wrote: &amp;ldquo;Two are better than one for dreaming up theories and constructing models, For with two minds working on a problem, ideas fly thicker and faster. They are bounced from partner to partner &amp;hellip; And in the process, illusions are sooner nipped in the bud.&amp;rdquo; This practice is common in the field of Physiology or Medicine, but still rare in programming.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Jeff has a restless nature: a problem becomes less interesting to him once he can see the shape of its solution. In 2011, he started working on AI in collaboration with Andrew Ng and ultimately proved that AI can work for Google given its sufficient scale of data. I feel that this attitude is important in making Jeff always a leader in the waves of technology revolutions.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Google&amp;rsquo;s career levels as of 2018. Level 1 are the I.T. support staff. Level 2s are fresh out of college; Level 3s often have master’s degrees. Getting to Level 4 takes several years, or a Ph.D. Most progression stops at Level 5. Level 6 engineers — the top ten percent — are so capable that they could be said to be the reason a project succeeds; Level 7s are Level 6s with a long track record. Principal Engineers, the Level 8s, are associated with a major product or piece of infrastructure. Distinguished Engineers, the Level 9s, are spoken of with reverence. To become a Google Fellow, a Level 10, is to win an honor that will follow you for life. Google Fellows are usually the world’s leading experts in their fields. Jeff and Sanjay are Google Senior Fellows — the company’s first and only Level 11s.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        <item>
         <title>AWS User Notes for Deep Learning</title>
         <link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link>
         <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>

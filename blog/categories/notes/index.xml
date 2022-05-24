@@ -6,15 +6,16 @@
     <description>Recent content in Notes on 大白鲸笔记本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/notes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 23 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/notes/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>AWS User Notes for Deep Learning</title>
-      <link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link>
-      <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
+      <title>How to be a better software engineer</title>
+      <link>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</link>
+      <pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
-      <description>Introduction Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences, and here are my notes and observations about the platform for this purpose.
-Overall speaking, AWS is a complex platform with a rather steep learning curve if I were to take advantage of services other than EC2 itself. Here are my notes for services that I&amp;rsquo;ve used throughout the fast-paced learning journey and hopefully they can be of help to others.</description>
+      <guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid>
+      <description>After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professor to understand how I can be a better software engineer in the future. Here are his advice that I feel are words to remember:
+  Know the full stack, not just how to build applications
+The article I will refer to later had a few perfect examples: a bug in web indexing was ultimately traced to faulty hardware.</description>
     </item>
     
     <item>
@@ -26,15 +27,6 @@ Overall speaking, AWS is a complex platform with a rather steep learning curve i
       <description>TL;DR
 To pose myself as a good software engineer candidate, I need to:
  Demonstrate passion to learn Provide more utility to the job position as a senior engineer Keep my resume short and relevant Tailor my resume for each position that I apply to Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to Not forget about the basics of computing (data structure and algorithms) Demonstrate Passion for coding  Background In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product.</description>
-    </item>
-    
-    <item>
-      <title>Basic usage of GraphX for clique detection</title>
-      <link>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</link>
-      <pubDate>Sat, 15 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</guid>
-      <description>GraphX is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on RDD and not DataFrame as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called GraphFrames is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.</description>
     </item>
     
   </channel>
