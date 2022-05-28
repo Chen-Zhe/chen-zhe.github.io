@@ -12,8 +12,8 @@
         <pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate>
         
         <guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid>
-        <description>&lt;p&gt;After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professor
-to understand how I can be a better software engineer in the future. Here are his advice
+        <description>&lt;p&gt;After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professors
+before I embark (again) on a journey to be a better software engineer. Here are his advice
 that I feel are words to remember:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -41,10 +41,29 @@ Presenting the same idea multiple times to different people can help you to impr
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Learn from other people&amp;rsquo;s experience&lt;/p&gt;
-&lt;p&gt;Participate in CMU alumni events.&lt;/p&gt;
+&lt;p&gt;Participate in CMU alumni events. Talk to other people.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Keep learning&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s probably scientifically known that an active brain dies slower, and learning helps to the brain active.
+The subject of learning doesn&amp;rsquo;t have to be academic. Learning a new language can be fun.
+I wanted to learn Japanese more systematically after watching anime.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Join a paper-reading group for a certain conference&lt;/p&gt;
+&lt;p&gt;Since I&amp;rsquo;ll be doing NLP-related work, it&amp;rsquo;s probably a good idea to find such group for NeurIPS within Google,
+which likely exists.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Be prepared for outages in California&lt;/p&gt;
+&lt;p&gt;Store 7 gallons = 26.5L of water per person (1 gallon = 3.78L per day) in the household in case of water outages.&lt;/p&gt;
+&lt;p&gt;Get an Iridium-capable &lt;a class=&#34;link&#34; href=&#34;https://discover.garmin.com/en-US/inreach/personal/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Garmin InReach&lt;/a&gt; and subscribe to a text-message-only plan
+in case of power outages that also take down cellular and wired network. It also comes in handy during trekking.&lt;/p&gt;
+&lt;p&gt;Get a good power bank&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Professor recommended &lt;a class=&#34;link&#34; href=&#34;https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;p&gt;&lt;strong&gt;A professor recommended &lt;a class=&#34;link&#34; href=&#34;https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;&amp;ldquo;The Friendship That Made Google Huge&amp;rdquo;&lt;/a&gt;&lt;/strong&gt;,
 which is long but well-written and insightful. It writes about the friendship of Jeff Dean and Sanjay Ghemawat, and how they
 they transformed Google, from the early days of debugging web indexing code,
