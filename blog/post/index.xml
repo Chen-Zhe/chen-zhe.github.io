@@ -14,7 +14,7 @@
       
       <guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid>
       <description>After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professors before I embark (again) on a journey to be a better software engineer. Here are his advice that I feel are words to remember:
-  Know the full stack, not just how to build applications
+Know the full stack, not just how to build applications
 The article I will refer to later had a few perfect examples: a bug in web indexing was ultimately traced to faulty hardware.</description>
     </item>
     
@@ -36,7 +36,7 @@ Overall speaking, AWS is a complex platform with a rather steep learning curve i
       <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
       <description>TL;DR
 To pose myself as a good software engineer candidate, I need to:
- Demonstrate passion to learn Provide more utility to the job position as a senior engineer Keep my resume short and relevant Tailor my resume for each position that I apply to Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to Not forget about the basics of computing (data structure and algorithms) Demonstrate Passion for coding  Background In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product.</description>
+Demonstrate passion to learn Provide more utility to the job position as a senior engineer Keep my resume short and relevant Tailor my resume for each position that I apply to Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to Not forget about the basics of computing (data structure and algorithms) Demonstrate Passion for coding Background In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product.</description>
     </item>
     
     <item>
@@ -46,7 +46,7 @@ To pose myself as a good software engineer candidate, I need to:
       
       <guid>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</guid>
       <description>Presentation video at IEEE WCNC 2020
-When I was with DataSpark, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost.</description>
+When I was with DataSpark, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost.</description>
     </item>
     
     <item>

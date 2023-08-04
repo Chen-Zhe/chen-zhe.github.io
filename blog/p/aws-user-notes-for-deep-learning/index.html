@@ -173,18 +173,18 @@ It includes hands-on setups of a GPU-backed EC2 spot instance and a Conda+PyTorc
 <h3 id="1-configure-custom-deep-learning-environment">1. Configure Custom Deep Learning Environment</h3>
 <p>Install miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
 and installed all necessary packages such as PyTorch and pandas:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Miniconda with Python 3.8</span>
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-chmod u+x Miniconda3-latest-Linux-x86_64.sh <span class="c1"># make it executable</span>
-./Miniconda3-latest-Linux-x86_64.sh <span class="c1"># start installer</span>
-
-<span class="c1"># Check https://pytorch.org/get-started/locally/ for the latest install command</span>
-conda install pytorch torchvision torchaudio <span class="nv">cudatoolkit</span><span class="o">=</span>11.3 -c pytorch
-conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
-pip install kaggle
-
-conda clean -a <span class="c1"># remove downloaded package zips</span>
-</code></pre></div><p>While installing Jupyter Lab, Conda will automatically install its dependencies,
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Miniconda with Python 3.8</span>
+</span></span><span class="line"><span class="cl">wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+</span></span><span class="line"><span class="cl">chmod u+x Miniconda3-latest-Linux-x86_64.sh <span class="c1"># make it executable</span>
+</span></span><span class="line"><span class="cl">./Miniconda3-latest-Linux-x86_64.sh <span class="c1"># start installer</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Check https://pytorch.org/get-started/locally/ for the latest install command</span>
+</span></span><span class="line"><span class="cl">conda install pytorch torchvision torchaudio <span class="nv">cudatoolkit</span><span class="o">=</span>11.3 -c pytorch
+</span></span><span class="line"><span class="cl">conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
+</span></span><span class="line"><span class="cl">pip install kaggle
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">conda clean -a <span class="c1"># remove downloaded package zips</span>
+</span></span></code></pre></div><p>While installing Jupyter Lab, Conda will automatically install its dependencies,
 such as <code>ipython</code>.</p>
 <h3 id="2-configure-kaggle-and-jupyter-lab-access">2. Configure Kaggle and Jupyter Lab Access</h3>
 <p>Store your Kaggle key (<code>kaggle.json</code>) in the <code>.kaggle</code> folder under <code>/home/ubuntu/</code>.</p>
@@ -192,36 +192,36 @@ such as <code>ipython</code>.</p>
 <p>For Jupyter Lab, follow the <a class="link" href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html"  target="_blank" rel="noopener"
     >docs</a> to configuring external access. But the following shows a simpler version:</p>
 <p>Generate hashed Jupyter Lab password by running the following piece of Python code:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">notebook.auth</span> <span class="kn">import</span> <span class="n">passwd</span>
-<span class="n">my_password</span> <span class="o">=</span> <span class="s2">&#34;password&#34;</span> <span class="c1"># set your desired password here</span>
-<span class="n">hashed_password</span> <span class="o">=</span> <span class="n">passwd</span><span class="p">(</span><span class="n">passphrase</span><span class="o">=</span><span class="n">my_password</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">hashed_password</span><span class="p">)</span> <span class="c1"># copy the hashed password</span>
-</code></pre></div><p>Then create a new file <code>jupyter_server_config.py</code> under <code>.jupyter</code> folder
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">notebook.auth</span> <span class="kn">import</span> <span class="n">passwd</span>
+</span></span><span class="line"><span class="cl"><span class="n">my_password</span> <span class="o">=</span> <span class="s2">&#34;password&#34;</span> <span class="c1"># set your desired password here</span>
+</span></span><span class="line"><span class="cl"><span class="n">hashed_password</span> <span class="o">=</span> <span class="n">passwd</span><span class="p">(</span><span class="n">passphrase</span><span class="o">=</span><span class="n">my_password</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sha256&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">hashed_password</span><span class="p">)</span> <span class="c1"># copy the hashed password</span>
+</span></span></code></pre></div><p>Then create a new file <code>jupyter_server_config.py</code> under <code>.jupyter</code> folder
 in the home directory with the following content:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
-<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha256:bcd259ccf...&lt;your hashed password here&gt;&#39;</span>
-<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># or any other ports you&#39;d like</span>
-</code></pre></div><h4 id="jupyter-lab-access-method-2-port-forwarding">Jupyter Lab Access Method 2: Port Forwarding</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="c1"># bind to any network interface</span>
+</span></span><span class="line"><span class="cl"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;sha256:bcd259ccf...&lt;your hashed password here&gt;&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">open_browser</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl"><span class="n">c</span><span class="o">.</span><span class="n">ServerApp</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">8888</span> <span class="c1"># or any other ports you&#39;d like</span>
+</span></span></code></pre></div><h4 id="jupyter-lab-access-method-2-port-forwarding">Jupyter Lab Access Method 2: Port Forwarding</h4>
 <p>Alternatively, you can use SSH port forwarding with the following command running on your local computer. In this case, access <code>127.0.0.1:8889</code> or <code>localhost:8889</code> while this command is running. Here, I have changed the local forwarding port to 8889 to avoid potential port conflict with your local Jupyter.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">ssh -N -L 8889:localhost:8888 -i your-aws.pem ubuntu@your-ec2-ip-address
-</code></pre></div><h3 id="3-tar-the-configured-environment-and-save-to-efs">3. Tar the configured environment and save to EFS</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
-</code></pre></div><p>Note that I didn&rsquo;t use the <code>z</code> option to compress the files, as my tests showed that
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ssh -N -L 8889:localhost:8888 -i your-aws.pem ubuntu@your-ec2-ip-address
+</span></span></code></pre></div><h3 id="3-tar-the-configured-environment-and-save-to-efs">3. Tar the configured environment and save to EFS</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+</span></span></code></pre></div><p>Note that I didn&rsquo;t use the <code>z</code> option to compress the files, as my tests showed that
 due to the sheer number of files that I&rsquo;m putting into this archive,
 adding compression <em>significantly</em> slows down the tar/untar process and time is
 much more valuable than the cost of extra storage space required.</p>
 <h3 id="4-deploy-saved-environment-in-a-new-ec2-instance">4. Deploy Saved Environment in a new EC2 instance</h3>
 <p>Launch a new instance with pre-configured security group and run</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># first connect to EFS and with working directory as ~</span>
-tar -xf efs/dl-env.tar <span class="c1"># will run for ~2 minutes</span>
-<span class="nb">source</span> .bashrc
-</code></pre></div><p>Voila, the conda environment is up and running!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># first connect to EFS and with working directory as ~</span>
+</span></span><span class="line"><span class="cl">tar -xf efs/dl-env.tar <span class="c1"># will run for ~2 minutes</span>
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> .bashrc
+</span></span></code></pre></div><p>Voila, the conda environment is up and running!</p>
 <h3 id="5-update-saved-environment">5. Update Saved Environment</h3>
 <p>If you made any changes to your environment, e.g. installed new packages,
 run the following command to (incrementally) update the tar</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">tar -uvf efs/dl-env.tar miniconda3/ .conda <span class="c1"># assuming environment update</span>
-</code></pre></div><h2 id="region">Region</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tar -uvf efs/dl-env.tar miniconda3/ .conda <span class="c1"># assuming environment update</span>
+</span></span></code></pre></div><h2 id="region">Region</h2>
 <p>AWS regions such as <em>US East (N. Virginia)</em> <code>us-east-1</code> and <em>US East (Ohio)</em> <code>us-east-2</code>
 are basically their data centers located within the region. Network transit within region
 is free of charge but is chargeable otherwise.</p>
@@ -411,8 +411,8 @@ for Windows users (I&rsquo;m one).</p>
 <p>You would need a key pair to access the EC2 instance. This file can be generated
 when launching the EC2 instance and reused. Each key can only be downloaded once
 so don&rsquo;t lose it. The full command line using ssh would look like:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
-</code></pre></div><p>Username would be <code>ec2-user</code> for regular Amazon AMIs and <code>ubuntu</code> for AWS Deep Learning AMI.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
+</span></span></code></pre></div><p>Username would be <code>ec2-user</code> for regular Amazon AMIs and <code>ubuntu</code> for AWS Deep Learning AMI.</p>
 <h3 id="ami">AMI</h3>
 <p>AMI is basically a prepackaged system disk image with pre-configured environment.</p>
 <p>I&rsquo;m really impressed with its boot speed, which only takes a few seconds.
@@ -607,7 +607,7 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
     <div class="disqus-container">
     <div id="disqus_thread"></div>
 <script type="application/javascript">
-    var disqus_config = function () {
+    window.disqus_config = function () {
     
     
     
@@ -654,7 +654,7 @@ This assume that your S3 bucket is created in <code>us-east-2</code></p>
         
             2018 - 
         
-        2022 陈哲 Chen Zhe
+        2023 陈哲 Chen Zhe
     </section>
     
     <section class="powerby">

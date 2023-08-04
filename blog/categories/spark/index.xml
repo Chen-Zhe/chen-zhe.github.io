@@ -14,7 +14,7 @@
       
       <guid>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</guid>
       <description>Presentation video at IEEE WCNC 2020
-When I was with DataSpark, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost.</description>
+When I was with DataSpark, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost.</description>
     </item>
     
     <item>
