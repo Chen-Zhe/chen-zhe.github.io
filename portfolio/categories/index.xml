@@ -4,7 +4,8 @@
     <title>Categories on Zhe&#39;s Photo Gallery</title>
     <link>https://chen-zhe.github.io/portfolio/categories/</link>
     <description>Recent content in Categories on Zhe&#39;s Photo Gallery</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://chen-zhe.github.io/portfolio/categories/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="https://chen-zhe.github.io/portfolio/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
