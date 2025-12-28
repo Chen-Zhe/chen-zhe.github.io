@@ -2,51 +2,51 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Zhe&#39;s Photo Gallery</title>
-    <link>https://chen-zhe.github.io/portfolio/</link>
+    <link>https://chen-zhe.github.io/gallery/</link>
     <description>Recent content on Zhe&#39;s Photo Gallery</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <atom:link href="https://chen-zhe.github.io/portfolio/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://chen-zhe.github.io/gallery/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fireworks</title>
-      <link>https://chen-zhe.github.io/portfolio/photo/5-fireworks/</link>
+      <link>https://chen-zhe.github.io/gallery/photo/5-fireworks/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://chen-zhe.github.io/portfolio/photo/5-fireworks/</guid>
+      <guid>https://chen-zhe.github.io/gallery/photo/5-fireworks/</guid>
       <description></description>
     </item>
     <item>
       <title>In Flight</title>
-      <link>https://chen-zhe.github.io/portfolio/photo/2-in-flight/</link>
+      <link>https://chen-zhe.github.io/gallery/photo/2-in-flight/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://chen-zhe.github.io/portfolio/photo/2-in-flight/</guid>
+      <guid>https://chen-zhe.github.io/gallery/photo/2-in-flight/</guid>
       <description></description>
     </item>
     <item>
       <title>Newly Added</title>
-      <link>https://chen-zhe.github.io/portfolio/photo/0-newly-added/</link>
+      <link>https://chen-zhe.github.io/gallery/photo/0-newly-added/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://chen-zhe.github.io/portfolio/photo/0-newly-added/</guid>
+      <guid>https://chen-zhe.github.io/gallery/photo/0-newly-added/</guid>
       <description></description>
     </item>
     <item>
       <title>Starry Nights</title>
-      <link>https://chen-zhe.github.io/portfolio/photo/1-starry-night/</link>
+      <link>https://chen-zhe.github.io/gallery/photo/1-starry-night/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://chen-zhe.github.io/portfolio/photo/1-starry-night/</guid>
+      <guid>https://chen-zhe.github.io/gallery/photo/1-starry-night/</guid>
       <description></description>
     </item>
     <item>
       <title>Telephoto</title>
-      <link>https://chen-zhe.github.io/portfolio/photo/4-telephoto/</link>
+      <link>https://chen-zhe.github.io/gallery/photo/4-telephoto/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://chen-zhe.github.io/portfolio/photo/4-telephoto/</guid>
+      <guid>https://chen-zhe.github.io/gallery/photo/4-telephoto/</guid>
       <description></description>
     </item>
     <item>
       <title>Vantage Point</title>
-      <link>https://chen-zhe.github.io/portfolio/photo/3-vantage-point/</link>
+      <link>https://chen-zhe.github.io/gallery/photo/3-vantage-point/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://chen-zhe.github.io/portfolio/photo/3-vantage-point/</guid>
+      <guid>https://chen-zhe.github.io/gallery/photo/3-vantage-point/</guid>
       <description></description>
     </item>
   </channel>
