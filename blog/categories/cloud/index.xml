@@ -1,21 +1,524 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Cloud on 大白鲸笔记本</title>
-    <link>https://chen-zhe.github.io/blog/categories/cloud/</link>
-    <description>Recent content in Cloud on 大白鲸笔记本</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/cloud/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>AWS User Notes for Deep Learning</title>
-      <link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link>
-      <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
-      <description>Introduction Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences, and here are my notes and observations about the platform for this purpose.
-Overall speaking, AWS is a complex platform with a rather steep learning curve if I were to take advantage of services other than EC2 itself. Here are my notes for services that I&amp;rsquo;ve used throughout the fast-paced learning journey and hopefully they can be of help to others.</description>
-    </item>
-    
-  </channel>
+    <channel>
+        <title>Cloud on 大白鲸笔记本</title>
+        <link>https://chen-zhe.github.io/blog/categories/cloud/</link>
+        <description>Recent content in Cloud on 大白鲸笔记本</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 27 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/cloud/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>AWS User Notes for Deep Learning</title>
+        <link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link>
+        <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
+        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
+and here are my notes and observations about the platform for this purpose.&lt;/p&gt;
+&lt;p&gt;Overall speaking, AWS is a complex platform with a rather steep learning curve
+if I were to take advantage of services other than EC2 itself.
+Here are my notes for services that I&amp;rsquo;ve used throughout the fast-paced learning journey
+and hopefully they can be of help to others.&lt;/p&gt;
+&lt;p&gt;There are other platforms that offer competitive pricing for deep learning applications
+such as &lt;a class=&#34;link&#34; href=&#34;https://vast.ai/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;vast.ai&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://datacrunch.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;DataCrunch.io&lt;/a&gt;,
+but the basics of using remote machines for the purpose of deep learning should be
+transferrable.&lt;/p&gt;
+&lt;h3 id=&#34;recitation-videos-youtube&#34;&gt;Recitation Videos (YouTube)
+&lt;/h3&gt;&lt;p&gt;This is the recitation video series that I&amp;rsquo;ve made for
+the Fall 2021 version of 11-785 Introduction to Deep Learning at Carnegie Mellon University.
+It includes hands-on setups of a GPU-backed EC2 spot instance and a Conda+PyTorch environment using Deep Learning Base AMI (Ubuntu 18.04).&lt;/p&gt;
+&lt;p&gt;The following blog post is the companion writeup of this video series, though this post can also be referred to independently.&lt;/p&gt;
+&lt;p style=&#34;text-align:center&#34;&gt;
+&lt;iframe width=&#34;80%&#34; height=&#34;400&#34; src=&#34;https://www.youtube.com/embed/videoseries?list=PLjd84g1GiDh2HcLTo02dcpBKg2Wtmt3AD&#34; title=&#34;YouTube video player&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/p&gt;
+&lt;h2 id=&#34;glossary-with-section-link&#34;&gt;Glossary with Section Link
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ssh&#34; &gt;SSH&lt;/a&gt;: Secure Shell&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ami&#34; &gt;AMI&lt;/a&gt;: Amazon Machine Image&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ebs&#34; &gt;EBS&lt;/a&gt;: Elastic Block Storage&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#efs&#34; &gt;EFS&lt;/a&gt;: Elastic File System&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#s3&#34; &gt;S3&lt;/a&gt;: Simple Storage Service&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#access-s3-bucket-in-ec2&#34; &gt;IAM&lt;/a&gt;: Identity and Access Management&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow
+&lt;/h2&gt;&lt;h3 id=&#34;1-configure-custom-deep-learning-environment&#34;&gt;1. Configure Custom Deep Learning Environment
+&lt;/h3&gt;&lt;p&gt;Install miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
+and installed all necessary packages such as PyTorch and pandas:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# make it executable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Check https://pytorch.org/get-started/locally/ for the latest install command&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda install pytorch torchvision torchaudio &lt;span class=&#34;nv&#34;&gt;cudatoolkit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;11.3 -c pytorch
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pip install kaggle
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;While installing Jupyter Lab, Conda will automatically install its dependencies,
+such as &lt;code&gt;ipython&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;2-configure-kaggle-and-jupyter-lab-access&#34;&gt;2. Configure Kaggle and Jupyter Lab Access
+&lt;/h3&gt;&lt;p&gt;Store your Kaggle key (&lt;code&gt;kaggle.json&lt;/code&gt;) in the &lt;code&gt;.kaggle&lt;/code&gt; folder under &lt;code&gt;/home/ubuntu/&lt;/code&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;jupyter-lab-access-method-1-external-access&#34;&gt;Jupyter Lab Access Method 1: External Access
+&lt;/h4&gt;&lt;p&gt;For Jupyter Lab, follow the &lt;a class=&#34;link&#34; href=&#34;https://jupyter-notebook.readthedocs.io/en/stable/public_server.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docs&lt;/a&gt; to configuring external access. But the following shows a simpler version:&lt;/p&gt;
+&lt;p&gt;Generate hashed Jupyter Lab password by running the following piece of Python code:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;notebook.auth&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;my_password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;password&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# set your desired password here&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;hashed_password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;passphrase&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;my_password&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;algorithm&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha256&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hashed_password&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy the hashed password&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Then create a new file &lt;code&gt;jupyter_server_config.py&lt;/code&gt; under &lt;code&gt;.jupyter&lt;/code&gt; folder
+in the home directory with the following content:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha256:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;jupyter-lab-access-method-2-port-forwarding&#34;&gt;Jupyter Lab Access Method 2: Port Forwarding
+&lt;/h4&gt;&lt;p&gt;Alternatively, you can use SSH port forwarding with the following command running on your local computer. In this case, access &lt;code&gt;127.0.0.1:8889&lt;/code&gt; or &lt;code&gt;localhost:8889&lt;/code&gt; while this command is running. Here, I have changed the local forwarding port to 8889 to avoid potential port conflict with your local Jupyter.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh -N -L 8889:localhost:8888 -i your-aws.pem ubuntu@your-ec2-ip-address
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;3-tar-the-configured-environment-and-save-to-efs&#34;&gt;3. Tar the configured environment and save to EFS
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Note that I didn&amp;rsquo;t use the &lt;code&gt;z&lt;/code&gt; option to compress the files, as my tests showed that
+due to the sheer number of files that I&amp;rsquo;m putting into this archive,
+adding compression &lt;em&gt;significantly&lt;/em&gt; slows down the tar/untar process and time is
+much more valuable than the cost of extra storage space required.&lt;/p&gt;
+&lt;h3 id=&#34;4-deploy-saved-environment-in-a-new-ec2-instance&#34;&gt;4. Deploy Saved Environment in a new EC2 instance
+&lt;/h3&gt;&lt;p&gt;Launch a new instance with pre-configured security group and run&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS and with working directory as ~&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tar -xf efs/dl-env.tar &lt;span class=&#34;c1&#34;&gt;# will run for ~2 minutes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt; .bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Voila, the conda environment is up and running!&lt;/p&gt;
+&lt;h3 id=&#34;5-update-saved-environment&#34;&gt;5. Update Saved Environment
+&lt;/h3&gt;&lt;p&gt;If you made any changes to your environment, e.g. installed new packages,
+run the following command to (incrementally) update the tar&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;region&#34;&gt;Region
+&lt;/h2&gt;&lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia)&lt;/em&gt; &lt;code&gt;us-east-1&lt;/code&gt; and &lt;em&gt;US East (Ohio)&lt;/em&gt; &lt;code&gt;us-east-2&lt;/code&gt;
+are basically their data centers located within the region. Network transit within region
+is free of charge but is chargeable otherwise.&lt;/p&gt;
+&lt;p&gt;Each region further divide into availability zones, such as &lt;code&gt;us-east-2a&lt;/code&gt;. EBS volumes
+created in a specific zone can only be mounted to EC2 instances within the same zone.&lt;/p&gt;
+&lt;p&gt;Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
+troublesome to me, so I recommend always backing up important data in a region-shared file system like EFS.&lt;/p&gt;
+&lt;h2 id=&#34;ec2&#34;&gt;EC2
+&lt;/h2&gt;&lt;p&gt;EC2 is a virtual machine service but you can only choose from their confusingly-named
+presets (CPU and memory combo) as opposed to custom configurations. I assume this is
+to simplify their scheduling algorithm.&lt;/p&gt;
+&lt;h3 id=&#34;increase-limit&#34;&gt;Increase Limit
+&lt;/h3&gt;&lt;p&gt;Newly registered AWS users have to first manually increase their limits/service quota
+in order to launch bigger instances or use GPU-backed instances.&lt;/p&gt;
+&lt;p&gt;Here&amp;rsquo;s the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;URL&lt;/a&gt;
+to AWS console&amp;rsquo;s limit page such that you can increase it. Here are the ones you need to make request
+to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Running instances
+&lt;ul&gt;
+&lt;li&gt;Running On-Demand All G instances&lt;/li&gt;
+&lt;li&gt;Running On-Demand All P instances&lt;/li&gt;
+&lt;li&gt;Running On-Demand All Standard (A, C, D, H, I, M, R, T, Z) instances&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Requested instances
+&lt;ul&gt;
+&lt;li&gt;All G Spot Instance Requests&lt;/li&gt;
+&lt;li&gt;All P Spot Instance Requests&lt;/li&gt;
+&lt;li&gt;All Standard (A, C, D, H, I, M, R, T, Z) Spot Instance Requests&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;security-group&#34;&gt;Security Group
+&lt;/h3&gt;&lt;p&gt;It&amp;rsquo;s basically like an old-school firewall that allows network access on specific ports.&lt;/p&gt;
+&lt;p&gt;Necessary inbound rules&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Type&lt;/th&gt;
+          &lt;th&gt;Protocol&lt;/th&gt;
+          &lt;th&gt;Port Range&lt;/th&gt;
+          &lt;th&gt;Source&lt;/th&gt;
+          &lt;th&gt;Reason&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;SSH&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
+          &lt;td&gt;Unrestricted in case your IP address changed&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;NFS&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;Security group attached to EC2 (I just use the same one)&lt;/td&gt;
+          &lt;td&gt;Allow EFS access&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Custom TCP&lt;/td&gt;
+          &lt;td&gt;TCP&lt;/td&gt;
+          &lt;td&gt;8888&lt;/td&gt;
+          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
+          &lt;td&gt;Unrestricted Jupyter Lab access in case you want to access it from different IPs. Change this if you configured Jupyter Lab to use a different port. Not needed if you use the SSH port forwarding approach&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Necessary outbound rules&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;Type&lt;/th&gt;
+          &lt;th&gt;Protocol&lt;/th&gt;
+          &lt;th&gt;Port Range&lt;/th&gt;
+          &lt;th&gt;Destination&lt;/th&gt;
+          &lt;th&gt;Reason&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;HTTP&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
+          &lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;HTTPS&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
+          &lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;SSH&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
+          &lt;td&gt;Automatically added&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;NFS&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;(auto)&lt;/td&gt;
+          &lt;td&gt;Security group attached to EC2&lt;/td&gt;
+          &lt;td&gt;Automatically added&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;type-selection&#34;&gt;Type Selection
+&lt;/h3&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/instance-types/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;EC2 instance type and name list&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;For machine learning, compute-optimized C5 series makes the most sense due to their
+higher CPU-to-memory ratio. I used &lt;code&gt;c5.24xlarge&lt;/code&gt; (with 96 vCores) for tasks that can take advantage of
+multiple cores.&lt;/p&gt;
+&lt;p&gt;As a side note, C5a instances uses AMD EPYC processors and there&amp;rsquo;s a limited
+number of them, so one of my extra-large instance using C5a was stopped due to
+insufficient resource and couldn&amp;rsquo;t be resumed, yikes!&lt;/p&gt;
+&lt;p&gt;For deep learning, G series is a good choice. Specifically for single GPU training:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;g4dn.xlarge&lt;/code&gt;: 4 vCores, 16GB memory and a Tesla T4
+&lt;ul&gt;
+&lt;li&gt;Spot pricing: ~0.158 USD/Hour&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;p3.2xlarge&lt;/code&gt;: 8 vCores, 61GB memory and a Tesla V100
+&lt;ul&gt;
+&lt;li&gt;Spot pricing: ~0.918 USD/Hour&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;using-ephemeral-drive&#34;&gt;Using Ephemeral Drive
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;g4dn&lt;/code&gt; series comes with a ephemeral drive that can be used to store temporary data,
+such as unzipped training data. Be warned that any data stored in this drive will be erased
+when the instance is stopped, hence the name &amp;ldquo;ephemeral&amp;rdquo;. Its size varies with instance types.
+For example, &lt;code&gt;g4dn.xlarge&lt;/code&gt; comes with a 125GB drive and &lt;code&gt;g4dn.2xlarge&lt;/code&gt; comes with a 250GB drive.&lt;/p&gt;
+&lt;p&gt;Ephemeral drive is usually detected by Ubuntu OS as &lt;code&gt;/dev/nvme1n1&lt;/code&gt;. Follow the
+&lt;a class=&#34;link&#34; href=&#34;#mounting-an-ebs-volume-to-ec2&#34; &gt;guide&lt;/a&gt;
+below on mounting EBS volumes to mount this drive.
+In cases where this device name is occupied by a secondary EBS volume, it might be renamed as
+&lt;code&gt;/dev/nvme2n1&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;suspend-vs-stop-vs-terminate&#34;&gt;Suspend vs Stop vs Terminate
+&lt;/h3&gt;&lt;p&gt;When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
+such that the any task that are running when the instance is suspended can resume once the instance
+is woken up.
+As such, you need to ensure that the boot EBS volume has enough spare capacity
+for storing the entire memory.
+It&amp;rsquo;s like hibernation on Windows.
+However, not all AMIs supports this. The instance&amp;rsquo;s ephemeral IP address will also change, so you&amp;rsquo;d need to use the new IP address for SSH.&lt;/p&gt;
+&lt;p&gt;Stopping an EC2 instance &lt;strong&gt;will not&lt;/strong&gt; remove its boot EBS volume and it can be restarted again. It&amp;rsquo;s basically
+like shutting down your computer. However, stopping and restarting will change the instance&amp;rsquo;s
+ephemeral IP address, too.&lt;/p&gt;
+&lt;p&gt;Terminating an EC2 instance &lt;strong&gt;will&lt;/strong&gt; remove its boot EBS volume and it&amp;rsquo;s gone forever!&lt;/p&gt;
+&lt;h3 id=&#34;vcore-performance&#34;&gt;vCore Performance
+&lt;/h3&gt;&lt;p&gt;vCores are much lower than physical CPU cores, hence &lt;strong&gt;parallelism is very important&lt;/strong&gt;!
+By my estimation, a vCore only runs at 50% of the speed of my laptop&amp;rsquo;s i7-8750H core.
+Make sure your &lt;code&gt;DataLoader&lt;/code&gt; can run on as many vCores as possible to keep the Tesla GPU
+from data starvation.&lt;/p&gt;
+&lt;h4 id=&#34;burstable-cpu&#34;&gt;Burstable CPU
+&lt;/h4&gt;&lt;p&gt;Burstable CPU is a feature of T2 series general-purpose VMs. It basically means
+you&amp;rsquo;ll be charged extra when you almost always use all cores for compute, but if
+the machine is mostly idle (like a web/database server), this could be a cost-saver.&lt;/p&gt;
+&lt;p&gt;This is probably not suitable for training models since you want to push all
+cores to the max (ideally) for the best performance. But if you are running some
+data analysis task using Jupyter Notebook, this type of instance could be a good fit.&lt;/p&gt;
+&lt;h3 id=&#34;spot-instance&#34;&gt;Spot Instance
+&lt;/h3&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/spot/pricing/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Spot Instance Pricing&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Spot instances are much cheaper than regular timed instances. The only downside
+is that it could be stopped by AWS at any time. But my experience shows that
+it doesn&amp;rsquo;t happen very often, at least in &lt;code&gt;us-east-2&lt;/code&gt;(Ohio).&lt;/p&gt;
+&lt;p&gt;If you do not check the &lt;strong&gt;Persistent request&lt;/strong&gt; box when launching a EC2 instance,
+the one-time-request spot instance will be terminated directly when it is stopped.&lt;/p&gt;
+&lt;p&gt;You &lt;strong&gt;must&lt;/strong&gt; cancel the request from the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Spot Requests&lt;/a&gt; page when you want to terminate the instance. Otherwise,
+a persistent request will relaunch the instance when you terminated it from the EC2
+management console.&lt;/p&gt;
+&lt;p&gt;If you are getting a &amp;ldquo;spot capacity error&amp;rdquo; message when launching &lt;code&gt;g4dn.xlarge&lt;/code&gt; spot instances, I advise waiting until nightfall at US East Coast and then try again, or try launching &lt;code&gt;g4dn.2xlarge&lt;/code&gt; instead.&lt;/p&gt;
+&lt;h3 id=&#34;ssh&#34;&gt;SSH
+&lt;/h3&gt;&lt;p&gt;Any SSH client would work, but I do highly recommend &lt;a class=&#34;link&#34; href=&#34;https://mobaxterm.mobatek.net/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MobaXterm&lt;/a&gt;
+for Windows users (I&amp;rsquo;m one).&lt;/p&gt;
+&lt;p&gt;You would need a key pair to access the EC2 instance. This file can be generated
+when launching the EC2 instance and reused. Each key can only be downloaded once
+so don&amp;rsquo;t lose it. The full command line using ssh would look like:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Username would be &lt;code&gt;ec2-user&lt;/code&gt; for regular Amazon AMIs and &lt;code&gt;ubuntu&lt;/code&gt; for AWS Deep Learning AMI.&lt;/p&gt;
+&lt;h3 id=&#34;ami&#34;&gt;AMI
+&lt;/h3&gt;&lt;p&gt;AMI is basically a prepackaged system disk image with pre-configured environment.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;m really impressed with its boot speed, which only takes a few seconds.
+I certainly feel that it&amp;rsquo;s faster than Google Cloud Compute instances in terms of
+boot speed.&lt;/p&gt;
+&lt;p&gt;AWS Deep Learning AMI comes with Anaconda, PyTorch and TensorFlow (with choices of versions, too)
+so that you can run your code straightaway. A big time saver! However, this
+beefy image also requires at least 100GB of boot volume, so EBS cost is going to be a factor
+if you decide to keep the instance for some time.&lt;/p&gt;
+&lt;p&gt;However, AWS Deep Learning AMI does not support suspending the instance, so be sure to
+write code for saving to and restoring from checkpoints, in case the spot instance
+was stopped by AWS while your model has not been trained for enough epochs.&lt;/p&gt;
+&lt;p&gt;AWS Deep Learning Base AMI is a slimmed-down version of the AWS Deep Learning AMI.
+It requires a minimum EBS disk size of 60GB and comes with necessary GPU drivers and
+linear algebra packs. However, it doesn&amp;rsquo;t come with any deep learning environment, so you
+need to configure one on your own.&lt;/p&gt;
+&lt;h3 id=&#34;monitoring&#34;&gt;Monitoring
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;htop&lt;/code&gt; for a command-line task manager to monitor CPU usage&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nvidia-smi&lt;/code&gt; for a summary of GPU usage&lt;/p&gt;
+&lt;h2 id=&#34;ebs&#34;&gt;EBS
+&lt;/h2&gt;&lt;p&gt;EBS serves as a hard drive for EC2 instances. Each EC2 instance will have a boot
+EBS volume, but you can attach additional EBS volumes to it.&lt;/p&gt;
+&lt;p&gt;Resizing EBS would require filesystem level operations on the instance OS, so
+I would recommend allocate enough storage on the boot volume to start with.&lt;/p&gt;
+&lt;p&gt;By default, EBS volumes are SSD-backed &lt;code&gt;gp2&lt;/code&gt;. It&amp;rsquo;s not expensive and have pretty good performance
+for my use case,
+so I&amp;rsquo;d just stick with it instead of downgrading to a HDD-backed option.&lt;/p&gt;
+&lt;p&gt;Note that the IOPS (I/O operations per second) of an &lt;code&gt;gp2&lt;/code&gt; EBS volume is proportional
+to its size (&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;up to 5,334 GB&lt;/a&gt;).
+Therefore, it seems to me that it&amp;rsquo;s better to allocate a large-enough EBS boot volume
+for AMI, training data and some buffer so that you get overall better performance.&lt;/p&gt;
+&lt;h3 id=&#34;mounting-an-ebs-volume-to-ec2&#34;&gt;Mounting an EBS volume to EC2
+&lt;/h3&gt;&lt;p&gt;In case you need some temporary storage, you can create a new EBS volume and attach it
+to your EC2 instance (&lt;strong&gt;in the same availability zone&lt;/strong&gt;) on AWS console.&lt;/p&gt;
+&lt;p&gt;Once you&amp;rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,
+the steps are (assume the volume is detected as &lt;code&gt;/dev/xvdf&lt;/code&gt;):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;ls /dev&lt;/code&gt; to find the new EBS volume device. I found that sometimes it has the name
+of &lt;code&gt;xvdf&lt;/code&gt; (last character is variable) and other times it has the name of &lt;code&gt;nvme1p1&lt;/code&gt;.
+You can compare the output before and after attaching the volume on UI so as
+to identify the new device.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;sudo mkfs -t xfs /dev/xvdf&lt;/code&gt; to format the volume. Skip if the volume is
+already formatted (e.g. it was used by another instance earlier).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;sudo mkdir ~/data &amp;amp;&amp;amp; sudo mount /dev/xvdf ~/data&lt;/code&gt; to mount the volume in
+a new &lt;code&gt;~/data&lt;/code&gt; directory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;cd ~/data &amp;amp;&amp;amp; sudo chmod go+rw .&lt;/code&gt; to give read-write permissions to non-root users.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;efs&#34;&gt;EFS
+&lt;/h2&gt;&lt;p&gt;EFS is a networked filesystem that can be shared across multiple instances in the
+same region. Since it&amp;rsquo;s managed by AWS, it is dynamically sized and charged based on the amount
+of data you stored in EFS. You also don&amp;rsquo;t need to worry about availability zone,
+since it will provide mounting points in all of them.&lt;/p&gt;
+&lt;p&gt;I find that it&amp;rsquo;s most convenient as both a shared drive across multiple instances and a backup
+location. The shared drive functionality allows me to run inference in one instance and
+score the result in another. I also backup training data and scripts in EFS such that
+I can terminate my instances but some time later I found that I need to retrain the model.&lt;/p&gt;
+&lt;p&gt;Accessing EFS will consume EC2 instance&amp;rsquo;s network bandwidth, so I usually copy the frequently accessed
+files out to the EBS volume. When copying files, it can sustain a read speed of
+close to 1Gbps.&lt;/p&gt;
+&lt;p&gt;In terms of pricing, EFS is more expensive than EBS per GB. However, given the flexibility
+and dynamic sizing, it might cost less.&lt;/p&gt;
+&lt;h3 id=&#34;mounting-a-efs-share-to-ec2&#34;&gt;Mounting a EFS share to EC2
+&lt;/h3&gt;&lt;h5 id=&#34;on-aws-console&#34;&gt;On AWS Console
+&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create a EFS share. This is pretty straightforward. Remember to create it
+in the same region as the EC2 instances that you intend to use this share on.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you are not using your default security group, you have to add the security group to all network availability zones under the &lt;code&gt;network&lt;/code&gt; tab of the EFS share management page&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Allows NFS port communication for the EC2 instance.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Open the security group settings attached to the EC2 instance&lt;/li&gt;
+&lt;li&gt;Modify the inbound rule and add a rule with type &lt;code&gt;NFS&lt;/code&gt;. Select source as the security group.&lt;/li&gt;
+&lt;li&gt;Save rules&lt;/li&gt;
+&lt;li&gt;Network traffic will be interrupted if and only if an existing rule is modified
+and that the traffic is using the aforementioned rule&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;on-ec2&#34;&gt;On EC2
+&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Install NFS client &lt;code&gt;nfs-utils&lt;/code&gt; (for CentOS or REHL) or &lt;code&gt;nfs-common&lt;/code&gt; (for vanilla Ubuntu).
+Skip this step if the instance is using an AMI.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;mkdir ~/efs&lt;/code&gt; to make a mounting point folder.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;FS_ID=file-system-id REGION=us-east-2 &amp;amp;&amp;amp; sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $FS_ID.efs.$REGION.amazonaws.com:/ ~/efs&lt;/code&gt; mounts the EFS volume
+to the mounting point folder&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;cd ~/efs &amp;amp;&amp;amp; sudo chmod go+rw .&lt;/code&gt; to give read-write permissions to non-root users.
+You only need to run this command once for a new EFS share.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;s3&#34;&gt;S3
+&lt;/h2&gt;&lt;p&gt;S3 is yet another storage service for file storage. To access the files, you need to use
+&lt;code&gt;aws&lt;/code&gt; commands. As such, it cannot be used as a regular disk like EFS or EBS.&lt;/p&gt;
+&lt;p&gt;For my use case, I find S3
+suitable for sharing large files, such as trained model weights, via HTTPS.
+I&amp;rsquo;ve also seen use cases that use S3 as a data lake. Apache Spark even supports reading
+data directly off S3.&lt;/p&gt;
+&lt;h3 id=&#34;access-s3-bucket-in-ec2&#34;&gt;Access S3 bucket in EC2
+&lt;/h3&gt;&lt;h4 id=&#34;on-aws-console-1&#34;&gt;On AWS Console
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create an S3 bucket in the region you intended to use.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create a IAM role with S3 full access&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In Identity and Access Management (IAM) page, click &lt;strong&gt;Create role&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Choose &lt;strong&gt;EC2&lt;/strong&gt; as use case&lt;/li&gt;
+&lt;li&gt;In attach permission policies, find &lt;strong&gt;AmazonS3FullAccess&lt;/strong&gt; and check it&lt;/li&gt;
+&lt;li&gt;Save the role and give it a name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Attach the role to the intended EC2 instance&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the instance list, select the instance&lt;/li&gt;
+&lt;li&gt;Choose &lt;strong&gt;Actions, Security, Modify IAM role&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Select the role you just created and choose &lt;strong&gt;Save&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;on-ec2-1&#34;&gt;On EC2
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;aws s3 cp my_copied_file.ext s3://my_bucket/my_folder/my_file.ext&lt;/code&gt; to upload
+files to S3. Reverse the 2 arguments to download files from S3.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;access-s3-objects-from-https&#34;&gt;Access S3 objects from HTTPS
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Go to the S3 console and modify its ACL read permission to be &lt;strong&gt;Everyone&lt;/strong&gt;.
+This is not safe but the files I&amp;rsquo;m sharing aren&amp;rsquo;t going to make sense for others anyway.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Access the file using &lt;code&gt;https://my-bucket.s3.us-east-2.amazonaws.com/my_folder/my_file.ext&lt;/code&gt;.
+This assume that your S3 bucket is created in &lt;code&gt;us-east-2&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

@@ -1,35 +1,40 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='My advising professors&#39; advice and reading notes for &#34;The Friendship That Made Google Huge&#34;'><title>How to be a better software engineer</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="My advising professors' advice and reading notes for \"The Friendship That Made Google Huge\"">
+<title>How to be a better software engineer</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/'>
 
-<link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='How to be a better software engineer'>
-<meta property='og:description' content='My advising professors&#39; advice and reading notes for &#34;The Friendship That Made Google Huge&#34;'>
+<link rel="stylesheet" href="/blog/scss/style.min.833d6eed45de56f48306bf57268d5b8cdfc8a60e8e7bdc99810464fcd033f7c6.css"><meta property='og:title' content="How to be a better software engineer">
+<meta property='og:description' content="My advising professors' advice and reading notes for \"The Friendship That Made Google Huge\"">
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2022-05-23T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2022-05-23T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="How to be a better software engineer">
-<meta name="twitter:description" content="My advising professors&#39; advice and reading notes for &#34;The Friendship That Made Google Huge&#34;">
+<meta name="twitter:description" content="My advising professors' advice and reading notes for \"The Friendship That Made Google Huge\"">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
-<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D1QVYGCXRR"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-D1QVYGCXRR', { 'anonymize_ip': false });
-}
-</script>
 
+<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-D1QVYGCXRR"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-D1QVYGCXRR');
+        }
+      </script>
     </head>
     <body class="
-    article-page 
-">
+    article-page
+    ">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -52,27 +57,22 @@ if (!doNotTrack) {
         }
     })();
 </script>
-<div class="container main-container flex 
-    
-        on-phone--column extended
-    
-">
-    
-        <aside class="sidebar left-sidebar sticky">
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
     <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
         <span class="hamburger-box">
             <span class="hamburger-inner"></span>
         </span>
     </button>
 
-    <header class="site-info">
+    <header>
         
             
             <figure class="site-avatar">
+                <a href="/blog/">
                 
                     <img src="/blog/image/personal_icon.png" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
                 
-
+                </a>
                 
                     <span class="emoji">🌏</span>
                 
@@ -80,15 +80,16 @@ if (!doNotTrack) {
             
         
         
-        <h1 class="site-name"><a href="/blog">大白鲸笔记本</a></h1>
-        <h2 class="site-description">也就是个markdown网络笔记本</h2></header>
-
-    <ol class="menu" id="main-menu">
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/blog">大白鲸笔记本</a></h1>
+            <h2 class="site-description">也就是个markdown网络笔记本</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
         
         
-
+        
         <li >
-            <a href='https://chen-zhe.github.io/blog/' >
+            <a href='/blog/' >
                 
                 
                 
@@ -106,9 +107,9 @@ if (!doNotTrack) {
             </a>
         </li>
         
-
+        
         <li >
-            <a href='https://chen-zhe.github.io/blog/search/' >
+            <a href='/blog/search/' >
                 
                 
                 
@@ -125,9 +126,9 @@ if (!doNotTrack) {
             </a>
         </li>
         
-
+        
         <li >
-            <a href='https://chen-zhe.github.io/blog/archives/' >
+            <a href='/blog/archives/' >
                 
                 
                 
@@ -145,7 +146,7 @@ if (!doNotTrack) {
             </a>
         </li>
         
-
+        
         <li >
             <a href='https://chen-zhe.github.io/home/' >
                 
@@ -164,10 +165,12 @@ if (!doNotTrack) {
             </a>
         </li>
         
+        <li class="menu-bottom-section">
+            <ol class="menu">
 
-        
-            <li id="dark-mode-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="8" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -175,7 +178,7 @@ if (!doNotTrack) {
 
 
 
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <circle cx="16" cy="12" r="2" />
   <rect x="2" y="6" width="20" height="12" rx="6" />
@@ -183,14 +186,17 @@ if (!doNotTrack) {
 
 
 
-                <span>Dark Mode</span>
-            </li>
-        
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
     </ol>
 </aside>
 
     
-<main class="main full-width">
+
+            <main class="main full-width">
     <article class="main-article">
     <header class="article-header">
 
@@ -205,16 +211,21 @@ if (!doNotTrack) {
     </header>
     
 
-    <h2 class="article-title">
-        <a href="/blog/p/how-to-be-a-better-software-engineer/">How to be a better software engineer</a>
-    </h2>
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/blog/p/how-to-be-a-better-software-engineer/">How to be a better software engineer</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            My advising professors&#39; advice and reading notes for &#34;The Friendship That Made Google Huge&#34;
+        </h3>
+        
+    </div>
 
     
-    <h3 class="article-subtitle">
-        My advising professors&#39; advice and reading notes for &#34;The Friendship That Made Google Huge&#34;
-    </h3>
     
-
+    
     
     <footer class="article-time">
         
@@ -228,7 +239,7 @@ if (!doNotTrack) {
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">May 23, 2022</time>
+                <time class="article-time--published" datetime='2022-05-23T00:00:00Z'>May 23, 2022</time>
             </div>
         
 
@@ -249,10 +260,15 @@ if (!doNotTrack) {
         
     </footer>
     
+
+    
 </div>
+
 </header>
 
     <section class="article-content">
+    
+    
     <p>After graduation from my Master&rsquo;s, I decided to get some advice from my advising professors
 before I embark (again) on a journey to be a better software engineer. Here are his advice
 that I feel are words to remember:</p>
@@ -359,14 +375,14 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
 
     
 
-    <aside class="related-contents--wrapper">
     
-    
-        <h2 class="section-title">Related contents</h2>
-        <div class="related-contents">
-            <div class="flex article-list--tile">
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
                 
-                    
 <article class="">
     <a href="/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/">
         
@@ -377,10 +393,10 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
         </div>
     </a>
 </article>
-                
-            </div>
+
+            
         </div>
-    
+    </div>
 </aside>
 
      
@@ -388,7 +404,7 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
         
     <div class="disqus-container">
     <div id="disqus_thread"></div>
-<script type="application/javascript">
+<script>
     window.disqus_config = function () {
     
     
@@ -420,7 +436,7 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
 
 <script>
     window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof(DISQUS) != 'undefined' && DISQUS) {
+        if (typeof DISQUS == 'object') {
             DISQUS.reset({
                 reload: true
             });
@@ -436,12 +452,12 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
         
             2018 - 
         
-        2023 陈哲 Chen Zhe
+        2025 陈哲 Chen Zhe
     </section>
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.6.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.33.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -510,29 +526,28 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
 
 </div><script 
                 src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer="true"
+                defer
                 >
             </script><script 
                 src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer="true"
+                defer
                 >
             </script><link 
                 rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
             ><link 
                 rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
             >
-
-            </main>
     
 
+            </main>
         </div>
         <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
-                defer="false"
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
                 >
-            </script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
+            </script><script type="text/javascript" src="/blog/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js" defer></script>
 
     </body>
 </html>

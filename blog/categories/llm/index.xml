@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>LLM on 大白鲸笔记本</title>
+        <link>https://chen-zhe.github.io/blog/categories/llm/</link>
+        <description>Recent content in LLM on 大白鲸笔记本</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 27 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/llm/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Learnings from training FunctionGemma 270M</title>
+        <link>https://chen-zhe.github.io/blog/p/learnings-from-training-functiongemma-270m/</link>
+        <pubDate>Sat, 27 Dec 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/learnings-from-training-functiongemma-270m/</guid>
+        <description>&lt;h2 id=&#34;what-is-functiongemma-270m&#34;&gt;What is FunctionGemma 270M
+&lt;/h2&gt;&lt;p&gt;To quote &lt;a class=&#34;link&#34; href=&#34;https://huggingface.co/google/functiongemma-270m-it&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;HuggingFace🤗&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://blog.google/technology/developers/functiongemma/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Google Blog&lt;/a&gt;, FunctionGemma is a lightweight, open model from Google, built as a foundation for creating your own specialized function calling models. It&amp;rsquo;s finetuned on top of the Gemma 3 270M model.&lt;/p&gt;
+&lt;p&gt;As a contributor, specifically on the RL training side, I think I should note down my learnings here for benefits of myself and hopefully others. For a more complete picture, definitely stayed tuned for its official technical report.&lt;/p&gt;
+&lt;h2 id=&#34;data&#34;&gt;Data
+&lt;/h2&gt;&lt;h3 id=&#34;generating-high-quality-synthetic-data&#34;&gt;Generating high-quality synthetic data
+&lt;/h3&gt;&lt;p&gt;We specifically finetuned the Gemma 270M model with function calling and natural language response after function response data. We used an internal synthetic data pipeline to generate examples for both scenarios using Gemini 2.5 Pro. 2.5 Pro is not perfect either, as it regularly makes formatting errors that renders the output impossible to parse. We simply over-sample the required number of examples and discard outputs that can&amp;rsquo;t be parsed into the desired function call and response format.&lt;/p&gt;
+&lt;p&gt;Data diversity is also important. To accomplish that, we configured the synthetic data pipeline&amp;rsquo;s prompt with different personalities and randomly sample 1 personality in each example&amp;rsquo;s generation. We also collected function declarations from multiple places:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We scrapped the Web for MCP function prototypes. However, these scrapped function prototypes are usually of lower quality.&lt;/li&gt;
+&lt;li&gt;We collected function prototypes from public datasets such as ToolACE and xLAM.&lt;/li&gt;
+&lt;li&gt;We synthetically generated some function prototypes targeting cases like smart home actions.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We randomly sample a few of these function declarations in each example&amp;rsquo;s generation.&lt;/p&gt;
+&lt;h3 id=&#34;reusing-hard-sft-examples&#34;&gt;Reusing hard SFT examples
+&lt;/h3&gt;&lt;p&gt;In the concept of curriculum learning, we want the model to start learning from simple examples to complex ones to ultimately improve model&amp;rsquo;s learning. While we don&amp;rsquo;t have sufficient time to modify the data pipeline for this, we still want to introduce some hard examples to the RL data mixture, such that the model can hone its learning on these.&lt;/p&gt;
+&lt;p&gt;We built a pipeline to get every example from the SFT data mixture, stripping off its final trainable section, and run inference using the SFT-ed model (which is also the starting checkpoint for RL). We took 4 nucleus-sampled model responses and compared them to the trainable section as reference for correctness.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;For natural language responses, we simply check if the model outputted in natural language as opposed to a function call.&lt;/li&gt;
+&lt;li&gt;For function calls, we use the function call reward function used in the RL setup to score its correctness ranging from 0 to 1. This is a program-based reward and does not use a critique model.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The correctness score across 4 responses were averaged and we use it to sort each example into 1 of the 4 buckets:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;hard NL examples are those that model fails to generate natural language response in at least 2 out of the 4 samples.&lt;/li&gt;
+&lt;li&gt;hard FC examples are those with average correctness scores in &lt;code&gt;[0.4, 0.8)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;extra hard FC examples are those with average correctness scores in &lt;code&gt;[0.0, 0.4)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;the rest are considered easy examples&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We stored the first 3 buckets of examples into different files and added them to the RL mixture with different weights. Extra hard examples got weighted down to prevent the model from not learning anything.&lt;/p&gt;
+&lt;h2 id=&#34;rl&#34;&gt;RL
+&lt;/h2&gt;&lt;h3 id=&#34;multi-step-rl-didnt-work&#34;&gt;Multi-step RL didn&amp;rsquo;t work
+&lt;/h3&gt;&lt;p&gt;I tried using the multi-turn gym environment built to train Gemini models on the FunctionGemma model. Gemini models, being way bigger than this model, can handle a variety of complex multi-step task execution scenarios involving 10s of function declarations. I wrote a pipeline to evaluate the number of functions needed for each examples in the internal multi-turn dataset and only selected ~100 examples that requires 5 or less unique functions.&lt;/p&gt;
+&lt;p&gt;However, this downsampled dataset proves to be still too hard for FunctionGemma to learn. The model can&amp;rsquo;t solve any examples the requires more than 1 step of function calling and gives up when the gym environment returns an error in the function response. Interestingly, some wins are actually judged incorrectly, as the verification code passes when the underlying environment is not changed at all. For example, the model may call a function with the incorrect parameters and then gives up (generating a natural language response like &amp;ldquo;I&amp;rsquo;m sorry, I couldn&amp;rsquo;t complete the task&amp;rdquo;), but the verifier code still returns correct.&lt;/p&gt;
+&lt;p&gt;I think the reason for this are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;FunctionGemma&amp;rsquo;s SFT data do not have multi-step cases and the model didn&amp;rsquo;t generalize single-step and multi-turn learnings to multi-step&lt;/li&gt;
+&lt;li&gt;FunctionGemma is not trained with thinking mode and couldn&amp;rsquo;t plan the task execution flow like the Gemini models.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;multi-turn-rl-somewhat-worked&#34;&gt;Multi-turn RL somewhat worked
+&lt;/h3&gt;&lt;p&gt;After the failed multi-step RL trial runs, we shifted focus to a multi-turn RL setup. We specifically wanted to focus on a clarification scenario when the user didn&amp;rsquo;t give the complete instructions to call a function. For example, some of the required parameters may be missing in the initial user request and the base FunctionGemma model often hallucinates a value. We want to discourage the model from doing this and the model should instead ask the user for clarification before making the correct function call.&lt;/p&gt;
+&lt;h4 id=&#34;synthetic-data&#34;&gt;Synthetic data
+&lt;/h4&gt;&lt;p&gt;We reused the synthetic data pipeline to generate over 10k such examples. Specifically, each example includes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a function declaration with at least 2 parameters&lt;/li&gt;
+&lt;li&gt;a user goal that contains the complete instruction and scenario to use the aforementioned function&lt;/li&gt;
+&lt;li&gt;the reference function call&lt;/li&gt;
+&lt;li&gt;an initial user prompt that&amp;rsquo;s missing some information&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;multi-turn-experiments&#34;&gt;Multi-turn Experiments
+&lt;/h4&gt;&lt;p&gt;I reused Gemini&amp;rsquo;s multi-turn environment for the training setup. Specifically, I used the Gemini 2.5 Pro to pose as the user in my user simulator. For each example, the user simulator is given its user goal and a randomly selected personality trait. I created the 3 personality traits with the help of Gemini 2.5 Pro 😉 as well, and they consists of a reasonable users, a vague user and an impatient user. This improves the user diversity and should help the model to better deal with real-world usages. Each round of conversation is capped at 5 turns and the same FC reward function used in the regular single-turn RL setup scores the model&amp;rsquo;s final response.&lt;/p&gt;
+&lt;p&gt;In the 1st run, the model doesn&amp;rsquo;t seem to learn at all and the accuracy hovers below ~10%. I read the sampled responses and found out that the model learned to hack my user simulator by generating a different control token than the standard FC control token, followed by the actual function call. Since my user simulator only terminates early when the standard FC control token is seen, this behavior would not lead to early termination and the response is fed to Gemini 2.5 Pro. Since Gemini 2.5 Pro probably is trained on neither malformed function calls, nor function calls without following function responses, it behaves strangely as well and starts critiquing the response, revealing some information from the user goal. I quickly modified the user simulator to terminate early when any control token is seen.&lt;/p&gt;
+&lt;p&gt;In the 2nd run, the model seems to learns slowly with the more robust user simulator and I discovered that the model is either hallucinating values or apologizing for not being able to complete the request. Some of the hallucinated values are actually correct. For example, a crop image function is provided an the user wants to crop an image to a width of 1920 pixels. The model hallucinated correctly that the height should be 1080 pixels. However, we think this behavior should be discouraged since it&amp;rsquo;s still a hallucination.&lt;/p&gt;
+&lt;p&gt;So for the 3rd run, we tweaked the reward function slightly to give the model a bad reward if the model makes a function call in the first turn, that is, the model is forced to make at least 1 clarification turn before making a function call. In just 20 steps, the model learned to clarify missing information from the user simulator and generate the correct function call. The accuracy jumped during the first 20 steps from 0 to ~25% and gradually improved to ~40% when training stopped at 200 steps. The metrics and sampled conversations all look great and reasonable to me!&lt;/p&gt;
+&lt;p&gt;However, when I actually served the model and vibe tested it, I realized that it&amp;rsquo;s actually a horrible model to use. The model do not produce function calls when the complete information is present in the user prompt, and no matter what information is present in the user prompt, the model always try to clarify for every parameter in the function declaration. It&amp;rsquo;s already this bad after 50 steps of training!&lt;/p&gt;
+&lt;p&gt;Ultimately, we didn&amp;rsquo;t have enough time to polish this setup before the model launch, so this feature is not included in the launched model. But I think the last issue would still be an easy fix: just combine single-turn RL with multi-turn RL. The multi-turn RL environment can be customized to terminate early when the example only requires a single turn. This should combat the forgetting behavior seen in the 3rd run.&lt;/p&gt;
+&lt;p&gt;Overall, my learning points in this multi-turn journey are:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Small models tend to forget more easily&lt;/li&gt;
+&lt;li&gt;Reward hacking is hard to avoid and requires a thoughtful reward design.&lt;/li&gt;
+&lt;li&gt;Vibe testing tells more about the model than the training metrics.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;hinted-search-improves-sample-efficiency&#34;&gt;Hinted search improves sample efficiency
+&lt;/h3&gt;&lt;p&gt;Since we normalize the rewards across each example prompt&amp;rsquo;s samples, when all samples received identical rewards, either all correct or incorrect, the normalized rewards have zero variance and are filtered out. &lt;a class=&#34;link&#34; href=&#34;https://arxiv.org/pdf/2510.13786&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;This paper&lt;/a&gt; described this zero-variance filtering technique. However simply filtering out samples decreases sample efficiency, and for a small model like FunctionGemma, mistakes happen regularly. We noticed that the sample efficiency hovers at around 40% at the start of RL training and gradually goes up as training continues.&lt;/p&gt;
+&lt;p&gt;To improve sample efficiency at the start, my colleagues devised a hinted search technique, which somewhat blends SFT and RL. Hinted search kicks in when all samples are incorrect. There are 2 levels of hints:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;In the prompt, we inject a short hint on what function to call or that the model should make a natural language response. We resample the responses using the updated prompt.&lt;/li&gt;
+&lt;li&gt;We directly replace one of the sampled response with the reference response.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The &amp;ldquo;hinted&amp;rdquo; responses are scored with the original prompt to get the per-token scores used for importance sampling and other parts of the core RL algorithm. The effect is immediate as the sample efficiency starts from ~80% during early stages of training and the model seems to learn more quickly.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

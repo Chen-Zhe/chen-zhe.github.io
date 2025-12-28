@@ -1,22 +1,96 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Interview on 大白鲸笔记本</title>
-    <link>https://chen-zhe.github.io/blog/categories/interview/</link>
-    <description>Recent content in Interview on 大白鲸笔记本</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 15 Mar 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/interview/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
-      <link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
-      <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
-      <description>TL;DR
-To pose myself as a good software engineer candidate, I need to:
-Demonstrate passion to learn Provide more utility to the job position as a senior engineer Keep my resume short and relevant Tailor my resume for each position that I apply to Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to Not forget about the basics of computing (data structure and algorithms) Demonstrate Passion for coding Background In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product.</description>
-    </item>
-    
-  </channel>
+    <channel>
+        <title>Interview on 大白鲸笔记本</title>
+        <link>https://chen-zhe.github.io/blog/categories/interview/</link>
+        <description>Recent content in Interview on 大白鲸笔记本</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 15 Mar 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/interview/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
+        <link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
+        <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
+        
+        <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
+        <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
+&lt;li&gt;Provide more &lt;strong&gt;utility&lt;/strong&gt; to the job position as a senior engineer&lt;/li&gt;
+&lt;li&gt;Keep my resume short and relevant&lt;/li&gt;
+&lt;li&gt;Tailor my resume for each position that I apply to&lt;/li&gt;
+&lt;li&gt;Be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/li&gt;
+&lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
+&lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;background&#34;&gt;Background
+&lt;/h2&gt;&lt;p&gt;In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product. The new hire would join the Singapore development center that I am part of, which is akin to a boutique: it is not large, but everyone in it is proficient in writing production-ready code (we are developing a software product after all). Thus, the new hire is implicitly expected to have a certain level of coding skills.&lt;/p&gt;
+&lt;p&gt;However, finding a candidate with skills matching our requirements (knows how to use and troubleshoot Spark, knows how to code in Scala) exactly could be difficult, so we wouldn&amp;rsquo;t mind tutoring a fresh grad, as long as he or she is driven to learn and can pick up new knowledge quickly. As it turns out:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Passion to learn is extremely important in maintaining competitiveness&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Because if a candidate don&amp;rsquo;t have highly relevant skills that the job requires and none of the other candidates do too, the interviewers fall back to use &lt;em&gt;passion to learn&lt;/em&gt; as the sole yardstick besides coding skills.&lt;/p&gt;
+&lt;p&gt;So here&amp;rsquo;s the important question that I&amp;rsquo;m trying to reason in this article: if we can only choose a single candidate, who should we hire?&lt;/p&gt;
+&lt;p&gt;First disclaimer: I know we have multiple vacancies and I can only provide inputs to my manager, who will ultimately make the hiring decision. However, the question in the title serves as a good thought experiment and ultimately inspired me to write it here to serve as a reminder to myself, and hopefully not being a waste of time to anyone who read it.&lt;/p&gt;
+&lt;p&gt;Second disclaimer: this article is completely based on my personal experience and does not represent my company at all.&lt;/p&gt;
+&lt;h2 id=&#34;a-resume-gives-the-first-impressions&#34;&gt;A resume gives the first impressions
+&lt;/h2&gt;&lt;p&gt;Judging by their resumes, all candidates have relevant experience in the Data Engineering field, and all of them claim to know Spark (at least PySpark). In terms of industry experience, candidate A has more than 6 years, candidate B has less than 4 years, and candidate C has a few month (a final year student). The instinctive answer for me at this point is to say: hire B or C, simply because their salary requirements are definitely lower. This instinct seems inhumane at first, but when I gave it another thought, the fully learning point came to me:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If a senior candidate cannot provide more &lt;strong&gt;utility&lt;/strong&gt; to the company, the hiring manager will probably choose a junior candidate instead&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In this context, I feel that the word &lt;strong&gt;utility&lt;/strong&gt; would refer to one of these:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;coding and troubleshooting experience in Spark&lt;/li&gt;
+&lt;li&gt;proficiency in Scala&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Notice that I used the word &lt;em&gt;hiring manager&lt;/em&gt; instead of interviewer here, because an interviewer like me should only focus on the technical competencies of a candidate.&lt;/p&gt;
+&lt;p&gt;The gist of this point is that to ensure that my senior self can still be competitive in the job market, I cannot be complacent at all. I have to keep re-learning in order to stay on top of the trend, e.g. what are the new features in Spark 2.4 and Spark 3.0, and at the same time, I have to keep learning other promising technologies, too, e.g. React and Redux for asynchronous UI development (I have little experience in these advanced JavaScript-based languages, but who knows what will replace them in a few years, like how React sort of replaced AngularJS in the mainstream)&lt;/p&gt;
+&lt;p&gt;As for the resume itself, I realized this when I tried to read a 10-page word document about a candidate, possibly provided by a headhunter:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A long resume is harder to scroll till the end, so an interviewer may not read beyond 1~2 pages
+To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep his resume within 1 page. As he gain more experience, the resume can be extended to 2 pages&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The headhunter &amp;ldquo;helpfully&amp;rdquo; put a long table of summary highlighting the candidate&amp;rsquo;s skill set, but it doesn&amp;rsquo;t feel very useful to me, mainly because it listed a very diverse and sometimes inconsistent (e.g. Spark, Livy, Java co-currency, multi-threading, Option) range of technologies. Frankly speaking though, it could help to pass the HR test.&lt;/p&gt;
+&lt;p&gt;I continued to scroll down until the candidate&amp;rsquo;s resume, and quickly read it through. I find that I paid more attention to the first few pages than the rest. This particular candidate spent more than a page at the end to describe the projects he has done, and I merely read the project titles and then stopped reading. The project titles seem to duplicate his working experience and the description is in plain text, not bullet points.&lt;/p&gt;
+&lt;p&gt;But how to keep the resume short when I have so many things to talk about? To quote a career coach:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tailor my resume to each position that I&amp;rsquo;m applying to&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Since I know I&amp;rsquo;m helping to hire a data engineer focusing on Spark, I naturally skipped any projects using Python and TensorFlow, or experience developing iOS apps. So if I were to apply for a job again, I&amp;rsquo;ll just shorten the description to the experiences that doesn&amp;rsquo;t fully match the job description. If I become more senior, I&amp;rsquo;ll probably shorten or remove the extracurricular activities section of my resume.&lt;/p&gt;
+&lt;p&gt;In all, I find that resume is only a conversation starter rather than a decision influencer, so keeping the resume short and easily readable is more important than its layout design, unless of course, I&amp;rsquo;m interviewing for a UI/UX position.&lt;/p&gt;
+&lt;h2 id=&#34;any-interview-can-be-technical&#34;&gt;Any interview can be technical
+&lt;/h2&gt;&lt;p&gt;We have a coding component in our interview process to assess a candidate&amp;rsquo;s ability to solve a practical challenge with code, but don&amp;rsquo;t let your guard down during non-coding portion of the interview! I only attended the non-coding portion of the interview process and it feels equally technical. This portion mainly assesses what this candidate has done in his past and usually starts with one of the recent projects that the candidate has worked on, so:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Both candidate A and B talked about a project in their current company, while candidate C talked about a pet project of his. In essence, it&amp;rsquo;s a conversation starter, so as long as the project has a certain degree of complexity (in our case, it should involve a data pipeline instead of merely loading the data into Pandas and running XGBoost on top of it) and I&amp;rsquo;m very familiar with it, the nature of the project (work or personal) doesn&amp;rsquo;t matter.&lt;/p&gt;
+&lt;p&gt;This means at first, interviewers will ask me to illustrate the design of the said project and shoot out design consideration questions based on that. But if I&amp;rsquo;m familiar with the project, this should be relatively easy.&lt;/p&gt;
+&lt;p&gt;Then, when it&amp;rsquo;s my turn to ask questions, I came up with the following on the fly:&lt;/p&gt;
+&lt;p&gt;To candidate A, I asked:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Which operation will cause a full shuffle, &lt;code&gt;df.coalesce&lt;/code&gt; or &lt;code&gt;df.repartition&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Performance benefit of &lt;code&gt;DataFrame&lt;/code&gt; over &lt;code&gt;RDD&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;These questions are specifically targeted at Spark because he indicated that he has experience with Spark on his resume as well as while describing his project. But inability to provide a satisfactory answer is not the end, it simply means that the interviewer will have to fall back to the &lt;em&gt;lowest common yardstick&lt;/em&gt; to compare the candidates&lt;/p&gt;
+&lt;p&gt;To candidate B and C, I asked&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Element lookup time complexity of &lt;code&gt;List&lt;/code&gt; and &lt;code&gt;Set&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Describe &lt;em&gt;Merge Sort&lt;/em&gt; and &lt;em&gt;Quick Sort&lt;/em&gt; and their time complexity&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Because they don&amp;rsquo;t know much about Spark (one of them haven&amp;rsquo;t even used Java before), I opted to ask these simple data structure and algorithm questions that test one&amp;rsquo;s basic computer science knowledge. As I&amp;rsquo;ve previously mentioned, we fall back to use the basics as the yardstick, hence:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A software engineer shall not forget about the basics of computing (data structure and algorithms)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Remembering how to write a lowest common ancestor function on a binary tree won&amp;rsquo;t be necessary, but the basics of computing shall not be forgotten.&lt;/p&gt;
+&lt;h2 id=&#34;the-final-decision-that-surprises-no-one&#34;&gt;The final decision that surprises no one
+&lt;/h2&gt;&lt;p&gt;Ultimately, based on the interviews, I concluded that all 3 candidates are on similar levels. So how do I make the choice if I were to choose only 1 of them? One character of candidate C made him stand out:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Throughout his interview, he exudes passion for his pet project and actively engages with us interviewers. That ultimately made the difference.&lt;/p&gt;
+&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
 </rss>

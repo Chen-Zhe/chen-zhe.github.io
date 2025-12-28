@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Some of my surprising findings when optimizing Spark code'><title>Apache Spark - Save Time with Less Join Operations</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Some of my surprising findings when optimizing Spark code">
+<title>Apache Spark - Save Time with Less Join Operations</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/'>
 
-<link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='Apache Spark - Save Time with Less Join Operations'>
-<meta property='og:description' content='Some of my surprising findings when optimizing Spark code'>
+<link rel="stylesheet" href="/blog/scss/style.min.833d6eed45de56f48306bf57268d5b8cdfc8a60e8e7bdc99810464fcd033f7c6.css"><meta property='og:title' content="Apache Spark - Save Time with Less Join Operations">
+<meta property='og:description' content="Some of my surprising findings when optimizing Spark code">
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-09-28T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2018-09-28T00:00:00&#43;00:00'/>
@@ -14,22 +15,26 @@
 <meta name="twitter:description" content="Some of my surprising findings when optimizing Spark code">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
-<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D1QVYGCXRR"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-D1QVYGCXRR', { 'anonymize_ip': false });
-}
-</script>
 
+<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-D1QVYGCXRR"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-D1QVYGCXRR');
+        }
+      </script>
     </head>
     <body class="
-    article-page has-toc
-">
+    article-page
+    ">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -52,26 +57,189 @@ if (!doNotTrack) {
         }
     })();
 </script>
-<div class="container main-container flex 
-    
-        extended
-    
-">
-    
-        <div id="article-toolbar">
-            <a href="/blog" class="back-home">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/blog/">
+                
+                    <img src="/blog/image/personal_icon.png" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+                    <span class="emoji">🌏</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/blog">大白鲸笔记本</a></h1>
+            <h2 class="site-description">也就是个markdown网络笔记本</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/blog/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="15 6 9 12 15 18" />
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
 </svg>
 
 
 
-                <span>Back</span>
+                
+                <span>Blog Home</span>
             </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='https://chen-zhe.github.io/home/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Site Home</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
         </div>
-    
-<main class="main full-width">
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#refactoring-joins">Refactoring Joins</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#1">1.</a></li>
+            <li><a href="#2">2.</a></li>
+            <li><a href="#3">3.</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#afterthought">Afterthought</a></li>
+    <li><a href="#one-actually-two-more-thing">One (actually two) more thing</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
     <article class="main-article">
     <header class="article-header">
 
@@ -86,16 +254,21 @@ if (!doNotTrack) {
     </header>
     
 
-    <h2 class="article-title">
-        <a href="/blog/p/apache-spark-save-time-with-less-join-operations/">Apache Spark - Save Time with Less Join Operations</a>
-    </h2>
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/blog/p/apache-spark-save-time-with-less-join-operations/">Apache Spark - Save Time with Less Join Operations</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Some of my surprising findings when optimizing Spark code
+        </h3>
+        
+    </div>
 
     
-    <h3 class="article-subtitle">
-        Some of my surprising findings when optimizing Spark code
-    </h3>
     
-
+    
     
     <footer class="article-time">
         
@@ -109,7 +282,7 @@ if (!doNotTrack) {
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Sep 28, 2018</time>
+                <time class="article-time--published" datetime='2018-09-28T00:00:00Z'>Sep 28, 2018</time>
             </div>
         
 
@@ -130,17 +303,42 @@ if (!doNotTrack) {
         
     </footer>
     
+
+    
 </div>
+
 </header>
 
     <section class="article-content">
+    
+    
     <p>Not long ago, I was tasked to improve our Spark application&rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of <code>join</code> operations.</p>
-<h2 id="refactoring-joins">Refactoring Joins</h2>
-<p><code>join</code> is a slow operation and everyone knows it, but sometime it’s just unavoidable. So, the real question is, how to prevent unnecessary use of joins. Interestingly, the examples that I discovered in the code base are all related to groupBy operations as well and gist of it can be summarized simply as: use a single groupBy to accomplish as much as possible.
+<h2 id="refactoring-joins">Refactoring Joins
+</h2><p><code>join</code> is a slow operation and everyone knows it, but sometime it’s just unavoidable. So, the real question is, how to prevent unnecessary use of joins. Interestingly, the examples that I discovered in the code base are all related to groupBy operations as well and gist of it can be summarized simply as: use a single groupBy to accomplish as much as possible.
 Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime improvements by removing the <code>join</code>s</p>
-<h4 id="1">1.</h4>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="c1">// Original
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">cond1</span><span class="o">)</span>
+<h4 id="1">1.
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="c1">// Original
+</span></span></span><span class="line"><span class="cl"><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">cond1</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">colA</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">agg</span><span class="o">(</span><span class="n">sum</span><span class="o">(</span><span class="n">colB</span><span class="o">).</span><span class="n">as</span><span class="o">(</span><span class="n">colB</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">cond2</span><span class="o">)</span>
@@ -149,17 +347,38 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 </span></span><span class="line"><span class="cl">  <span class="o">,</span> <span class="n">colA</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// Optimized
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">colA</span><span class="o">)</span>
+</span></span></span><span class="line"><span class="cl"><span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">colA</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">agg</span><span class="o">(</span><span class="n">sum</span><span class="o">(</span><span class="n">when</span><span class="o">(</span><span class="n">cond1</span><span class="o">,</span> <span class="n">colB</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">       <span class="o">.</span><span class="n">otherwise</span><span class="o">(</span><span class="n">sth</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">       <span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="n">colB</span><span class="o">),</span>
 </span></span><span class="line"><span class="cl">       <span class="n">max</span><span class="o">(</span><span class="n">when</span><span class="o">(</span><span class="n">cond2</span><span class="o">,</span> <span class="n">colB</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">       <span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="n">colC</span><span class="o">))</span>
-</span></span></code></pre></div><p>Essentially, this code block is trying to get 2 different aggregated statistics of groups from colA based on certain conditions. The join operation then puts the 2 different statistics into the same table column-wise under the same group.</p>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Essentially, this code block is trying to get 2 different aggregated statistics of groups from colA based on certain conditions. The join operation then puts the 2 different statistics into the same table column-wise under the same group.</p>
 <p>In this case, Spark’s (probably borrowed from SQL) When operator can be substituted for conditional filtering. Unless a default value or column is specified through the otherwise operator, when operator returns null. Spark’s built-in aggregation functions (max, sum, avg, etc.) will automatically ignore null values so when combined with when function, it acts as aggregations with conditions. The code snippet below is much more efficient, especially when more conditional aggregations are used.</p>
-<h4 id="2">2.</h4>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="c1">// Original
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">res</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span>
+<h4 id="2">2.
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="c1">// Original
+</span></span></span><span class="line"><span class="cl"><span class="n">res</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">        <span class="o">.</span><span class="n">agg</span><span class="o">(...</span><span class="n">as</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl"><span class="n">res</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">b</span><span class="o">===</span><span class="mi">1</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">   <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">c</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="n">b1</span><span class="o">))</span>
@@ -169,35 +388,58 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 </span></span><span class="line"><span class="cl">   <span class="o">,</span> <span class="n">a</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// Optimized
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+</span></span></span><span class="line"><span class="cl"><span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">pivot</span><span class="o">(</span><span class="n">b</span><span class="o">,</span> <span class="nc">Seq</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">agg</span><span class="o">(</span><span class="n">first</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">withColumnRenamed</span><span class="o">(...)</span>
-</span></span></code></pre></div><p>Understanding what this piece of code is trying to do is important. In short, the code tries to group the table based on column A and then pivot on column B. Pivot operation can be considered as a groupBy on a certain column and transpose the result onto columns instead of rows.</p>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Understanding what this piece of code is trying to do is important. In short, the code tries to group the table based on column A and then pivot on column B. Pivot operation can be considered as a groupBy on a certain column and transpose the result onto columns instead of rows.</p>
 <p>With the understanding in mind, we can the proceed to rewrite this piece of code to use pivot operator? Wait, in this piece of code, we are only concerned with a value of 1 or 2 in column B. Worry not, Spark has it all prepared for you. Its pivot operation accepts an optional second parameter (a Sequence of values) and it will create the exact number of columns for every value in the parameter, regardless of the existence of the value in the pivoting column.</p>
 <p>Since we are sure that for each unique combination of values in Column A and Column B, there’s only a single row, we can use the first aggregation function.</p>
-<h4 id="3">3.</h4>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="c1">// Original
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">impt</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span>
+<h4 id="3">3.
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="c1">// Original
+</span></span></span><span class="line"><span class="cl"><span class="n">impt</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">         <span class="o">.</span><span class="n">agg</span><span class="o">(...</span><span class="n">as</span><span class="o">(</span><span class="n">impt_val</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl"><span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">impt</span><span class="o">,</span> <span class="nc">Seq</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">c</span> <span class="o">&gt;</span> <span class="n">impt_val</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">,</span><span class="n">d</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// Optimized
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="n">tmp</span><span class="o">,</span> <span class="n">struct</span><span class="o">(</span><span class="n">c</span><span class="o">,</span><span class="n">d</span><span class="o">))</span>
+</span></span></span><span class="line"><span class="cl"><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="n">tmp</span><span class="o">,</span> <span class="n">struct</span><span class="o">(</span><span class="n">c</span><span class="o">,</span><span class="n">d</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">agg</span><span class="o">(...</span><span class="n">as</span><span class="o">(</span><span class="n">impt_val</span><span class="o">),</span>
 </span></span><span class="line"><span class="cl">      <span class="n">collect_list</span><span class="o">(</span><span class="n">tmp</span><span class="o">).</span><span class="n">as</span><span class="o">(</span><span class="n">tmp</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="n">tmp</span><span class="o">,</span> <span class="n">explode</span><span class="o">(</span><span class="n">tmp</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">c</span> <span class="o">&gt;</span> <span class="n">impt_val</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">  <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">a</span><span class="o">,</span><span class="n">b</span><span class="o">,</span><span class="n">tmp</span><span class="o">.</span><span class="n">d</span><span class="o">)</span>
-</span></span></code></pre></div><p>This piece of code first calculates an aggregated statistic per group and then use it as a threshold to filter the original dataframe. Optimizations to this example might be counter-intuitive, but in reality, if there are a lot of groups as defined by column A and column B, the join operation would take a significant amount of time.</p>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This piece of code first calculates an aggregated statistic per group and then use it as a threshold to filter the original dataframe. Optimizations to this example might be counter-intuitive, but in reality, if there are a lot of groups as defined by column A and column B, the join operation would take a significant amount of time.</p>
 <p>The optimized version uses groupBy to get not only the threshold value, but also a list of values to be used in the filter and select statements later. All values are packed into a single compound column through struct operator and the aggregated list is unpacked through the explode operator, which flattens the list to each row and duplicates every other column. To some extent, the collect_list operation is not extremely efficient, but the overall execution time is still drastically faster.</p>
-<h2 id="afterthought">Afterthought</h2>
-<p>Perhaps the main culprit here is the shuffling of partitions when executing groupBy and Join statements. As the shuffling might be different for one groupBy operation and one join operation, a third shuffle is required to bring rows of the same key into the same executor. In Spark, partition shuffle might be done over network and hence incurs significant overhead. In contrast, refactoring the operation into a single groupBy operator requires only 1 shuffle and hence runs much faster.</p>
-<h2 id="one-actually-two-more-thing">One (actually two) more thing</h2>
-<p>While staring at the YARN application tracker UI, I have also discovered a few small steps that might impact performance significantly.</p>
+<h2 id="afterthought">Afterthought
+</h2><p>Perhaps the main culprit here is the shuffling of partitions when executing groupBy and Join statements. As the shuffling might be different for one groupBy operation and one join operation, a third shuffle is required to bring rows of the same key into the same executor. In Spark, partition shuffle might be done over network and hence incurs significant overhead. In contrast, refactoring the operation into a single groupBy operator requires only 1 shuffle and hence runs much faster.</p>
+<h2 id="one-actually-two-more-thing">One (actually two) more thing
+</h2><p>While staring at the YARN application tracker UI, I have also discovered a few small steps that might impact performance significantly.</p>
 <p>Dataframe <code>df.count</code> operation: count seems to be a harmless function but unlike its counterpart in Pandas, this operation requires a full execution of the SQL plan. In short, getting the count of rows in a Spark dataframe takes approximately the same amount of the time as generating the content of the entire dataframe.</p>
 <p>Thus, when the dataframe is generated from complex operations, counting from saved parquet or cached content is faster.</p>
 <p>Dataframe <code>df.cache</code> operation: caching a large dataset negatively impacts performance, which might stem from the disk I/O overhead due to spilling.</p>
@@ -228,14 +470,14 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 
     
 
-    <aside class="related-contents--wrapper">
     
-    
-        <h2 class="section-title">Related contents</h2>
-        <div class="related-contents">
-            <div class="flex article-list--tile">
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
                 
-                    
 <article class="">
     <a href="/blog/p/manuscript-cell-sector-clustering/">
         
@@ -246,8 +488,9 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
         </div>
     </a>
 </article>
+
+            
                 
-                    
 <article class="">
     <a href="/blog/p/basic-usage-of-graphx-for-clique-detection/">
         
@@ -258,10 +501,10 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
         </div>
     </a>
 </article>
-                
-            </div>
+
+            
         </div>
-    
+    </div>
 </aside>
 
      
@@ -269,7 +512,7 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
         
     <div class="disqus-container">
     <div id="disqus_thread"></div>
-<script type="application/javascript">
+<script>
     window.disqus_config = function () {
     
     
@@ -301,7 +544,7 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 
 <script>
     window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof(DISQUS) != 'undefined' && DISQUS) {
+        if (typeof DISQUS == 'object') {
             DISQUS.reset({
                 reload: true
             });
@@ -317,12 +560,12 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
         
             2018 - 
         
-        2023 陈哲 Chen Zhe
+        2025 陈哲 Chen Zhe
     </section>
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.6.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.33.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -391,61 +634,28 @@ Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime
 
 </div><script 
                 src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer="true"
+                defer
                 >
             </script><script 
                 src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer="true"
+                defer
                 >
             </script><link 
                 rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
             ><link 
                 rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
             >
+    
 
             </main>
-    
-        <aside class="sidebar right-sidebar sticky">
-            <section class="widget archives">
-                <div class="widget-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <line x1="5" y1="9" x2="19" y2="9" />
-  <line x1="5" y1="15" x2="19" y2="15" />
-  <line x1="11" y1="4" x2="7" y2="20" />
-  <line x1="17" y1="4" x2="13" y2="20" />
-</svg>
-
-
-
-                </div>
-                <h2 class="widget-title section-title">Table of contents</h2>
-                
-                <div class="widget--toc">
-                    <nav id="TableOfContents">
-  <ul>
-    <li><a href="#refactoring-joins">Refactoring Joins</a>
-      <ul>
-        <li></li>
-      </ul>
-    </li>
-    <li><a href="#afterthought">Afterthought</a></li>
-    <li><a href="#one-actually-two-more-thing">One (actually two) more thing</a></li>
-  </ul>
-</nav>
-                </div>
-            </section>
-        </aside>
-    
-
         </div>
         <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
-                defer="false"
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
                 >
-            </script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
+            </script><script type="text/javascript" src="/blog/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js" defer></script>
 
     </body>
 </html>

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Unfortunately, the Bron-Kerbosch clique detection algorithm is still running on the driver'><title>Basic usage of GraphX for clique detection</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Unfortunately, the Bron-Kerbosch clique detection algorithm is still running on the driver">
+<title>Basic usage of GraphX for clique detection</title>
 
 <link rel='canonical' href='https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/'>
 
-<link rel="stylesheet" href="/blog/scss/style.min.775dbd4fd34fda61c5273b4bc3415f7c9666414fb6c40aab164a7ded4397da98.css"><meta property='og:title' content='Basic usage of GraphX for clique detection'>
-<meta property='og:description' content='Unfortunately, the Bron-Kerbosch clique detection algorithm is still running on the driver'>
+<link rel="stylesheet" href="/blog/scss/style.min.833d6eed45de56f48306bf57268d5b8cdfc8a60e8e7bdc99810464fcd033f7c6.css"><meta property='og:title' content="Basic usage of GraphX for clique detection">
+<meta property='og:description' content="Unfortunately, the Bron-Kerbosch clique detection algorithm is still running on the driver">
 <meta property='og:url' content='https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/'>
 <meta property='og:site_name' content='大白鲸笔记本'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2018-12-15T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2018-12-15T00:00:00&#43;00:00'/>
@@ -14,22 +15,26 @@
 <meta name="twitter:description" content="Unfortunately, the Bron-Kerbosch clique detection algorithm is still running on the driver">
     <link rel="shortcut icon" href="https://chen-zhe.github.io/favicon.png" />
 
-<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D1QVYGCXRR"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-D1QVYGCXRR', { 'anonymize_ip': false });
-}
-</script>
 
+<link href="https://chen-zhe.github.io/assets/fonts/lato/lato_family.css" rel="stylesheet" type="text/css">
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-D1QVYGCXRR"></script>
+      <script>
+        var doNotTrack = false;
+        if ( true ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-D1QVYGCXRR');
+        }
+      </script>
     </head>
     <body class="
-    article-page has-toc
-">
+    article-page
+    ">
     <script>
         (function() {
             const colorSchemeKey = 'StackColorScheme';
@@ -52,26 +57,177 @@ if (!doNotTrack) {
         }
     })();
 </script>
-<div class="container main-container flex 
-    
-        extended
-    
-">
-    
-        <div id="article-toolbar">
-            <a href="/blog" class="back-home">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/blog/">
+                
+                    <img src="/blog/image/personal_icon.png" width="300" height="300" class="site-logo" loading="lazy" alt="Avatar">
+                
+                </a>
+                
+                    <span class="emoji">🌏</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/blog">大白鲸笔记本</a></h1>
+            <h2 class="site-description">也就是个markdown网络笔记本</h2>
+        </div>
+    </header><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/blog/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
-  <polyline points="15 6 9 12 15 18" />
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
 </svg>
 
 
 
-                <span>Back</span>
+                
+                <span>Blog Home</span>
             </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='https://chen-zhe.github.io/home/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Site Home</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
         </div>
-    
-<main class="main full-width">
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#clique-detection-problem">Clique Detection Problem</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
     <article class="main-article">
     <header class="article-header">
 
@@ -83,23 +239,24 @@ if (!doNotTrack) {
                 Spark
             </a>
         
-            <a href="/blog/categories/graph-cliques/" >
-                Graph Cliques
-            </a>
-        
     </header>
     
 
-    <h2 class="article-title">
-        <a href="/blog/p/basic-usage-of-graphx-for-clique-detection/">Basic usage of GraphX for clique detection</a>
-    </h2>
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/blog/p/basic-usage-of-graphx-for-clique-detection/">Basic usage of GraphX for clique detection</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Unfortunately, the Bron-Kerbosch clique detection algorithm is still running on the driver
+        </h3>
+        
+    </div>
 
     
-    <h3 class="article-subtitle">
-        Unfortunately, the Bron-Kerbosch clique detection algorithm is still running on the driver
-    </h3>
     
-
+    
     
     <footer class="article-time">
         
@@ -113,7 +270,7 @@ if (!doNotTrack) {
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Dec 15, 2018</time>
+                <time class="article-time--published" datetime='2018-12-15T00:00:00Z'>Dec 15, 2018</time>
             </div>
         
 
@@ -134,20 +291,53 @@ if (!doNotTrack) {
         
     </footer>
     
+
+    
 </div>
+
 </header>
 
     <section class="article-content">
+    
+    
     <p><code>GraphX</code> is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on <code>RDD</code> and not <code>DataFrame</code> as I&rsquo;m used to in Spark 2.2. Although a Spark package called <code>GraphFrames</code> is available to extend GraphX&rsquo;s power to DataFrame, I recon it&rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.</p>
 <p>GraphX requires me to manually assign a <code>VertexId</code> (which is essentially Scala/Java type <code>Long</code>) to each vertex, which can be done through Spark DataFrame&rsquo;s <code>monotonically_increasing_id()</code> function. This function provides unique id but doesn&rsquo;t guarantee continuity (unlike SQL database&rsquo;s auto-incremental primary key). However, since this id relies on partition number, it is NOT stable! The solution, though, is easy: <code>cache</code> the DataFrame with id (or saving it to disk) will make it persistent across operations (e.g. <code>join</code>).</p>
 <p>The following piece of code converts a graph expressed as a DataFrame of edges through source vertex object, destination vertex object and edge weight (a small price (storing redundant objects) to pay for Spark to generate it all in parallel) into GraphX Graph representation.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">org.apache.spark.graphx._</span>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">org.apache.spark.graphx._</span>
 </span></span><span class="line"><span class="cl"><span class="k">import</span> <span class="nn">org.apache.spark.rdd.RDD</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="k">case</span> <span class="k">class</span> <span class="nc">Obj</span> <span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// graph DataFrame Schema -- src: Struct, dst: Struct, weight: DoubleType
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="n">idx</span> <span class="k">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">$</span><span class="s">&#34;src&#34;</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;obj&#34;</span><span class="o">))</span>
+</span></span></span><span class="line"><span class="cl"><span class="k">val</span> <span class="n">idx</span> <span class="k">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">$</span><span class="s">&#34;src&#34;</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;obj&#34;</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">				<span class="o">.</span><span class="n">union</span><span class="o">(</span><span class="n">graph</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">$</span><span class="s">&#34;dst&#34;</span><span class="o">.</span><span class="s">&#34;obj&#34;</span><span class="o">))</span>
 </span></span><span class="line"><span class="cl">				<span class="o">.</span><span class="n">distinct</span>
 </span></span><span class="line"><span class="cl">				<span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">,</span> <span class="n">monotonically_increasing_id</span><span class="o">())</span>
@@ -162,12 +352,14 @@ if (!doNotTrack) {
 </span></span><span class="line"><span class="cl">            <span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">idx</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">$</span><span class="s">&#34;id&#34;</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;srcId&#34;</span><span class="o">),</span> <span class="n">$</span><span class="s">&#34;cell.id&#34;</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;src&#34;</span><span class="o">)),</span> <span class="s">&#34;src&#34;</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">            <span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">idx</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="n">$</span><span class="s">&#34;id&#34;</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;dstId&#34;</span><span class="o">),</span> <span class="n">$</span><span class="s">&#34;cell.id&#34;</span><span class="o">.</span><span class="n">as</span><span class="o">(</span><span class="s">&#34;dst&#34;</span><span class="o">)),</span> <span class="s">&#34;dst&#34;</span><span class="o">)</span>
 </span></span><span class="line"><span class="cl">            <span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&#34;srcId&#34;</span><span class="o">,</span> <span class="s">&#34;dstId&#34;</span><span class="o">,</span> <span class="s">&#34;attr&#34;</span><span class="o">)</span> <span class="c1">// GraphX&#39;s required fields for an Edge object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">Edge</span><span class="o">[</span><span class="kt">Double</span><span class="o">]].</span><span class="n">rdd</span><span class="o">.</span><span class="n">cache</span> <span class="c1">// caching edges is optional
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">            <span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">Edge</span><span class="o">[</span><span class="kt">Double</span><span class="o">]].</span><span class="n">rdd</span><span class="o">.</span><span class="n">cache</span> <span class="c1">// caching edges is optional
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="k">val</span> <span class="n">graph</span> <span class="k">=</span> <span class="nc">Graph</span><span class="o">(</span><span class="n">vertices</span><span class="o">,</span> <span class="n">edges</span><span class="o">)</span>
-</span></span></code></pre></div><p>The case class Obj requires a simple unique id that doesn&rsquo;t have to be a number (if so, it can be used as VertexId directly) as joining case classes are problematic with it. The <code>idx</code> DataFrame is cached for persistence and then assigned to the edges through join operations. It can also be referred to later for conversion of VertexId back to its corresponding object.</p>
-<h2 id="clique-detection-problem">Clique Detection Problem</h2>
-<p>Although GraphX supports popular graph algorithms such as PageRank, Connected Components and Strongly Connected Components, Clique Detection is missing from its features. It&rsquo;s probably due to the non-parallel nature of the original Bron-Kerbosch algorithm.</p>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The case class Obj requires a simple unique id that doesn&rsquo;t have to be a number (if so, it can be used as VertexId directly) as joining case classes are problematic with it. The <code>idx</code> DataFrame is cached for persistence and then assigned to the edges through join operations. It can also be referred to later for conversion of VertexId back to its corresponding object.</p>
+<h2 id="clique-detection-problem">Clique Detection Problem
+</h2><p>Although GraphX supports popular graph algorithms such as PageRank, Connected Components and Strongly Connected Components, Clique Detection is missing from its features. It&rsquo;s probably due to the non-parallel nature of the original Bron-Kerbosch algorithm.</p>
 <p>Since it&rsquo;s the most suitable algorithm for my task on hand, research papers aren&rsquo;t going to cut it. I found a simple Scala-based implementation, cleaned it up and optimized it for my use. By offloading heavy-lifting work to Spark as much as possible, this tiny recursive function (running on a single core) is surprisingly fast. My runtime for a graph with around 120,000 edges took 45 seconds. The graph is filtered for the important edges (based on the weight I defined) generated in the entirety of Singapore. So, to me, it is probably enough.</p>
 <script src="https://gist.github.com/Chen-Zhe/ade6cb064fc32b9bb013a05fe482fc0b.js"></script>
 <p>The function may not perform well in a densely-connected graph, but you should try it before calling it unusable.</p>
@@ -199,14 +391,14 @@ if (!doNotTrack) {
 
     
 
-    <aside class="related-contents--wrapper">
     
-    
-        <h2 class="section-title">Related contents</h2>
-        <div class="related-contents">
-            <div class="flex article-list--tile">
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
                 
-                    
 <article class="">
     <a href="/blog/p/manuscript-cell-sector-clustering/">
         
@@ -217,8 +409,9 @@ if (!doNotTrack) {
         </div>
     </a>
 </article>
+
+            
                 
-                    
 <article class="">
     <a href="/blog/p/apache-spark-save-time-with-less-join-operations/">
         
@@ -229,10 +422,10 @@ if (!doNotTrack) {
         </div>
     </a>
 </article>
-                
-            </div>
+
+            
         </div>
-    
+    </div>
 </aside>
 
      
@@ -240,7 +433,7 @@ if (!doNotTrack) {
         
     <div class="disqus-container">
     <div id="disqus_thread"></div>
-<script type="application/javascript">
+<script>
     window.disqus_config = function () {
     
     
@@ -272,7 +465,7 @@ if (!doNotTrack) {
 
 <script>
     window.addEventListener('onColorSchemeChange', (e) => {
-        if (typeof(DISQUS) != 'undefined' && DISQUS) {
+        if (typeof DISQUS == 'object') {
             DISQUS.reset({
                 reload: true
             });
@@ -288,12 +481,12 @@ if (!doNotTrack) {
         
             2018 - 
         
-        2023 陈哲 Chen Zhe
+        2025 陈哲 Chen Zhe
     </section>
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.6.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.33.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
@@ -362,55 +555,28 @@ if (!doNotTrack) {
 
 </div><script 
                 src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
-                defer="true"
+                defer
                 >
             </script><script 
                 src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
-                defer="true"
+                defer
                 >
             </script><link 
                 rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
             ><link 
                 rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
             >
+    
 
             </main>
-    
-        <aside class="sidebar right-sidebar sticky">
-            <section class="widget archives">
-                <div class="widget-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z"/>
-  <line x1="5" y1="9" x2="19" y2="9" />
-  <line x1="5" y1="15" x2="19" y2="15" />
-  <line x1="11" y1="4" x2="7" y2="20" />
-  <line x1="17" y1="4" x2="13" y2="20" />
-</svg>
-
-
-
-                </div>
-                <h2 class="widget-title section-title">Table of contents</h2>
-                
-                <div class="widget--toc">
-                    <nav id="TableOfContents">
-  <ul>
-    <li><a href="#clique-detection-problem">Clique Detection Problem</a></li>
-  </ul>
-</nav>
-                </div>
-            </section>
-        </aside>
-    
-
         </div>
         <script 
-                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
-                defer="false"
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
                 >
-            </script><script type="text/javascript" src="/blog/ts/main.js" defer></script>
+            </script><script type="text/javascript" src="/blog/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js" defer></script>
 
     </body>
 </html>
