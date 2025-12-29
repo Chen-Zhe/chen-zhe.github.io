@@ -1,24 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>大白鲸笔记本</title>
-        <link>https://chen-zhe.github.io/blog/</link>
-        <description>Recent content on 大白鲸笔记本</description>
-        <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language>
-        <lastBuildDate>Sat, 27 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Learnings from training FunctionGemma 270M</title>
-        <link>https://chen-zhe.github.io/blog/p/learnings-from-training-functiongemma-270m/</link>
-        <pubDate>Sat, 27 Dec 2025 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/learnings-from-training-functiongemma-270m/</guid>
-        <description>&lt;h2 id=&#34;what-is-functiongemma-270m&#34;&gt;What is FunctionGemma 270M
-&lt;/h2&gt;&lt;p&gt;To quote &lt;a class=&#34;link&#34; href=&#34;https://huggingface.co/google/functiongemma-270m-it&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;HuggingFace🤗&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://blog.google/technology/developers/functiongemma/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Google Blog&lt;/a&gt;, FunctionGemma is a lightweight, open model from Google, built as a foundation for creating your own specialized function calling models. It&amp;rsquo;s finetuned on top of the Gemma 3 270M model.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>大白鲸笔记本</title><link>https://chen-zhe.github.io/blog/</link><description>Recent content on 大白鲸笔记本</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 27 Dec 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Learnings from training FunctionGemma 270M</title><link>https://chen-zhe.github.io/blog/p/learnings-from-training-functiongemma-270m/</link><pubDate>Sat, 27 Dec 2025 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/learnings-from-training-functiongemma-270m/</guid><description>&lt;h2 id="what-is-functiongemma-270m"&gt;What is FunctionGemma 270M
+&lt;/h2&gt;&lt;p&gt;To quote &lt;a class="link" href="https://huggingface.co/google/functiongemma-270m-it" target="_blank" rel="noopener"
+&gt;HuggingFace🤗&lt;/a&gt; and &lt;a class="link" href="https://blog.google/technology/developers/functiongemma/" target="_blank" rel="noopener"
+&gt;Google Blog&lt;/a&gt;, FunctionGemma is a lightweight, open model from Google, built as a foundation for creating your own specialized function calling models. It&amp;rsquo;s finetuned on top of the Gemma 3 270M model.&lt;/p&gt;
 &lt;p&gt;As a contributor, specifically on the RL training side, I think I should note down my learnings here for benefits of myself and hopefully others. For a more complete picture, definitely stayed tuned for its official technical report.&lt;/p&gt;
-&lt;h2 id=&#34;data&#34;&gt;Data
-&lt;/h2&gt;&lt;h3 id=&#34;generating-high-quality-synthetic-data&#34;&gt;Generating high-quality synthetic data
+&lt;h2 id="data"&gt;Data
+&lt;/h2&gt;&lt;h3 id="generating-high-quality-synthetic-data"&gt;Generating high-quality synthetic data
 &lt;/h3&gt;&lt;p&gt;We specifically finetuned the Gemma 270M model with function calling and natural language response after function response data. We used an internal synthetic data pipeline to generate examples for both scenarios using Gemini 2.5 Pro. 2.5 Pro is not perfect either, as it regularly makes formatting errors that renders the output impossible to parse. We simply over-sample the required number of examples and discard outputs that can&amp;rsquo;t be parsed into the desired function call and response format.&lt;/p&gt;
 &lt;p&gt;Data diversity is also important. To accomplish that, we configured the synthetic data pipeline&amp;rsquo;s prompt with different personalities and randomly sample 1 personality in each example&amp;rsquo;s generation. We also collected function declarations from multiple places:&lt;/p&gt;
 &lt;ol&gt;
@@ -27,7 +13,7 @@
 &lt;li&gt;We synthetically generated some function prototypes targeting cases like smart home actions.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;We randomly sample a few of these function declarations in each example&amp;rsquo;s generation.&lt;/p&gt;
-&lt;h3 id=&#34;reusing-hard-sft-examples&#34;&gt;Reusing hard SFT examples
+&lt;h3 id="reusing-hard-sft-examples"&gt;Reusing hard SFT examples
 &lt;/h3&gt;&lt;p&gt;In the concept of curriculum learning, we want the model to start learning from simple examples to complex ones to ultimately improve model&amp;rsquo;s learning. While we don&amp;rsquo;t have sufficient time to modify the data pipeline for this, we still want to introduce some hard examples to the RL data mixture, such that the model can hone its learning on these.&lt;/p&gt;
 &lt;p&gt;We built a pipeline to get every example from the SFT data mixture, stripping off its final trainable section, and run inference using the SFT-ed model (which is also the starting checkpoint for RL). We took 4 nucleus-sampled model responses and compared them to the trainable section as reference for correctness.&lt;/p&gt;
 &lt;ul&gt;
@@ -42,8 +28,8 @@
 &lt;li&gt;the rest are considered easy examples&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;We stored the first 3 buckets of examples into different files and added them to the RL mixture with different weights. Extra hard examples got weighted down to prevent the model from not learning anything.&lt;/p&gt;
-&lt;h2 id=&#34;rl&#34;&gt;RL
-&lt;/h2&gt;&lt;h3 id=&#34;multi-step-rl-didnt-work&#34;&gt;Multi-step RL didn&amp;rsquo;t work
+&lt;h2 id="rl"&gt;RL
+&lt;/h2&gt;&lt;h3 id="multi-step-rl-didnt-work"&gt;Multi-step RL didn&amp;rsquo;t work
 &lt;/h3&gt;&lt;p&gt;I tried using the internal multi-turn gym environment on the FunctionGemma model. I wrote a pipeline to evaluate the number of functions needed for each examples in the internal multi-turn dataset using Gemini 2.5 Flash and only selected ~100 examples that requires 5 or less unique functions.&lt;/p&gt;
 &lt;p&gt;However, this downsampled dataset proves to be still too hard for FunctionGemma to learn. The model can&amp;rsquo;t solve any examples the requires more than 1 step of function calling and gives up when the gym environment returns an error in the function response. Interestingly, some wins are actually judged incorrectly, as the verification code passes when the underlying environment is not changed at all. For example, the model may call a function with the incorrect parameters and then gives up (generating a natural language response like &amp;ldquo;I&amp;rsquo;m sorry, I couldn&amp;rsquo;t complete the task&amp;rdquo;), but the verifier code still returns correct.&lt;/p&gt;
 &lt;p&gt;I think the reason for this are:&lt;/p&gt;
@@ -51,9 +37,9 @@
 &lt;li&gt;FunctionGemma&amp;rsquo;s SFT data do not have multi-step cases and the model didn&amp;rsquo;t generalize single-step and multi-turn learnings to multi-step&lt;/li&gt;
 &lt;li&gt;FunctionGemma is not trained with thinking mode and couldn&amp;rsquo;t plan the task execution flow like the Gemini models.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;multi-turn-rl-somewhat-worked&#34;&gt;Multi-turn RL somewhat worked
+&lt;h3 id="multi-turn-rl-somewhat-worked"&gt;Multi-turn RL somewhat worked
 &lt;/h3&gt;&lt;p&gt;After the failed multi-step RL trial runs, we shifted focus to a multi-turn RL setup. We specifically wanted to focus on a clarification scenario when the user didn&amp;rsquo;t give the complete instructions to call a function. For example, some of the required parameters may be missing in the initial user request and the base FunctionGemma model often hallucinates a value. We want to discourage the model from doing this and the model should instead ask the user for clarification before making the correct function call.&lt;/p&gt;
-&lt;h4 id=&#34;synthetic-data&#34;&gt;Synthetic data
+&lt;h4 id="synthetic-data"&gt;Synthetic data
 &lt;/h4&gt;&lt;p&gt;We reused the synthetic data pipeline to generate over 10k such examples. Specifically, each example includes:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;a function declaration with at least 2 parameters&lt;/li&gt;
@@ -61,7 +47,7 @@
 &lt;li&gt;the reference function call&lt;/li&gt;
 &lt;li&gt;an initial user prompt that&amp;rsquo;s missing some information&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;multi-turn-experiments&#34;&gt;Multi-turn Experiments
+&lt;h4 id="multi-turn-experiments"&gt;Multi-turn Experiments
 &lt;/h4&gt;&lt;p&gt;The training setup is based on the internal multi-turn environment. Specifically, I used the Gemini 2.5 Pro to pose as the user in my user simulator. For each example, the user simulator is given its user goal and a randomly selected personality trait. I created the 3 personality traits with the help of Gemini 2.5 Pro 😉 as well, and they consists of a reasonable users, a vague user and an impatient user. This improves the user diversity and should help the model to better deal with real-world usages. Each round of conversation is capped at 5 turns and the same FC reward function used in the regular single-turn RL setup scores the model&amp;rsquo;s final response.&lt;/p&gt;
 &lt;p&gt;In the 1st run, the model doesn&amp;rsquo;t seem to learn at all and the accuracy hovers below ~10%. I read the sampled responses and found out that the model learned to hack my user simulator by generating a different control token than the standard FC control token, followed by the actual function call. Since my user simulator only terminates early when the standard FC control token is seen, this behavior would not lead to early termination and the response is fed to Gemini 2.5 Pro. Since Gemini 2.5 Pro probably is trained on neither malformed function calls, nor function calls without following function responses, it behaves strangely as well and starts critiquing the response, revealing some information from the user goal. I quickly modified the user simulator to terminate early when any control token is seen.&lt;/p&gt;
 &lt;p&gt;In the 2nd run, the model seems to learns slowly with the more robust user simulator and I discovered that the model is either hallucinating values or apologizing for not being able to complete the request. Some of the hallucinated values are actually correct. For example, a crop image function is provided an the user wants to crop an image to a width of 1920 pixels. The model hallucinated correctly that the height should be 1080 pixels. However, we think this behavior should be discouraged since it&amp;rsquo;s still a hallucination.&lt;/p&gt;
@@ -74,24 +60,15 @@
 &lt;li&gt;Reward hacking is hard to avoid and requires a thoughtful reward design.&lt;/li&gt;
 &lt;li&gt;Vibe testing tells more about the model than the training metrics.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h3 id=&#34;hinted-search-improves-sample-efficiency&#34;&gt;Hinted search improves sample efficiency
-&lt;/h3&gt;&lt;p&gt;Since we normalize the rewards across each example prompt&amp;rsquo;s samples, when all samples received identical rewards, either all correct or incorrect, the normalized rewards have zero variance and are filtered out. &lt;a class=&#34;link&#34; href=&#34;https://arxiv.org/pdf/2510.13786&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;This paper&lt;/a&gt; described this zero-variance filtering technique. However simply filtering out samples decreases sample efficiency, and for a small model like FunctionGemma, mistakes happen regularly. We noticed that the sample efficiency hovers at around 40% at the start of RL training and gradually goes up as training continues.&lt;/p&gt;
+&lt;h3 id="hinted-search-improves-sample-efficiency"&gt;Hinted search improves sample efficiency
+&lt;/h3&gt;&lt;p&gt;Since we normalize the rewards across each example prompt&amp;rsquo;s samples, when all samples received identical rewards, either all correct or incorrect, the normalized rewards have zero variance and are filtered out. &lt;a class="link" href="https://arxiv.org/pdf/2510.13786" target="_blank" rel="noopener"
+&gt;This paper&lt;/a&gt; described this zero-variance filtering technique. However simply filtering out samples decreases sample efficiency, and for a small model like FunctionGemma, mistakes happen regularly. We noticed that the sample efficiency hovers at around 40% at the start of RL training and gradually goes up as training continues.&lt;/p&gt;
 &lt;p&gt;To improve sample efficiency at the start, my colleagues devised a hinted search technique, which somewhat blends SFT and RL. Hinted search kicks in when all samples are incorrect. There are 2 levels of hints:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;In the prompt, we inject a short hint on what function to call or that the model should make a natural language response. We resample the responses using the updated prompt.&lt;/li&gt;
 &lt;li&gt;We directly replace one of the sampled response with the reference response.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;The &amp;ldquo;hinted&amp;rdquo; responses are scored with the original prompt to get the per-token scores used for importance sampling and other parts of the core RL algorithm. The effect is immediate as the sample efficiency starts from ~80% during early stages of training and the model seems to learn more quickly.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>How to be a better software engineer</title>
-        <link>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</link>
-        <pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid>
-        <description>&lt;p&gt;After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professors
+&lt;p&gt;The &amp;ldquo;hinted&amp;rdquo; responses are scored with the original prompt to get the per-token scores used for importance sampling and other parts of the core RL algorithm. The effect is immediate as the sample efficiency starts from ~80% during early stages of training and the model seems to learn more quickly.&lt;/p&gt;</description></item><item><title>How to be a better software engineer</title><link>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</link><pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid><description>&lt;p&gt;After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professors
 before I embark (again) on a journey to be a better software engineer. Here are his advice
 that I feel are words to remember:&lt;/p&gt;
 &lt;ul&gt;
@@ -136,14 +113,14 @@ which likely exists.&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;Be prepared for outages in California&lt;/p&gt;
 &lt;p&gt;Store 7 gallons = 26.5L of water per person (1 gallon = 3.78L per day) in the household in case of water outages.&lt;/p&gt;
-&lt;p&gt;Get an Iridium-capable &lt;a class=&#34;link&#34; href=&#34;https://discover.garmin.com/en-US/inreach/personal/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Garmin InReach&lt;/a&gt; and subscribe to a text-message-only plan
+&lt;p&gt;Get an Iridium-capable &lt;a class="link" href="https://discover.garmin.com/en-US/inreach/personal/" target="_blank" rel="noopener"
+&gt;Garmin InReach&lt;/a&gt; and subscribe to a text-message-only plan
 in case of power outages that also take down cellular and wired network. It also comes in handy during trekking.&lt;/p&gt;
 &lt;p&gt;Get a good power bank&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;A professor recommended &lt;a class=&#34;link&#34; href=&#34;https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;&amp;ldquo;The Friendship That Made Google Huge&amp;rdquo;&lt;/a&gt;&lt;/strong&gt;,
+&lt;p&gt;&lt;strong&gt;A professor recommended &lt;a class="link" href="https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge" target="_blank" rel="noopener"
+&gt;&amp;ldquo;The Friendship That Made Google Huge&amp;rdquo;&lt;/a&gt;&lt;/strong&gt;,
 which is long but well-written and insightful. It writes about the friendship of Jeff Dean and Sanjay Ghemawat, and how they
 they transformed Google, from the early days of debugging web indexing code,
 to building the scalable and fault-tolerant distributed computing framework &lt;em&gt;MapReduce&lt;/em&gt;,
@@ -169,16 +146,7 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
 &lt;li&gt;
 &lt;p&gt;Google&amp;rsquo;s career levels as of 2018. Level 1 are the I.T. support staff. Level 2s are fresh out of college; Level 3s often have master’s degrees. Getting to Level 4 takes several years, or a Ph.D. Most progression stops at Level 5. Level 6 engineers — the top ten percent — are so capable that they could be said to be the reason a project succeeds; Level 7s are Level 6s with a long track record. Principal Engineers, the Level 8s, are associated with a major product or piece of infrastructure. Distinguished Engineers, the Level 9s, are spoken of with reverence. To become a Google Fellow, a Level 10, is to win an honor that will follow you for life. Google Fellows are usually the world’s leading experts in their fields. Jeff and Sanjay are Google Senior Fellows — the company’s first and only Level 11s.&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        </item>
-        <item>
-        <title>AWS User Notes for Deep Learning</title>
-        <link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link>
-        <pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid>
-        <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+&lt;/ul&gt;</description></item><item><title>AWS User Notes for Deep Learning</title><link>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</link><pubDate>Wed, 27 Jan 2021 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/aws-user-notes-for-deep-learning/</guid><description>&lt;h2 id="introduction"&gt;Introduction
 &lt;/h2&gt;&lt;p&gt;Recently I&amp;rsquo;ve used AWS to train machine learning / deep learning models and run inferences,
 and here are my notes and observations about the platform for this purpose.&lt;/p&gt;
 &lt;p&gt;Overall speaking, AWS is a complex platform with a rather steep learning curve
@@ -186,149 +154,149 @@ if I were to take advantage of services other than EC2 itself.
 Here are my notes for services that I&amp;rsquo;ve used throughout the fast-paced learning journey
 and hopefully they can be of help to others.&lt;/p&gt;
 &lt;p&gt;There are other platforms that offer competitive pricing for deep learning applications
-such as &lt;a class=&#34;link&#34; href=&#34;https://vast.ai/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;vast.ai&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://datacrunch.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;DataCrunch.io&lt;/a&gt;,
+such as &lt;a class="link" href="https://vast.ai/" target="_blank" rel="noopener"
+&gt;vast.ai&lt;/a&gt; and &lt;a class="link" href="https://datacrunch.io/" target="_blank" rel="noopener"
+&gt;DataCrunch.io&lt;/a&gt;,
 but the basics of using remote machines for the purpose of deep learning should be
 transferrable.&lt;/p&gt;
-&lt;h3 id=&#34;recitation-videos-youtube&#34;&gt;Recitation Videos (YouTube)
+&lt;h3 id="recitation-videos-youtube"&gt;Recitation Videos (YouTube)
 &lt;/h3&gt;&lt;p&gt;This is the recitation video series that I&amp;rsquo;ve made for
 the Fall 2021 version of 11-785 Introduction to Deep Learning at Carnegie Mellon University.
 It includes hands-on setups of a GPU-backed EC2 spot instance and a Conda+PyTorch environment using Deep Learning Base AMI (Ubuntu 18.04).&lt;/p&gt;
 &lt;p&gt;The following blog post is the companion writeup of this video series, though this post can also be referred to independently.&lt;/p&gt;
-&lt;p style=&#34;text-align:center&#34;&gt;
-&lt;iframe width=&#34;80%&#34; height=&#34;400&#34; src=&#34;https://www.youtube.com/embed/videoseries?list=PLjd84g1GiDh2HcLTo02dcpBKg2Wtmt3AD&#34; title=&#34;YouTube video player&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;p style="text-align:center"&gt;
+&lt;iframe width="80%" height="400" src="https://www.youtube.com/embed/videoseries?list=PLjd84g1GiDh2HcLTo02dcpBKg2Wtmt3AD" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
 &lt;/p&gt;
-&lt;h2 id=&#34;glossary-with-section-link&#34;&gt;Glossary with Section Link
+&lt;h2 id="glossary-with-section-link"&gt;Glossary with Section Link
 &lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ec2&#34; &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ssh&#34; &gt;SSH&lt;/a&gt;: Secure Shell&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ami&#34; &gt;AMI&lt;/a&gt;: Amazon Machine Image&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#ebs&#34; &gt;EBS&lt;/a&gt;: Elastic Block Storage&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#efs&#34; &gt;EFS&lt;/a&gt;: Elastic File System&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#s3&#34; &gt;S3&lt;/a&gt;: Simple Storage Service&lt;/li&gt;
-&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;#access-s3-bucket-in-ec2&#34; &gt;IAM&lt;/a&gt;: Identity and Access Management&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#ec2" &gt;EC2&lt;/a&gt;: Elastic Compute Cloud&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#ssh" &gt;SSH&lt;/a&gt;: Secure Shell&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#ami" &gt;AMI&lt;/a&gt;: Amazon Machine Image&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#ebs" &gt;EBS&lt;/a&gt;: Elastic Block Storage&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#efs" &gt;EFS&lt;/a&gt;: Elastic File System&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#s3" &gt;S3&lt;/a&gt;: Simple Storage Service&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#access-s3-bucket-in-ec2" &gt;IAM&lt;/a&gt;: Identity and Access Management&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;tldr-my-workflow&#34;&gt;TL;DR. My Workflow
-&lt;/h2&gt;&lt;h3 id=&#34;1-configure-custom-deep-learning-environment&#34;&gt;1. Configure Custom Deep Learning Environment
+&lt;h2 id="tldr-my-workflow"&gt;TL;DR. My Workflow
+&lt;/h2&gt;&lt;h3 id="1-configure-custom-deep-learning-environment"&gt;1. Configure Custom Deep Learning Environment
 &lt;/h3&gt;&lt;p&gt;Install miniconda3 on an EC2 instance using AWS Deep Learning Base AMI (Ubuntu 18.04)
 and installed all necessary packages such as PyTorch and pandas:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Miniconda with Python 3.8&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# make it executable&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./Miniconda3-latest-Linux-x86_64.sh &lt;span class=&#34;c1&#34;&gt;# start installer&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Check https://pytorch.org/get-started/locally/ for the latest install command&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda install pytorch torchvision torchaudio &lt;span class=&#34;nv&#34;&gt;cudatoolkit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;11.3 -c pytorch
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pip install kaggle
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda clean -a &lt;span class=&#34;c1&#34;&gt;# remove downloaded package zips&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Miniconda with Python 3.8&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;chmod u+x Miniconda3-latest-Linux-x86_64.sh &lt;span class="c1"&gt;# make it executable&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./Miniconda3-latest-Linux-x86_64.sh &lt;span class="c1"&gt;# start installer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Check https://pytorch.org/get-started/locally/ for the latest install command&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;conda install pytorch torchvision torchaudio &lt;span class="nv"&gt;cudatoolkit&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;11.3 -c pytorch
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;conda install pandas scikit-learn jupyterlab matplotlib tqdm seaborn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install kaggle
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;conda clean -a &lt;span class="c1"&gt;# remove downloaded package zips&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;While installing Jupyter Lab, Conda will automatically install its dependencies,
 such as &lt;code&gt;ipython&lt;/code&gt;.&lt;/p&gt;
-&lt;h3 id=&#34;2-configure-kaggle-and-jupyter-lab-access&#34;&gt;2. Configure Kaggle and Jupyter Lab Access
+&lt;h3 id="2-configure-kaggle-and-jupyter-lab-access"&gt;2. Configure Kaggle and Jupyter Lab Access
 &lt;/h3&gt;&lt;p&gt;Store your Kaggle key (&lt;code&gt;kaggle.json&lt;/code&gt;) in the &lt;code&gt;.kaggle&lt;/code&gt; folder under &lt;code&gt;/home/ubuntu/&lt;/code&gt;.&lt;/p&gt;
-&lt;h4 id=&#34;jupyter-lab-access-method-1-external-access&#34;&gt;Jupyter Lab Access Method 1: External Access
-&lt;/h4&gt;&lt;p&gt;For Jupyter Lab, follow the &lt;a class=&#34;link&#34; href=&#34;https://jupyter-notebook.readthedocs.io/en/stable/public_server.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;docs&lt;/a&gt; to configuring external access. But the following shows a simpler version:&lt;/p&gt;
+&lt;h4 id="jupyter-lab-access-method-1-external-access"&gt;Jupyter Lab Access Method 1: External Access
+&lt;/h4&gt;&lt;p&gt;For Jupyter Lab, follow the &lt;a class="link" href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html" target="_blank" rel="noopener"
+&gt;docs&lt;/a&gt; to configuring external access. But the following shows a simpler version:&lt;/p&gt;
 &lt;p&gt;Generate hashed Jupyter Lab password by running the following piece of Python code:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;notebook.auth&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;my_password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;password&amp;#34;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# set your desired password here&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;hashed_password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;passphrase&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;my_password&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;algorithm&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha256&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;hashed_password&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# copy the hashed password&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;notebook.auth&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;passwd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;my_password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;password&amp;#34;&lt;/span&gt; &lt;span class="c1"&gt;# set your desired password here&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;hashed_password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;passwd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;passphrase&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;my_password&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;algorithm&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sha256&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hashed_password&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# copy the hashed password&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Then create a new file &lt;code&gt;jupyter_server_config.py&lt;/code&gt; under &lt;code&gt;.jupyter&lt;/code&gt; folder
 in the home directory with the following content:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ip&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# bind to any network interface&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;u&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;sha256:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open_browser&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ServerApp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;port&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8888&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ServerApp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;*&amp;#39;&lt;/span&gt; &lt;span class="c1"&gt;# bind to any network interface&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ServerApp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;password&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sha256:bcd259ccf...&amp;lt;your hashed password here&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ServerApp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open_browser&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ServerApp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;8888&lt;/span&gt; &lt;span class="c1"&gt;# or any other ports you&amp;#39;d like&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h4 id=&#34;jupyter-lab-access-method-2-port-forwarding&#34;&gt;Jupyter Lab Access Method 2: Port Forwarding
+&lt;/div&gt;&lt;h4 id="jupyter-lab-access-method-2-port-forwarding"&gt;Jupyter Lab Access Method 2: Port Forwarding
 &lt;/h4&gt;&lt;p&gt;Alternatively, you can use SSH port forwarding with the following command running on your local computer. In this case, access &lt;code&gt;127.0.0.1:8889&lt;/code&gt; or &lt;code&gt;localhost:8889&lt;/code&gt; while this command is running. Here, I have changed the local forwarding port to 8889 to avoid potential port conflict with your local Jupyter.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh -N -L 8889:localhost:8888 -i your-aws.pem ubuntu@your-ec2-ip-address
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh -N -L 8889:localhost:8888 -i your-aws.pem ubuntu@your-ec2-ip-address
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;3-tar-the-configured-environment-and-save-to-efs&#34;&gt;3. Tar the configured environment and save to EFS
-&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/div&gt;&lt;h3 id="3-tar-the-configured-environment-and-save-to-efs"&gt;3. Tar the configured environment and save to EFS
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -cf ~/efs/dl-env.tar ./miniconda3 .kaggle .ipython .jupyter .conda .bashrc
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Note that I didn&amp;rsquo;t use the &lt;code&gt;z&lt;/code&gt; option to compress the files, as my tests showed that
 due to the sheer number of files that I&amp;rsquo;m putting into this archive,
 adding compression &lt;em&gt;significantly&lt;/em&gt; slows down the tar/untar process and time is
 much more valuable than the cost of extra storage space required.&lt;/p&gt;
-&lt;h3 id=&#34;4-deploy-saved-environment-in-a-new-ec2-instance&#34;&gt;4. Deploy Saved Environment in a new EC2 instance
+&lt;h3 id="4-deploy-saved-environment-in-a-new-ec2-instance"&gt;4. Deploy Saved Environment in a new EC2 instance
 &lt;/h3&gt;&lt;p&gt;Launch a new instance with pre-configured security group and run&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# first connect to EFS and with working directory as ~&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tar -xf efs/dl-env.tar &lt;span class=&#34;c1&#34;&gt;# will run for ~2 minutes&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt; .bashrc
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# first connect to EFS and with working directory as ~&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -xf efs/dl-env.tar &lt;span class="c1"&gt;# will run for ~2 minutes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;source&lt;/span&gt; .bashrc
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Voila, the conda environment is up and running!&lt;/p&gt;
-&lt;h3 id=&#34;5-update-saved-environment&#34;&gt;5. Update Saved Environment
+&lt;h3 id="5-update-saved-environment"&gt;5. Update Saved Environment
 &lt;/h3&gt;&lt;p&gt;If you made any changes to your environment, e.g. installed new packages,
 run the following command to (incrementally) update the tar&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class=&#34;c1&#34;&gt;# assuming environment update&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -uvf efs/dl-env.tar miniconda3/ .conda &lt;span class="c1"&gt;# assuming environment update&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h2 id=&#34;region&#34;&gt;Region
+&lt;/div&gt;&lt;h2 id="region"&gt;Region
 &lt;/h2&gt;&lt;p&gt;AWS regions such as &lt;em&gt;US East (N. Virginia)&lt;/em&gt; &lt;code&gt;us-east-1&lt;/code&gt; and &lt;em&gt;US East (Ohio)&lt;/em&gt; &lt;code&gt;us-east-2&lt;/code&gt;
 are basically their data centers located within the region. Network transit within region
 is free of charge but is chargeable otherwise.&lt;/p&gt;
@@ -336,15 +304,15 @@ is free of charge but is chargeable otherwise.&lt;/p&gt;
 created in a specific zone can only be mounted to EC2 instances within the same zone.&lt;/p&gt;
 &lt;p&gt;Side note: there are ways to duplicate EBS volumes across availability zones but it seemed too
 troublesome to me, so I recommend always backing up important data in a region-shared file system like EFS.&lt;/p&gt;
-&lt;h2 id=&#34;ec2&#34;&gt;EC2
+&lt;h2 id="ec2"&gt;EC2
 &lt;/h2&gt;&lt;p&gt;EC2 is a virtual machine service but you can only choose from their confusingly-named
 presets (CPU and memory combo) as opposed to custom configurations. I assume this is
 to simplify their scheduling algorithm.&lt;/p&gt;
-&lt;h3 id=&#34;increase-limit&#34;&gt;Increase Limit
+&lt;h3 id="increase-limit"&gt;Increase Limit
 &lt;/h3&gt;&lt;p&gt;Newly registered AWS users have to first manually increase their limits/service quota
 in order to launch bigger instances or use GPU-backed instances.&lt;/p&gt;
-&lt;p&gt;Here&amp;rsquo;s the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;URL&lt;/a&gt;
+&lt;p&gt;Here&amp;rsquo;s the &lt;a class="link" href="https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Limits:" target="_blank" rel="noopener"
+&gt;URL&lt;/a&gt;
 to AWS console&amp;rsquo;s limit page such that you can increase it. Here are the ones you need to make request
 to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
 &lt;ul&gt;
@@ -363,88 +331,88 @@ to increase. Just request for 64 vCores on all of following:&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;security-group&#34;&gt;Security Group
+&lt;h3 id="security-group"&gt;Security Group
 &lt;/h3&gt;&lt;p&gt;It&amp;rsquo;s basically like an old-school firewall that allows network access on specific ports.&lt;/p&gt;
 &lt;p&gt;Necessary inbound rules&lt;/p&gt;
 &lt;table&gt;
-  &lt;thead&gt;
-      &lt;tr&gt;
-          &lt;th&gt;Type&lt;/th&gt;
-          &lt;th&gt;Protocol&lt;/th&gt;
-          &lt;th&gt;Port Range&lt;/th&gt;
-          &lt;th&gt;Source&lt;/th&gt;
-          &lt;th&gt;Reason&lt;/th&gt;
-      &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-      &lt;tr&gt;
-          &lt;td&gt;SSH&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
-          &lt;td&gt;Unrestricted in case your IP address changed&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;NFS&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;Security group attached to EC2 (I just use the same one)&lt;/td&gt;
-          &lt;td&gt;Allow EFS access&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;Custom TCP&lt;/td&gt;
-          &lt;td&gt;TCP&lt;/td&gt;
-          &lt;td&gt;8888&lt;/td&gt;
-          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
-          &lt;td&gt;Unrestricted Jupyter Lab access in case you want to access it from different IPs. Change this if you configured Jupyter Lab to use a different port. Not needed if you use the SSH port forwarding approach&lt;/td&gt;
-      &lt;/tr&gt;
-  &lt;/tbody&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Protocol&lt;/th&gt;
+&lt;th&gt;Port Range&lt;/th&gt;
+&lt;th&gt;Source&lt;/th&gt;
+&lt;th&gt;Reason&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;SSH&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Unrestricted in case your IP address changed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;Security group attached to EC2 (I just use the same one)&lt;/td&gt;
+&lt;td&gt;Allow EFS access&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Custom TCP&lt;/td&gt;
+&lt;td&gt;TCP&lt;/td&gt;
+&lt;td&gt;8888&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Unrestricted Jupyter Lab access in case you want to access it from different IPs. Change this if you configured Jupyter Lab to use a different port. Not needed if you use the SSH port forwarding approach&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Necessary outbound rules&lt;/p&gt;
 &lt;table&gt;
-  &lt;thead&gt;
-      &lt;tr&gt;
-          &lt;th&gt;Type&lt;/th&gt;
-          &lt;th&gt;Protocol&lt;/th&gt;
-          &lt;th&gt;Port Range&lt;/th&gt;
-          &lt;th&gt;Destination&lt;/th&gt;
-          &lt;th&gt;Reason&lt;/th&gt;
-      &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-      &lt;tr&gt;
-          &lt;td&gt;HTTP&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
-          &lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;HTTPS&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
-          &lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;SSH&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;0.0.0.0/0&lt;/td&gt;
-          &lt;td&gt;Automatically added&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-          &lt;td&gt;NFS&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;(auto)&lt;/td&gt;
-          &lt;td&gt;Security group attached to EC2&lt;/td&gt;
-          &lt;td&gt;Automatically added&lt;/td&gt;
-      &lt;/tr&gt;
-  &lt;/tbody&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Protocol&lt;/th&gt;
+&lt;th&gt;Port Range&lt;/th&gt;
+&lt;th&gt;Destination&lt;/th&gt;
+&lt;th&gt;Reason&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTP&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTPS&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Allow EC2 to download external data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SSH&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;0.0.0.0/0&lt;/td&gt;
+&lt;td&gt;Automatically added&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NFS&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;(auto)&lt;/td&gt;
+&lt;td&gt;Security group attached to EC2&lt;/td&gt;
+&lt;td&gt;Automatically added&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h3 id=&#34;type-selection&#34;&gt;Type Selection
-&lt;/h3&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/instance-types/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;EC2 instance type and name list&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="type-selection"&gt;Type Selection
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://aws.amazon.com/ec2/instance-types/" target="_blank" rel="noopener"
+&gt;EC2 instance type and name list&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;For machine learning, compute-optimized C5 series makes the most sense due to their
 higher CPU-to-memory ratio. I used &lt;code&gt;c5.24xlarge&lt;/code&gt; (with 96 vCores) for tasks that can take advantage of
 multiple cores.&lt;/p&gt;
@@ -464,17 +432,17 @@ insufficient resource and couldn&amp;rsquo;t be resumed, yikes!&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;using-ephemeral-drive&#34;&gt;Using Ephemeral Drive
+&lt;h4 id="using-ephemeral-drive"&gt;Using Ephemeral Drive
 &lt;/h4&gt;&lt;p&gt;&lt;code&gt;g4dn&lt;/code&gt; series comes with a ephemeral drive that can be used to store temporary data,
 such as unzipped training data. Be warned that any data stored in this drive will be erased
 when the instance is stopped, hence the name &amp;ldquo;ephemeral&amp;rdquo;. Its size varies with instance types.
 For example, &lt;code&gt;g4dn.xlarge&lt;/code&gt; comes with a 125GB drive and &lt;code&gt;g4dn.2xlarge&lt;/code&gt; comes with a 250GB drive.&lt;/p&gt;
 &lt;p&gt;Ephemeral drive is usually detected by Ubuntu OS as &lt;code&gt;/dev/nvme1n1&lt;/code&gt;. Follow the
-&lt;a class=&#34;link&#34; href=&#34;#mounting-an-ebs-volume-to-ec2&#34; &gt;guide&lt;/a&gt;
+&lt;a class="link" href="#mounting-an-ebs-volume-to-ec2" &gt;guide&lt;/a&gt;
 below on mounting EBS volumes to mount this drive.
 In cases where this device name is occupied by a secondary EBS volume, it might be renamed as
 &lt;code&gt;/dev/nvme2n1&lt;/code&gt;.&lt;/p&gt;
-&lt;h3 id=&#34;suspend-vs-stop-vs-terminate&#34;&gt;Suspend vs Stop vs Terminate
+&lt;h3 id="suspend-vs-stop-vs-terminate"&gt;Suspend vs Stop vs Terminate
 &lt;/h3&gt;&lt;p&gt;When suspending an EC2 instance, its memory content will be written to (probably the boot) EBS
 such that the any task that are running when the instance is suspended can resume once the instance
 is woken up.
@@ -486,48 +454,48 @@ However, not all AMIs supports this. The instance&amp;rsquo;s ephemeral IP addre
 like shutting down your computer. However, stopping and restarting will change the instance&amp;rsquo;s
 ephemeral IP address, too.&lt;/p&gt;
 &lt;p&gt;Terminating an EC2 instance &lt;strong&gt;will&lt;/strong&gt; remove its boot EBS volume and it&amp;rsquo;s gone forever!&lt;/p&gt;
-&lt;h3 id=&#34;vcore-performance&#34;&gt;vCore Performance
+&lt;h3 id="vcore-performance"&gt;vCore Performance
 &lt;/h3&gt;&lt;p&gt;vCores are much lower than physical CPU cores, hence &lt;strong&gt;parallelism is very important&lt;/strong&gt;!
 By my estimation, a vCore only runs at 50% of the speed of my laptop&amp;rsquo;s i7-8750H core.
 Make sure your &lt;code&gt;DataLoader&lt;/code&gt; can run on as many vCores as possible to keep the Tesla GPU
 from data starvation.&lt;/p&gt;
-&lt;h4 id=&#34;burstable-cpu&#34;&gt;Burstable CPU
+&lt;h4 id="burstable-cpu"&gt;Burstable CPU
 &lt;/h4&gt;&lt;p&gt;Burstable CPU is a feature of T2 series general-purpose VMs. It basically means
 you&amp;rsquo;ll be charged extra when you almost always use all cores for compute, but if
 the machine is mostly idle (like a web/database server), this could be a cost-saver.&lt;/p&gt;
 &lt;p&gt;This is probably not suitable for training models since you want to push all
 cores to the max (ideally) for the best performance. But if you are running some
 data analysis task using Jupyter Notebook, this type of instance could be a good fit.&lt;/p&gt;
-&lt;h3 id=&#34;spot-instance&#34;&gt;Spot Instance
-&lt;/h3&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/ec2/spot/pricing/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Spot Instance Pricing&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="spot-instance"&gt;Spot Instance
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://aws.amazon.com/ec2/spot/pricing/" target="_blank" rel="noopener"
+&gt;Spot Instance Pricing&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Spot instances are much cheaper than regular timed instances. The only downside
 is that it could be stopped by AWS at any time. But my experience shows that
 it doesn&amp;rsquo;t happen very often, at least in &lt;code&gt;us-east-2&lt;/code&gt;(Ohio).&lt;/p&gt;
 &lt;p&gt;If you do not check the &lt;strong&gt;Persistent request&lt;/strong&gt; box when launching a EC2 instance,
 the one-time-request spot instance will be terminated directly when it is stopped.&lt;/p&gt;
-&lt;p&gt;You &lt;strong&gt;must&lt;/strong&gt; cancel the request from the &lt;a class=&#34;link&#34; href=&#34;https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Spot Requests&lt;/a&gt; page when you want to terminate the instance. Otherwise,
+&lt;p&gt;You &lt;strong&gt;must&lt;/strong&gt; cancel the request from the &lt;a class="link" href="https://us-east-2.console.aws.amazon.com/ec2sp/v2/home?region=us-east-2#/spot" target="_blank" rel="noopener"
+&gt;Spot Requests&lt;/a&gt; page when you want to terminate the instance. Otherwise,
 a persistent request will relaunch the instance when you terminated it from the EC2
 management console.&lt;/p&gt;
 &lt;p&gt;If you are getting a &amp;ldquo;spot capacity error&amp;rdquo; message when launching &lt;code&gt;g4dn.xlarge&lt;/code&gt; spot instances, I advise waiting until nightfall at US East Coast and then try again, or try launching &lt;code&gt;g4dn.2xlarge&lt;/code&gt; instead.&lt;/p&gt;
-&lt;h3 id=&#34;ssh&#34;&gt;SSH
-&lt;/h3&gt;&lt;p&gt;Any SSH client would work, but I do highly recommend &lt;a class=&#34;link&#34; href=&#34;https://mobaxterm.mobatek.net/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;MobaXterm&lt;/a&gt;
+&lt;h3 id="ssh"&gt;SSH
+&lt;/h3&gt;&lt;p&gt;Any SSH client would work, but I do highly recommend &lt;a class="link" href="https://mobaxterm.mobatek.net/" target="_blank" rel="noopener"
+&gt;MobaXterm&lt;/a&gt;
 for Windows users (I&amp;rsquo;m one).&lt;/p&gt;
 &lt;p&gt;You would need a key pair to access the EC2 instance. This file can be generated
 when launching the EC2 instance and reused. Each key can only be downloaded once
 so don&amp;rsquo;t lose it. The full command line using ssh would look like:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh -i /path/my-key-pair.pem user-name@my-instance-public-ip-address
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Username would be &lt;code&gt;ec2-user&lt;/code&gt; for regular Amazon AMIs and &lt;code&gt;ubuntu&lt;/code&gt; for AWS Deep Learning AMI.&lt;/p&gt;
-&lt;h3 id=&#34;ami&#34;&gt;AMI
+&lt;h3 id="ami"&gt;AMI
 &lt;/h3&gt;&lt;p&gt;AMI is basically a prepackaged system disk image with pre-configured environment.&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;m really impressed with its boot speed, which only takes a few seconds.
 I certainly feel that it&amp;rsquo;s faster than Google Cloud Compute instances in terms of
@@ -543,10 +511,10 @@ was stopped by AWS while your model has not been trained for enough epochs.&lt;/
 It requires a minimum EBS disk size of 60GB and comes with necessary GPU drivers and
 linear algebra packs. However, it doesn&amp;rsquo;t come with any deep learning environment, so you
 need to configure one on your own.&lt;/p&gt;
-&lt;h3 id=&#34;monitoring&#34;&gt;Monitoring
+&lt;h3 id="monitoring"&gt;Monitoring
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;htop&lt;/code&gt; for a command-line task manager to monitor CPU usage&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nvidia-smi&lt;/code&gt; for a summary of GPU usage&lt;/p&gt;
-&lt;h2 id=&#34;ebs&#34;&gt;EBS
+&lt;h2 id="ebs"&gt;EBS
 &lt;/h2&gt;&lt;p&gt;EBS serves as a hard drive for EC2 instances. Each EC2 instance will have a boot
 EBS volume, but you can attach additional EBS volumes to it.&lt;/p&gt;
 &lt;p&gt;Resizing EBS would require filesystem level operations on the instance OS, so
@@ -555,11 +523,11 @@ I would recommend allocate enough storage on the boot volume to start with.&lt;/
 for my use case,
 so I&amp;rsquo;d just stick with it instead of downgrading to a HDD-backed option.&lt;/p&gt;
 &lt;p&gt;Note that the IOPS (I/O operations per second) of an &lt;code&gt;gp2&lt;/code&gt; EBS volume is proportional
-to its size (&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;up to 5,334 GB&lt;/a&gt;).
+to its size (&lt;a class="link" href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html" target="_blank" rel="noopener"
+&gt;up to 5,334 GB&lt;/a&gt;).
 Therefore, it seems to me that it&amp;rsquo;s better to allocate a large-enough EBS boot volume
 for AMI, training data and some buffer so that you get overall better performance.&lt;/p&gt;
-&lt;h3 id=&#34;mounting-an-ebs-volume-to-ec2&#34;&gt;Mounting an EBS volume to EC2
+&lt;h3 id="mounting-an-ebs-volume-to-ec2"&gt;Mounting an EBS volume to EC2
 &lt;/h3&gt;&lt;p&gt;In case you need some temporary storage, you can create a new EBS volume and attach it
 to your EC2 instance (&lt;strong&gt;in the same availability zone&lt;/strong&gt;) on AWS console.&lt;/p&gt;
 &lt;p&gt;Once you&amp;rsquo;ve done that, you need to attach and format the disk in the OS. For Linux,
@@ -583,7 +551,7 @@ a new &lt;code&gt;~/data&lt;/code&gt; directory.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;cd ~/data &amp;amp;&amp;amp; sudo chmod go+rw .&lt;/code&gt; to give read-write permissions to non-root users.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id=&#34;efs&#34;&gt;EFS
+&lt;h2 id="efs"&gt;EFS
 &lt;/h2&gt;&lt;p&gt;EFS is a networked filesystem that can be shared across multiple instances in the
 same region. Since it&amp;rsquo;s managed by AWS, it is dynamically sized and charged based on the amount
 of data you stored in EFS. You also don&amp;rsquo;t need to worry about availability zone,
@@ -597,8 +565,8 @@ files out to the EBS volume. When copying files, it can sustain a read speed of
 close to 1Gbps.&lt;/p&gt;
 &lt;p&gt;In terms of pricing, EFS is more expensive than EBS per GB. However, given the flexibility
 and dynamic sizing, it might cost less.&lt;/p&gt;
-&lt;h3 id=&#34;mounting-a-efs-share-to-ec2&#34;&gt;Mounting a EFS share to EC2
-&lt;/h3&gt;&lt;h5 id=&#34;on-aws-console&#34;&gt;On AWS Console
+&lt;h3 id="mounting-a-efs-share-to-ec2"&gt;Mounting a EFS share to EC2
+&lt;/h3&gt;&lt;h5 id="on-aws-console"&gt;On AWS Console
 &lt;/h5&gt;&lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Create a EFS share. This is pretty straightforward. Remember to create it
@@ -618,7 +586,7 @@ and that the traffic is using the aforementioned rule&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h5 id=&#34;on-ec2&#34;&gt;On EC2
+&lt;h5 id="on-ec2"&gt;On EC2
 &lt;/h5&gt;&lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Install NFS client &lt;code&gt;nfs-utils&lt;/code&gt; (for CentOS or REHL) or &lt;code&gt;nfs-common&lt;/code&gt; (for vanilla Ubuntu).
@@ -636,15 +604,15 @@ to the mounting point folder&lt;/p&gt;
 You only need to run this command once for a new EFS share.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id=&#34;s3&#34;&gt;S3
+&lt;h2 id="s3"&gt;S3
 &lt;/h2&gt;&lt;p&gt;S3 is yet another storage service for file storage. To access the files, you need to use
 &lt;code&gt;aws&lt;/code&gt; commands. As such, it cannot be used as a regular disk like EFS or EBS.&lt;/p&gt;
 &lt;p&gt;For my use case, I find S3
 suitable for sharing large files, such as trained model weights, via HTTPS.
 I&amp;rsquo;ve also seen use cases that use S3 as a data lake. Apache Spark even supports reading
 data directly off S3.&lt;/p&gt;
-&lt;h3 id=&#34;access-s3-bucket-in-ec2&#34;&gt;Access S3 bucket in EC2
-&lt;/h3&gt;&lt;h4 id=&#34;on-aws-console-1&#34;&gt;On AWS Console
+&lt;h3 id="access-s3-bucket-in-ec2"&gt;Access S3 bucket in EC2
+&lt;/h3&gt;&lt;h4 id="on-aws-console-1"&gt;On AWS Console
 &lt;/h4&gt;&lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Create an S3 bucket in the region you intended to use.&lt;/p&gt;
@@ -667,12 +635,12 @@ data directly off S3.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h4 id=&#34;on-ec2-1&#34;&gt;On EC2
+&lt;h4 id="on-ec2-1"&gt;On EC2
 &lt;/h4&gt;&lt;ol&gt;
 &lt;li&gt;&lt;code&gt;aws s3 cp my_copied_file.ext s3://my_bucket/my_folder/my_file.ext&lt;/code&gt; to upload
 files to S3. Reverse the 2 arguments to download files from S3.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h3 id=&#34;access-s3-objects-from-https&#34;&gt;Access S3 objects from HTTPS
+&lt;h3 id="access-s3-objects-from-https"&gt;Access S3 objects from HTTPS
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Go to the S3 console and modify its ACL read permission to be &lt;strong&gt;Everyone&lt;/strong&gt;.
@@ -682,16 +650,7 @@ This is not safe but the files I&amp;rsquo;m sharing aren&amp;rsquo;t going to m
 &lt;p&gt;Access the file using &lt;code&gt;https://my-bucket.s3.us-east-2.amazonaws.com/my_folder/my_file.ext&lt;/code&gt;.
 This assume that your S3 bucket is created in &lt;code&gt;us-east-2&lt;/code&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ol&gt;
-</description>
-        </item>
-        <item>
-        <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
-        <link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
-        <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
-        <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
+&lt;/ol&gt;</description></item><item><title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title><link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link><pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid><description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
@@ -702,7 +661,7 @@ This assume that your S3 bucket is created in &lt;code&gt;us-east-2&lt;/code&gt;
 &lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
 &lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;background&#34;&gt;Background
+&lt;h2 id="background"&gt;Background
 &lt;/h2&gt;&lt;p&gt;In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product. The new hire would join the Singapore development center that I am part of, which is akin to a boutique: it is not large, but everyone in it is proficient in writing production-ready code (we are developing a software product after all). Thus, the new hire is implicitly expected to have a certain level of coding skills.&lt;/p&gt;
 &lt;p&gt;However, finding a candidate with skills matching our requirements (knows how to use and troubleshoot Spark, knows how to code in Scala) exactly could be difficult, so we wouldn&amp;rsquo;t mind tutoring a fresh grad, as long as he or she is driven to learn and can pick up new knowledge quickly. As it turns out:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -712,7 +671,7 @@ This assume that your S3 bucket is created in &lt;code&gt;us-east-2&lt;/code&gt;
 &lt;p&gt;So here&amp;rsquo;s the important question that I&amp;rsquo;m trying to reason in this article: if we can only choose a single candidate, who should we hire?&lt;/p&gt;
 &lt;p&gt;First disclaimer: I know we have multiple vacancies and I can only provide inputs to my manager, who will ultimately make the hiring decision. However, the question in the title serves as a good thought experiment and ultimately inspired me to write it here to serve as a reminder to myself, and hopefully not being a waste of time to anyone who read it.&lt;/p&gt;
 &lt;p&gt;Second disclaimer: this article is completely based on my personal experience and does not represent my company at all.&lt;/p&gt;
-&lt;h2 id=&#34;a-resume-gives-the-first-impressions&#34;&gt;A resume gives the first impressions
+&lt;h2 id="a-resume-gives-the-first-impressions"&gt;A resume gives the first impressions
 &lt;/h2&gt;&lt;p&gt;Judging by their resumes, all candidates have relevant experience in the Data Engineering field, and all of them claim to know Spark (at least PySpark). In terms of industry experience, candidate A has more than 6 years, candidate B has less than 4 years, and candidate C has a few month (a final year student). The instinctive answer for me at this point is to say: hire B or C, simply because their salary requirements are definitely lower. This instinct seems inhumane at first, but when I gave it another thought, the fully learning point came to me:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;If a senior candidate cannot provide more &lt;strong&gt;utility&lt;/strong&gt; to the company, the hiring manager will probably choose a junior candidate instead&lt;/p&gt;
@@ -737,7 +696,7 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
 &lt;/blockquote&gt;
 &lt;p&gt;Since I know I&amp;rsquo;m helping to hire a data engineer focusing on Spark, I naturally skipped any projects using Python and TensorFlow, or experience developing iOS apps. So if I were to apply for a job again, I&amp;rsquo;ll just shorten the description to the experiences that doesn&amp;rsquo;t fully match the job description. If I become more senior, I&amp;rsquo;ll probably shorten or remove the extracurricular activities section of my resume.&lt;/p&gt;
 &lt;p&gt;In all, I find that resume is only a conversation starter rather than a decision influencer, so keeping the resume short and easily readable is more important than its layout design, unless of course, I&amp;rsquo;m interviewing for a UI/UX position.&lt;/p&gt;
-&lt;h2 id=&#34;any-interview-can-be-technical&#34;&gt;Any interview can be technical
+&lt;h2 id="any-interview-can-be-technical"&gt;Any interview can be technical
 &lt;/h2&gt;&lt;p&gt;We have a coding component in our interview process to assess a candidate&amp;rsquo;s ability to solve a practical challenge with code, but don&amp;rsquo;t let your guard down during non-coding portion of the interview! I only attended the non-coding portion of the interview process and it feels equally technical. This portion mainly assesses what this candidate has done in his past and usually starts with one of the recent projects that the candidate has worked on, so:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/p&gt;
@@ -761,258 +720,211 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
 &lt;p&gt;A software engineer shall not forget about the basics of computing (data structure and algorithms)&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Remembering how to write a lowest common ancestor function on a binary tree won&amp;rsquo;t be necessary, but the basics of computing shall not be forgotten.&lt;/p&gt;
-&lt;h2 id=&#34;the-final-decision-that-surprises-no-one&#34;&gt;The final decision that surprises no one
+&lt;h2 id="the-final-decision-that-surprises-no-one"&gt;The final decision that surprises no one
 &lt;/h2&gt;&lt;p&gt;Ultimately, based on the interviews, I concluded that all 3 candidates are on similar levels. So how do I make the choice if I were to choose only 1 of them? One character of candidate C made him stand out:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Throughout his interview, he exudes passion for his pet project and actively engages with us interviewers. That ultimately made the difference.&lt;/p&gt;
-&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>Manuscript: Cell Sector Clustering</title>
-        <link>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</link>
-        <pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</guid>
-        <description>&lt;span style=&#34;text-align:center&#34;&gt;
+&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;</description></item><item><title>Manuscript: Cell Sector Clustering</title><link>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</link><pubDate>Sat, 05 Oct 2019 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/manuscript-cell-sector-clustering/</guid><description>&lt;span style="text-align:center"&gt;
 &lt;p&gt;&lt;strong&gt;Presentation video at IEEE WCNC 2020&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;
-&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;https://www.youtube.com/embed/g89n9_uRFck&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/g89n9_uRFck" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
 &lt;/p&gt;
 &lt;/span&gt;
-&lt;p&gt;When I was with &lt;a class=&#34;link&#34; href=&#34;https://www.dsanalytics.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;DataSpark&lt;/a&gt;, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost. After deploying this feature, I decided to author a paper about this algorithm, together with my manager.&lt;/p&gt;
-&lt;iframe src=&#34;https://chen-zhe.github.io/assets/files/2020-SCUT.pdf&#34; style=&#34;width:100%; height:90vh; border:0;&#34;&gt;&lt;/iframe&gt;</description>
-        </item>
-        <item>
-        <title>Archives</title>
-        <link>https://chen-zhe.github.io/blog/archives/</link>
-        <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/archives/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Basic usage of GraphX for clique detection</title>
-        <link>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</link>
-        <pubDate>Sat, 15 Dec 2018 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</guid>
-        <description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;
+&lt;p&gt;When I was with &lt;a class="link" href="https://www.dsanalytics.com/" target="_blank" rel="noopener"
+&gt;DataSpark&lt;/a&gt;, I was part of a product team building a telco-specific solution that optimizes a telco operator&amp;rsquo;s spending on cell site upgrades to maximize return on investment (ROI). Requested by one of our clients, I designed, implemented and deployed this algorithm to identify cell sector clusters that share user load. Discovery of the sharing capability reduces the need to upgrade cell sites and hence saves upgrade cost. After deploying this feature, I decided to author a paper about this algorithm, together with my manager.&lt;/p&gt;
+&lt;iframe src="https://chen-zhe.github.io/assets/files/2020-SCUT.pdf" style="width:100%; height:90vh; border:0;"&gt;&lt;/iframe&gt;</description></item><item><title>Archives</title><link>https://chen-zhe.github.io/blog/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/archives/</guid><description/></item><item><title>Basic usage of GraphX for clique detection</title><link>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</link><pubDate>Sat, 15 Dec 2018 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/basic-usage-of-graphx-for-clique-detection/</guid><description>&lt;p&gt;&lt;code&gt;GraphX&lt;/code&gt; is a powerful component in Spark that allows graph-based programming and manipulation at very large scale. The only drawback is that it run on &lt;code&gt;RDD&lt;/code&gt; and not &lt;code&gt;DataFrame&lt;/code&gt; as I&amp;rsquo;m used to in Spark 2.2. Although a Spark package called &lt;code&gt;GraphFrames&lt;/code&gt; is available to extend GraphX&amp;rsquo;s power to DataFrame, I recon it&amp;rsquo;s still easier to learn to construct a graph using GraphX and RDD than importing the package in Spark.&lt;/p&gt;
 &lt;p&gt;GraphX requires me to manually assign a &lt;code&gt;VertexId&lt;/code&gt; (which is essentially Scala/Java type &lt;code&gt;Long&lt;/code&gt;) to each vertex, which can be done through Spark DataFrame&amp;rsquo;s &lt;code&gt;monotonically_increasing_id()&lt;/code&gt; function. This function provides unique id but doesn&amp;rsquo;t guarantee continuity (unlike SQL database&amp;rsquo;s auto-incremental primary key). However, since this id relies on partition number, it is NOT stable! The solution, though, is easy: &lt;code&gt;cache&lt;/code&gt; the DataFrame with id (or saving it to disk) will make it persistent across operations (e.g. &lt;code&gt;join&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;The following piece of code converts a graph expressed as a DataFrame of edges through source vertex object, destination vertex object and edge weight (a small price (storing redundant objects) to pay for Spark to generate it all in parallel) into GraphX Graph representation.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.spark.graphx._&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.spark.rdd.RDD&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;case&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Obj&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// graph DataFrame Schema -- src: Struct, dst: Struct, weight: DoubleType
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;union&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;distinct&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;monotonically_increasing_id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;())&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;VertexId&lt;/span&gt;, &lt;span class=&#34;kt&#34;&gt;Obj&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;				&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cache&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vertices&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;RDD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;VertexId&lt;/span&gt;, &lt;span class=&#34;kt&#34;&gt;Cell&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rdd&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;edges&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;RDD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Edge&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Double&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;weight&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;attr&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;srcId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;cell.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)),&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dstId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;cell.id&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)),&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;srcId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;dstId&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;attr&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// GraphX&amp;#39;s required fields for an Edge object
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Edge&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;Double&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;]].&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rdd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cache&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// caching edges is optional
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;val&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;graph&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Graph&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vertices&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;edges&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.spark.graphx._&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.spark.rdd.RDD&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Obj&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="k"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// graph DataFrame Schema -- src: Struct, dst: Struct, weight: DoubleType
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;idx&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;graph&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;union&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;graph&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;distinct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;withColumn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;monotonically_increasing_id&lt;/span&gt;&lt;span class="o"&gt;())&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;obj&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;[(&lt;/span&gt;&lt;span class="kt"&gt;VertexId&lt;/span&gt;, &lt;span class="kt"&gt;Obj&lt;/span&gt;&lt;span class="o"&gt;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;vertices&lt;/span&gt;&lt;span class="k"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;RDD&lt;/span&gt;&lt;span class="o"&gt;[(&lt;/span&gt;&lt;span class="kt"&gt;VertexId&lt;/span&gt;, &lt;span class="kt"&gt;Cell&lt;/span&gt;&lt;span class="o"&gt;)]&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rdd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;edges&lt;/span&gt;&lt;span class="k"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;RDD&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="kt"&gt;Edge&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="kt"&gt;Double&lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;graph&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;src.id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;dst.id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;weight&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;attr&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;srcId&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;cell.id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;)),&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;src&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;dstId&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;cell.id&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;)),&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;dst&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;srcId&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;dstId&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;attr&amp;#34;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// GraphX&amp;#39;s required fields for an Edge object
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="kt"&gt;Edge&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="kt"&gt;Double&lt;/span&gt;&lt;span class="o"&gt;]].&lt;/span&gt;&lt;span class="n"&gt;rdd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cache&lt;/span&gt; &lt;span class="c1"&gt;// caching edges is optional
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;graph&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="nc"&gt;Graph&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vertices&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;edges&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;The case class Obj requires a simple unique id that doesn&amp;rsquo;t have to be a number (if so, it can be used as VertexId directly) as joining case classes are problematic with it. The &lt;code&gt;idx&lt;/code&gt; DataFrame is cached for persistence and then assigned to the edges through join operations. It can also be referred to later for conversion of VertexId back to its corresponding object.&lt;/p&gt;
-&lt;h2 id=&#34;clique-detection-problem&#34;&gt;Clique Detection Problem
+&lt;h2 id="clique-detection-problem"&gt;Clique Detection Problem
 &lt;/h2&gt;&lt;p&gt;Although GraphX supports popular graph algorithms such as PageRank, Connected Components and Strongly Connected Components, Clique Detection is missing from its features. It&amp;rsquo;s probably due to the non-parallel nature of the original Bron-Kerbosch algorithm.&lt;/p&gt;
 &lt;p&gt;Since it&amp;rsquo;s the most suitable algorithm for my task on hand, research papers aren&amp;rsquo;t going to cut it. I found a simple Scala-based implementation, cleaned it up and optimized it for my use. By offloading heavy-lifting work to Spark as much as possible, this tiny recursive function (running on a single core) is surprisingly fast. My runtime for a graph with around 120,000 edges took 45 seconds. The graph is filtered for the important edges (based on the weight I defined) generated in the entirety of Singapore. So, to me, it is probably enough.&lt;/p&gt;
-&lt;script src=&#34;https://gist.github.com/Chen-Zhe/ade6cb064fc32b9bb013a05fe482fc0b.js&#34;&gt;&lt;/script&gt;
+&lt;script src="https://gist.github.com/Chen-Zhe/ade6cb064fc32b9bb013a05fe482fc0b.js"&gt;&lt;/script&gt;
 &lt;p&gt;The function may not perform well in a densely-connected graph, but you should try it before calling it unusable.&lt;/p&gt;
-&lt;p&gt;Larger graph, on the other hand, could be handled through first partitioning the graph based on certain criteria and run multiple instances of this function on difference partitions.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>Apache Spark - Save Time with Less Join Operations</title>
-        <link>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</link>
-        <pubDate>Fri, 28 Sep 2018 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</guid>
-        <description>&lt;p&gt;Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of &lt;code&gt;join&lt;/code&gt; operations.&lt;/p&gt;
-&lt;h2 id=&#34;refactoring-joins&#34;&gt;Refactoring Joins
+&lt;p&gt;Larger graph, on the other hand, could be handled through first partitioning the graph based on certain criteria and run multiple instances of this function on difference partitions.&lt;/p&gt;</description></item><item><title>Apache Spark - Save Time with Less Join Operations</title><link>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</link><pubDate>Fri, 28 Sep 2018 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/apache-spark-save-time-with-less-join-operations/</guid><description>&lt;p&gt;Not long ago, I was tasked to improve our Spark application&amp;rsquo;s runtime performance as some modules takes 7 hours or more to complete on datasets that are not considered very large. This is my conclusion and afterthoughts after countless hours staring at our codebase and YARN application tracking UI. I was able to achieve 30% ~ 80% reduction of runtime, depending on how well the module was written and the nature of operations. But one thing is in common for the modules with maximum achieved runtime reduction, that is refactoring of &lt;code&gt;join&lt;/code&gt; operations.&lt;/p&gt;
+&lt;h2 id="refactoring-joins"&gt;Refactoring Joins
 &lt;/h2&gt;&lt;p&gt;&lt;code&gt;join&lt;/code&gt; is a slow operation and everyone knows it, but sometime it’s just unavoidable. So, the real question is, how to prevent unnecessary use of joins. Interestingly, the examples that I discovered in the code base are all related to groupBy operations as well and gist of it can be summarized simply as: use a single groupBy to accomplish as much as possible.
 Here’s a few (Scala style) pseudo code blocks that I’ve seen drastic runtime improvements by removing the &lt;code&gt;join&lt;/code&gt;s&lt;/p&gt;
-&lt;h4 id=&#34;1&#34;&gt;1.
-&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;h4 id="1"&gt;1.
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;          &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;max&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colC&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Optimized
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colA&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sum&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;when&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;       &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;otherwise&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sth&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;       &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;       &lt;span class=&#34;n&#34;&gt;max&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;when&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cond2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;colB&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;       &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;colC&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Original
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cond1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colA&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;agg&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colB&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colB&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cond2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colA&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;agg&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colB&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colC&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;colA&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Optimized
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colA&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;agg&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;when&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cond1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;colB&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;otherwise&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sth&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colB&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;max&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;when&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cond2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;colB&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;colC&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Essentially, this code block is trying to get 2 different aggregated statistics of groups from colA based on certain conditions. The join operation then puts the 2 different statistics into the same table column-wise under the same group.&lt;/p&gt;
 &lt;p&gt;In this case, Spark’s (probably borrowed from SQL) When operator can be substituted for conditional filtering. Unless a default value or column is specified through the otherwise operator, when operator returns null. Spark’s built-in aggregation functions (max, sum, avg, etc.) will automatically ignore null values so when combined with when function, it acts as aggregations with conditions. The code snippet below is much more efficient, especially when more conditional aggregations are used.&lt;/p&gt;
-&lt;h4 id=&#34;2&#34;&gt;2.
-&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;h4 id="2"&gt;2.
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;     &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;===&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;     &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Optimized
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pivot&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Seq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;first&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumnRenamed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...)&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Original
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;agg&lt;/span&gt;&lt;span class="o"&gt;(...&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;===&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b1&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;===&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b2&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Optimized
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pivot&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nc"&gt;Seq&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;agg&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;first&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;withColumnRenamed&lt;/span&gt;&lt;span class="o"&gt;(...)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Understanding what this piece of code is trying to do is important. In short, the code tries to group the table based on column A and then pivot on column B. Pivot operation can be considered as a groupBy on a certain column and transpose the result onto columns instead of rows.&lt;/p&gt;
 &lt;p&gt;With the understanding in mind, we can the proceed to rewrite this piece of code to use pivot operator? Wait, in this piece of code, we are only concerned with a value of 1 or 2 in column B. Worry not, Spark has it all prepared for you. Its pivot operation accepts an optional second parameter (a Sequence of values) and it will create the exact number of columns for every value in the parameter, regardless of the existence of the value in the pivoting column.&lt;/p&gt;
 &lt;p&gt;Since we are sure that for each unique combination of values in Column A and Column B, there’s only a single row, we can use the first aggregation function.&lt;/p&gt;
-&lt;h4 id=&#34;3&#34;&gt;3.
-&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;h4 id="3"&gt;3.
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scala&#34; data-lang=&#34;scala&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Original
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;impt&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;         &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Seq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Optimized
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;df&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;groupBy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;agg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(...&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;),&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;n&#34;&gt;collect_list&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;withColumn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;explode&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;filter&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;impt_val&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;select&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tmp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-scala" data-lang="scala"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Original
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;impt&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;agg&lt;/span&gt;&lt;span class="o"&gt;(...&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;impt_val&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;impt&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nc"&gt;Seq&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;impt_val&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Optimized
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;withColumn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;struct&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;agg&lt;/span&gt;&lt;span class="o"&gt;(...&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;impt_val&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;collect_list&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;as&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;withColumn&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;explode&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;impt_val&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;select&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;This piece of code first calculates an aggregated statistic per group and then use it as a threshold to filter the original dataframe. Optimizations to this example might be counter-intuitive, but in reality, if there are a lot of groups as defined by column A and column B, the join operation would take a significant amount of time.&lt;/p&gt;
 &lt;p&gt;The optimized version uses groupBy to get not only the threshold value, but also a list of values to be used in the filter and select statements later. All values are packed into a single compound column through struct operator and the aggregated list is unpacked through the explode operator, which flattens the list to each row and duplicates every other column. To some extent, the collect_list operation is not extremely efficient, but the overall execution time is still drastically faster.&lt;/p&gt;
-&lt;h2 id=&#34;afterthought&#34;&gt;Afterthought
+&lt;h2 id="afterthought"&gt;Afterthought
 &lt;/h2&gt;&lt;p&gt;Perhaps the main culprit here is the shuffling of partitions when executing groupBy and Join statements. As the shuffling might be different for one groupBy operation and one join operation, a third shuffle is required to bring rows of the same key into the same executor. In Spark, partition shuffle might be done over network and hence incurs significant overhead. In contrast, refactoring the operation into a single groupBy operator requires only 1 shuffle and hence runs much faster.&lt;/p&gt;
-&lt;h2 id=&#34;one-actually-two-more-thing&#34;&gt;One (actually two) more thing
+&lt;h2 id="one-actually-two-more-thing"&gt;One (actually two) more thing
 &lt;/h2&gt;&lt;p&gt;While staring at the YARN application tracker UI, I have also discovered a few small steps that might impact performance significantly.&lt;/p&gt;
 &lt;p&gt;Dataframe &lt;code&gt;df.count&lt;/code&gt; operation: count seems to be a harmless function but unlike its counterpart in Pandas, this operation requires a full execution of the SQL plan. In short, getting the count of rows in a Spark dataframe takes approximately the same amount of the time as generating the content of the entire dataframe.&lt;/p&gt;
 &lt;p&gt;Thus, when the dataframe is generated from complex operations, counting from saved parquet or cached content is faster.&lt;/p&gt;
-&lt;p&gt;Dataframe &lt;code&gt;df.cache&lt;/code&gt; operation: caching a large dataset negatively impacts performance, which might stem from the disk I/O overhead due to spilling.&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>Search</title>
-        <link>https://chen-zhe.github.io/blog/search/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/search/</guid>
-        <description></description>
-        </item>
-        
-    </channel>
-</rss>
+&lt;p&gt;Dataframe &lt;code&gt;df.cache&lt;/code&gt; operation: caching a large dataset negatively impacts performance, which might stem from the disk I/O overhead due to spilling.&lt;/p&gt;</description></item><item><title>Search</title><link>https://chen-zhe.github.io/blog/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/search/</guid><description/></item></channel></rss>

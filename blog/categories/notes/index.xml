@@ -1,18 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>Notes on 大白鲸笔记本</title>
-        <link>https://chen-zhe.github.io/blog/categories/notes/</link>
-        <description>Recent content in Notes on 大白鲸笔记本</description>
-        <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language>
-        <lastBuildDate>Mon, 23 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/notes/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>How to be a better software engineer</title>
-        <link>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</link>
-        <pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid>
-        <description>&lt;p&gt;After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professors
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on 大白鲸笔记本</title><link>https://chen-zhe.github.io/blog/categories/notes/</link><description>Recent content in Notes on 大白鲸笔记本</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 23 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>How to be a better software engineer</title><link>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</link><pubDate>Mon, 23 May 2022 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/how-to-be-a-better-software-engineer/</guid><description>&lt;p&gt;After graduation from my Master&amp;rsquo;s, I decided to get some advice from my advising professors
 before I embark (again) on a journey to be a better software engineer. Here are his advice
 that I feel are words to remember:&lt;/p&gt;
 &lt;ul&gt;
@@ -57,14 +43,14 @@ which likely exists.&lt;/p&gt;
 &lt;li&gt;
 &lt;p&gt;Be prepared for outages in California&lt;/p&gt;
 &lt;p&gt;Store 7 gallons = 26.5L of water per person (1 gallon = 3.78L per day) in the household in case of water outages.&lt;/p&gt;
-&lt;p&gt;Get an Iridium-capable &lt;a class=&#34;link&#34; href=&#34;https://discover.garmin.com/en-US/inreach/personal/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Garmin InReach&lt;/a&gt; and subscribe to a text-message-only plan
+&lt;p&gt;Get an Iridium-capable &lt;a class="link" href="https://discover.garmin.com/en-US/inreach/personal/" target="_blank" rel="noopener"
+&gt;Garmin InReach&lt;/a&gt; and subscribe to a text-message-only plan
 in case of power outages that also take down cellular and wired network. It also comes in handy during trekking.&lt;/p&gt;
 &lt;p&gt;Get a good power bank&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;A professor recommended &lt;a class=&#34;link&#34; href=&#34;https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;&amp;ldquo;The Friendship That Made Google Huge&amp;rdquo;&lt;/a&gt;&lt;/strong&gt;,
+&lt;p&gt;&lt;strong&gt;A professor recommended &lt;a class="link" href="https://www.newyorker.com/magazine/2018/12/10/the-friendship-that-made-google-huge" target="_blank" rel="noopener"
+&gt;&amp;ldquo;The Friendship That Made Google Huge&amp;rdquo;&lt;/a&gt;&lt;/strong&gt;,
 which is long but well-written and insightful. It writes about the friendship of Jeff Dean and Sanjay Ghemawat, and how they
 they transformed Google, from the early days of debugging web indexing code,
 to building the scalable and fault-tolerant distributed computing framework &lt;em&gt;MapReduce&lt;/em&gt;,
@@ -90,16 +76,7 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
 &lt;li&gt;
 &lt;p&gt;Google&amp;rsquo;s career levels as of 2018. Level 1 are the I.T. support staff. Level 2s are fresh out of college; Level 3s often have master’s degrees. Getting to Level 4 takes several years, or a Ph.D. Most progression stops at Level 5. Level 6 engineers — the top ten percent — are so capable that they could be said to be the reason a project succeeds; Level 7s are Level 6s with a long track record. Principal Engineers, the Level 8s, are associated with a major product or piece of infrastructure. Distinguished Engineers, the Level 9s, are spoken of with reverence. To become a Google Fellow, a Level 10, is to win an honor that will follow you for life. Google Fellows are usually the world’s leading experts in their fields. Jeff and Sanjay are Google Senior Fellows — the company’s first and only Level 11s.&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        </item>
-        <item>
-        <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
-        <link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
-        <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
-        <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
+&lt;/ul&gt;</description></item><item><title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title><link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link><pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid><description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
@@ -110,7 +87,7 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
 &lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
 &lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;background&#34;&gt;Background
+&lt;h2 id="background"&gt;Background
 &lt;/h2&gt;&lt;p&gt;In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product. The new hire would join the Singapore development center that I am part of, which is akin to a boutique: it is not large, but everyone in it is proficient in writing production-ready code (we are developing a software product after all). Thus, the new hire is implicitly expected to have a certain level of coding skills.&lt;/p&gt;
 &lt;p&gt;However, finding a candidate with skills matching our requirements (knows how to use and troubleshoot Spark, knows how to code in Scala) exactly could be difficult, so we wouldn&amp;rsquo;t mind tutoring a fresh grad, as long as he or she is driven to learn and can pick up new knowledge quickly. As it turns out:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -120,7 +97,7 @@ came from Lisp, and knowing details close to the hardware helped him to write mo
 &lt;p&gt;So here&amp;rsquo;s the important question that I&amp;rsquo;m trying to reason in this article: if we can only choose a single candidate, who should we hire?&lt;/p&gt;
 &lt;p&gt;First disclaimer: I know we have multiple vacancies and I can only provide inputs to my manager, who will ultimately make the hiring decision. However, the question in the title serves as a good thought experiment and ultimately inspired me to write it here to serve as a reminder to myself, and hopefully not being a waste of time to anyone who read it.&lt;/p&gt;
 &lt;p&gt;Second disclaimer: this article is completely based on my personal experience and does not represent my company at all.&lt;/p&gt;
-&lt;h2 id=&#34;a-resume-gives-the-first-impressions&#34;&gt;A resume gives the first impressions
+&lt;h2 id="a-resume-gives-the-first-impressions"&gt;A resume gives the first impressions
 &lt;/h2&gt;&lt;p&gt;Judging by their resumes, all candidates have relevant experience in the Data Engineering field, and all of them claim to know Spark (at least PySpark). In terms of industry experience, candidate A has more than 6 years, candidate B has less than 4 years, and candidate C has a few month (a final year student). The instinctive answer for me at this point is to say: hire B or C, simply because their salary requirements are definitely lower. This instinct seems inhumane at first, but when I gave it another thought, the fully learning point came to me:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;If a senior candidate cannot provide more &lt;strong&gt;utility&lt;/strong&gt; to the company, the hiring manager will probably choose a junior candidate instead&lt;/p&gt;
@@ -145,7 +122,7 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
 &lt;/blockquote&gt;
 &lt;p&gt;Since I know I&amp;rsquo;m helping to hire a data engineer focusing on Spark, I naturally skipped any projects using Python and TensorFlow, or experience developing iOS apps. So if I were to apply for a job again, I&amp;rsquo;ll just shorten the description to the experiences that doesn&amp;rsquo;t fully match the job description. If I become more senior, I&amp;rsquo;ll probably shorten or remove the extracurricular activities section of my resume.&lt;/p&gt;
 &lt;p&gt;In all, I find that resume is only a conversation starter rather than a decision influencer, so keeping the resume short and easily readable is more important than its layout design, unless of course, I&amp;rsquo;m interviewing for a UI/UX position.&lt;/p&gt;
-&lt;h2 id=&#34;any-interview-can-be-technical&#34;&gt;Any interview can be technical
+&lt;h2 id="any-interview-can-be-technical"&gt;Any interview can be technical
 &lt;/h2&gt;&lt;p&gt;We have a coding component in our interview process to assess a candidate&amp;rsquo;s ability to solve a practical challenge with code, but don&amp;rsquo;t let your guard down during non-coding portion of the interview! I only attended the non-coding portion of the interview process and it feels equally technical. This portion mainly assesses what this candidate has done in his past and usually starts with one of the recent projects that the candidate has worked on, so:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/p&gt;
@@ -169,15 +146,10 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
 &lt;p&gt;A software engineer shall not forget about the basics of computing (data structure and algorithms)&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Remembering how to write a lowest common ancestor function on a binary tree won&amp;rsquo;t be necessary, but the basics of computing shall not be forgotten.&lt;/p&gt;
-&lt;h2 id=&#34;the-final-decision-that-surprises-no-one&#34;&gt;The final decision that surprises no one
+&lt;h2 id="the-final-decision-that-surprises-no-one"&gt;The final decision that surprises no one
 &lt;/h2&gt;&lt;p&gt;Ultimately, based on the interviews, I concluded that all 3 candidates are on similar levels. So how do I make the choice if I were to choose only 1 of them? One character of candidate C made him stand out:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Throughout his interview, he exudes passion for his pet project and actively engages with us interviewers. That ultimately made the difference.&lt;/p&gt;
-&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;
-</description>
-        </item>
-        
-    </channel>
-</rss>
+&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;</description></item></channel></rss>

@@ -1,18 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>Interview on 大白鲸笔记本</title>
-        <link>https://chen-zhe.github.io/blog/categories/interview/</link>
-        <description>Recent content in Interview on 大白鲸笔记本</description>
-        <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language>
-        <lastBuildDate>Sun, 15 Mar 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/interview/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title>
-        <link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link>
-        <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-        
-        <guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid>
-        <description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Interview on 大白鲸笔记本</title><link>https://chen-zhe.github.io/blog/categories/interview/</link><description>Recent content in Interview on 大白鲸笔记本</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 15 Mar 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://chen-zhe.github.io/blog/categories/interview/index.xml" rel="self" type="application/rss+xml"/><item><title>How to get hired as a software engineer? A note to myself after 3 interviews as an interviewer</title><link>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</link><pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate><guid>https://chen-zhe.github.io/blog/p/how-to-get-hired-as-a-software-engineer-a-note-to-myself-after-3-interviews-as-an-interviewer/</guid><description>&lt;p&gt;&lt;em&gt;TL;DR&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;To pose myself as a good software engineer candidate, I need to:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Demonstrate passion to learn&lt;/li&gt;
@@ -23,7 +9,7 @@
 &lt;li&gt;Not forget about the basics of computing (data structure and algorithms)&lt;/li&gt;
 &lt;li&gt;Demonstrate &lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;background&#34;&gt;Background
+&lt;h2 id="background"&gt;Background
 &lt;/h2&gt;&lt;p&gt;In the past few weeks, I participated in 3 interview sessions to hire more software engineers for developing the Spark ETL pipeline (using Scala) of a product. The new hire would join the Singapore development center that I am part of, which is akin to a boutique: it is not large, but everyone in it is proficient in writing production-ready code (we are developing a software product after all). Thus, the new hire is implicitly expected to have a certain level of coding skills.&lt;/p&gt;
 &lt;p&gt;However, finding a candidate with skills matching our requirements (knows how to use and troubleshoot Spark, knows how to code in Scala) exactly could be difficult, so we wouldn&amp;rsquo;t mind tutoring a fresh grad, as long as he or she is driven to learn and can pick up new knowledge quickly. As it turns out:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -33,7 +19,7 @@
 &lt;p&gt;So here&amp;rsquo;s the important question that I&amp;rsquo;m trying to reason in this article: if we can only choose a single candidate, who should we hire?&lt;/p&gt;
 &lt;p&gt;First disclaimer: I know we have multiple vacancies and I can only provide inputs to my manager, who will ultimately make the hiring decision. However, the question in the title serves as a good thought experiment and ultimately inspired me to write it here to serve as a reminder to myself, and hopefully not being a waste of time to anyone who read it.&lt;/p&gt;
 &lt;p&gt;Second disclaimer: this article is completely based on my personal experience and does not represent my company at all.&lt;/p&gt;
-&lt;h2 id=&#34;a-resume-gives-the-first-impressions&#34;&gt;A resume gives the first impressions
+&lt;h2 id="a-resume-gives-the-first-impressions"&gt;A resume gives the first impressions
 &lt;/h2&gt;&lt;p&gt;Judging by their resumes, all candidates have relevant experience in the Data Engineering field, and all of them claim to know Spark (at least PySpark). In terms of industry experience, candidate A has more than 6 years, candidate B has less than 4 years, and candidate C has a few month (a final year student). The instinctive answer for me at this point is to say: hire B or C, simply because their salary requirements are definitely lower. This instinct seems inhumane at first, but when I gave it another thought, the fully learning point came to me:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;If a senior candidate cannot provide more &lt;strong&gt;utility&lt;/strong&gt; to the company, the hiring manager will probably choose a junior candidate instead&lt;/p&gt;
@@ -58,7 +44,7 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
 &lt;/blockquote&gt;
 &lt;p&gt;Since I know I&amp;rsquo;m helping to hire a data engineer focusing on Spark, I naturally skipped any projects using Python and TensorFlow, or experience developing iOS apps. So if I were to apply for a job again, I&amp;rsquo;ll just shorten the description to the experiences that doesn&amp;rsquo;t fully match the job description. If I become more senior, I&amp;rsquo;ll probably shorten or remove the extracurricular activities section of my resume.&lt;/p&gt;
 &lt;p&gt;In all, I find that resume is only a conversation starter rather than a decision influencer, so keeping the resume short and easily readable is more important than its layout design, unless of course, I&amp;rsquo;m interviewing for a UI/UX position.&lt;/p&gt;
-&lt;h2 id=&#34;any-interview-can-be-technical&#34;&gt;Any interview can be technical
+&lt;h2 id="any-interview-can-be-technical"&gt;Any interview can be technical
 &lt;/h2&gt;&lt;p&gt;We have a coding component in our interview process to assess a candidate&amp;rsquo;s ability to solve a practical challenge with code, but don&amp;rsquo;t let your guard down during non-coding portion of the interview! I only attended the non-coding portion of the interview process and it feels equally technical. This portion mainly assesses what this candidate has done in his past and usually starts with one of the recent projects that the candidate has worked on, so:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;be mentally prepared for a project with relevancy to the position I&amp;rsquo;m applying to&lt;/p&gt;
@@ -82,15 +68,10 @@ To quote a career coach from my alma mater, &amp;ldquo;a fresh grad should keep 
 &lt;p&gt;A software engineer shall not forget about the basics of computing (data structure and algorithms)&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Remembering how to write a lowest common ancestor function on a binary tree won&amp;rsquo;t be necessary, but the basics of computing shall not be forgotten.&lt;/p&gt;
-&lt;h2 id=&#34;the-final-decision-that-surprises-no-one&#34;&gt;The final decision that surprises no one
+&lt;h2 id="the-final-decision-that-surprises-no-one"&gt;The final decision that surprises no one
 &lt;/h2&gt;&lt;p&gt;Ultimately, based on the interviews, I concluded that all 3 candidates are on similar levels. So how do I make the choice if I were to choose only 1 of them? One character of candidate C made him stand out:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Passion for coding&lt;/strong&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Throughout his interview, he exudes passion for his pet project and actively engages with us interviewers. That ultimately made the difference.&lt;/p&gt;
-&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;
-</description>
-        </item>
-        
-    </channel>
-</rss>
+&lt;p&gt;This decision may not come as a surprise. After all, candidate C is probably the cheapest to hire, too. But beyond salary, the rationale behind this decision still provides enough food for thought to myself, and hopefully to some of the fellow software engineers, too.&lt;/p&gt;</description></item></channel></rss>
